@@ -1,18 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EditorUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static EditorUI _Instance;
 
-    // Update is called once per frame
-    void Update()
-    {
+    public RuntimeToolUI runtimeToolUI;
+    public AreaListUI areaListUI;
 
+    private void Awake()
+    {
+        _Instance = this;
     }
 }

@@ -5,20 +5,21 @@ using UnityEngine.UI;
 using Battlehub.RTHandles.Demo;
 using Battlehub.RTCommon;
 using System.Linq;
+using Battlehub.RTHandles;
 
 [DefaultExecutionOrder(-10)]
-public class ShootGameEditor : SimpleEditor, IRTEState
+public class ShootGameEditor : SimpleEditor
 {
     private List<ShootingArea> m_Arealist = new List<ShootingArea>();
 
     [SerializeField]
-    private GameObject AreaPerfab, AreaPerfabUI;
-    [SerializeField]
-    private GameObject AreaCount, AreaUICount;
-
+    RuntimeSceneComponent Component;
 
     [SerializeField]
-    Button Add, Subtract;
+    private GameObject AreaPerfab;
+    [SerializeField]
+    private GameObject AreaCount;
+
 
     public bool IsCreated
     {
@@ -38,6 +39,11 @@ public class ShootGameEditor : SimpleEditor, IRTEState
     protected override void Start()
     {
         base.Start();
+        EditorUI._Instance.areaListUI.Add.onClick.AddListener(delegate (){Add_Arealist();});
+        EditorUI._Instance.areaListUI.Subtract.onClick.AddListener(delegate (){Subtract_Arealist(Editor.Selection.gameObjects);});
+        EditorUI._Instance.runtimeToolUI.Move_Button.onClick.AddListener(delegate() { SetRuntimeTool(RuntimeTool.Move); });
+        EditorUI._Instance.runtimeToolUI.Rotate_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Rotate); });
+        EditorUI._Instance.runtimeToolUI.Scale_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Scale); });
     }
 
     protected override void OnDestroy()
@@ -47,26 +53,18 @@ public class ShootGameEditor : SimpleEditor, IRTEState
     protected override void Awake()
     {
         base.Awake();
-        Add.onClick.AddListener(delegate ()
-        {
-            Add_Arealist();
-        });
-        Subtract.onClick.AddListener(delegate ()
-        {
-            Subtract_Arealist(Editor.Selection.gameObjects);
-        });
-
     }
 
     void Add_Arealist()
     {
         ShootingArea newArea = new ShootingArea();
-        newArea.Instantiate_obj(AreaPerfab, AreaPerfabUI, AreaCount, AreaUICount, delegate () { UIClickEvent(newArea); });
+        newArea.Instantiate_obj(AreaPerfab, EditorUI._Instance.areaListUI.AreaPerfabUI, AreaCount, EditorUI._Instance.areaListUI.AreaUICount, delegate () { UIClickEvent(newArea); });
         m_Arealist.Add(newArea);
     }
 
     void UIClickEvent(ShootingArea value)
     {
+        
         foreach (ShootingArea i in m_Arealist)
         {
             if (value == i)
@@ -78,8 +76,32 @@ public class ShootGameEditor : SimpleEditor, IRTEState
                 selection.Insert(0, value.Perfab);
 
                 Editor.Undo.Select(selection.ToArray(), value.Perfab);
+                
+
+                //Component.handle.LockObject.PositionY = true;
+                //Editor.Selection.activeTransform.position;
+                //Debug.Log(Editor.Tools.PivotRotation);
             }
         }
+    }
+
+
+
+    void SetRuntimeTool(RuntimeTool runtimeTool)
+    {
+        switch (runtimeTool)
+        {
+            case RuntimeTool.Move:
+                Editor.Tools.Current = RuntimeTool.Move;               
+                break;
+            case RuntimeTool.Rotate:
+                Editor.Tools.Current = RuntimeTool.Rotate;
+                break;
+            case RuntimeTool.Scale:
+                Editor.Tools.Current = RuntimeTool.Scale;
+                break;
+        }
+
     }
     void Subtract_Arealist(GameObject[] area)
     {

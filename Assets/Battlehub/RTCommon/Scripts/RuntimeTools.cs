@@ -259,7 +259,8 @@ namespace Battlehub.RTCommon
         public void Reset()
         {
             ActiveTool = null;
-            LockAxes = null;
+            LockAxes = new LockObject();
+            LockAxes.PositionY = true;
             m_isViewing = false;
             m_isSnapping = false;
             m_showSelectionGizmos = true;

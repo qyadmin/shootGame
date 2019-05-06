@@ -53,11 +53,11 @@ namespace Battlehub.RTHandles
             set
             {
                 m_lockObject = value;
-                if(m_lockObject != null && Editor != null && Editor.Tools.LockAxes != null)
+                if (m_lockObject != null && Editor != null && Editor.Tools.LockAxes != null)
                 {
                     m_lockObject.SetGlobalLock(Editor.Tools.LockAxes);
                 }
-                
+
                 if (Model != null && !Model.gameObject.IsPrefab())
                 {
                     Model.SetLock(LockObject);
@@ -86,7 +86,7 @@ namespace Battlehub.RTHandles
         {
             get
             {
-                if(m_realTargets == null)
+                if (m_realTargets == null)
                 {
                     return Targets;
                 }
@@ -102,7 +102,7 @@ namespace Battlehub.RTHandles
 
         private void GetActiveRealTargets()
         {
-            if(m_realTargets == null)
+            if (m_realTargets == null)
             {
                 m_activeRealTargets = null;
                 return;
@@ -205,9 +205,9 @@ namespace Battlehub.RTHandles
             get { return m_targets; }
             set
             {
-             
+
                 m_targets = value;
-                if(m_targets == null)
+                if (m_targets == null)
                 {
                     LockObject = LockAxes.Eval(null);
                     m_activeTargets = null;
@@ -230,18 +230,18 @@ namespace Battlehub.RTHandles
                     m_activeTargets = new Transform[0];
                     return;
                 }
-                else if(m_targets.Length == 1)
+                else if (m_targets.Length == 1)
                 {
-                    m_activeTargets = new [] { m_targets[0] };
+                    m_activeTargets = new[] { m_targets[0] };
                 }
 
-                for(int i = 0; i < m_targets.Length; ++i)
+                for (int i = 0; i < m_targets.Length; ++i)
                 {
                     Transform target = m_targets[i];
                     Transform p = target.parent;
-                    while(p != null)
+                    while (p != null)
                     {
-                        if(targetsHS.Contains(p))
+                        if (targetsHS.Contains(p))
                         {
                             targetsHS.Remove(target);
                             break;
@@ -253,7 +253,7 @@ namespace Battlehub.RTHandles
 
                 m_activeTargets = targetsHS.ToArray();
                 LockObject = LockAxes.Eval(m_activeTargets.Where(t => t.GetComponent<LockAxes>() != null).Select(t => t.GetComponent<LockAxes>()).ToArray());
-                if(m_activeTargets.Any(target => target.gameObject.isStatic))
+                if (m_activeTargets.Any(target => target.gameObject.isStatic))
                 {
                     LockObject = new LockObject();
                     LockObject.PositionX = LockObject.PositionY = LockObject.PositionZ = true;
@@ -263,12 +263,12 @@ namespace Battlehub.RTHandles
                     LockObject.RotationFree = true;
                 }
 
-                if(m_activeTargets != null && m_activeTargets.Length > 0)
+                if (m_activeTargets != null && m_activeTargets.Length > 0)
                 {
                     transform.position = m_activeTargets[0].position;
                 }
 
-                if(IsAwaked && Model != null)
+                if (IsAwaked && Model != null)
                 {
                     SyncModelTransform();
                 }
@@ -279,7 +279,7 @@ namespace Battlehub.RTHandles
         {
             get
             {
-                if(Targets == null || Targets.Length == 0)
+                if (Targets == null || Targets.Length == 0)
                 {
                     return null;
                 }
@@ -296,7 +296,7 @@ namespace Battlehub.RTHandles
         /// Whether drag operation in progress
         /// </summary>
         private bool m_isDragging;
-        
+
         /// <summary>
         /// Drag plane
         /// </summary>
@@ -322,7 +322,7 @@ namespace Battlehub.RTHandles
         {
             get
             {
-                if(Targets == null || Targets.Length <= 0 || Target == null)
+                if (Targets == null || Targets.Length <= 0 || Target == null)
                 {
                     return Quaternion.identity;
                 }
@@ -336,7 +336,7 @@ namespace Battlehub.RTHandles
             get { return m_selectedAxis; }
             set
             {
-                if(m_selectedAxis != value)
+                if (m_selectedAxis != value)
                 {
                     m_selectedAxis = value;
                     if (Model != null)
@@ -375,11 +375,11 @@ namespace Battlehub.RTHandles
             m_allHandles.Add(this);
 
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
-            if (m_targets != null && m_targets.Length > 0 )
+            if (m_targets != null && m_targets.Length > 0)
             {
                 var lockObject = LockObject;
                 Targets = m_targets;
-                if(lockObject != null)
+                if (lockObject != null)
                 {
                     LockObject = lockObject;
                 }
@@ -389,7 +389,7 @@ namespace Battlehub.RTHandles
             {
                 var lockObject = LockObject;
                 Targets = new[] { transform };
-                if(lockObject != null)
+                if (lockObject != null)
                 {
                     LockObject = lockObject;
                 }
@@ -418,14 +418,14 @@ namespace Battlehub.RTHandles
                 bool activeSelf = Model.gameObject.activeSelf;
                 Model.gameObject.SetActive(false);
                 BaseHandleModel model = Instantiate(Model, transform.parent);
-                
+
                 model.name = Model.name;
                 model.Appearance = Appearance;
                 model.Window = Window;
 
                 Model.gameObject.SetActive(activeSelf);
 
-                if(enabled)
+                if (enabled)
                 {
                     model.gameObject.SetActive(true);
                     Model = model;
@@ -435,7 +435,7 @@ namespace Battlehub.RTHandles
                 {
                     Model = model;
                 }
-            
+
                 Model.ModelScale = Appearance.HandleScale;
                 Model.SelectionMargin = Appearance.SelectionMargin;
             }
@@ -467,7 +467,7 @@ namespace Battlehub.RTHandles
 
             OnEnableOverride();
 
-            if(m_input != null)
+            if (m_input != null)
             {
                 m_input.enabled = true;
             }
@@ -480,7 +480,7 @@ namespace Battlehub.RTHandles
                 {
                     Model.SetLock(LockObject);
                 }
-        
+
             }
             else
             {
@@ -579,9 +579,9 @@ namespace Battlehub.RTHandles
             {
                 for (int i = 0; i < m_commonCenter.Length; ++i)
                 {
-                    if(m_commonCenter[i])
+                    if (m_commonCenter[i])
                     {
-                        if(destroyImmediate)
+                        if (destroyImmediate)
                         {
                             DestroyImmediate(m_commonCenter[i].gameObject);
                         }
@@ -589,9 +589,9 @@ namespace Battlehub.RTHandles
                         {
                             Destroy(m_commonCenter[i].gameObject);
                         }
-                        
+
                     }
-                    
+
                 }
             }
 
@@ -599,7 +599,7 @@ namespace Battlehub.RTHandles
             {
                 for (int i = 0; i < m_commonCenterTarget.Length; ++i)
                 {
-                    if(m_commonCenterTarget[i])
+                    if (m_commonCenterTarget[i])
                     {
                         if (destroyImmediate)
                         {
@@ -619,7 +619,7 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
-            if(Model != null)
+            if (Model != null)
             {
                 Model.ModelScale = Appearance.HandleScale;
                 Model.SelectionMargin = Appearance.SelectionMargin;
@@ -652,7 +652,7 @@ namespace Battlehub.RTHandles
                     SelectedAxis = RuntimeHandleAxis.None;
                 }
             }
-            
+
             UpdateOverride();
 
             if (m_isDragging)
@@ -668,9 +668,9 @@ namespace Battlehub.RTHandles
                         target.transform.rotation = commonCenterTarget.rotation;
                         target.transform.localScale = commonCenterTarget.localScale;
                     }
-                }   
+                }
 
-                if(m_commonCenter != null && m_commonCenter.Length > 0)
+                if (m_commonCenter != null && m_commonCenter.Length > 0)
                 {
                     for (int i = 0; i < m_allHandles.Count; ++i)
                     {
@@ -717,7 +717,7 @@ namespace Battlehub.RTHandles
                 SyncModelTransform();
             }
 
-            if(!m_isDragging)
+            if (!m_isDragging)
             {
                 if (Editor.Tools.ActiveTool == this)
                 {
@@ -732,7 +732,7 @@ namespace Battlehub.RTHandles
             Model.transform.position = position;
             Model.transform.rotation = Rotation;
             float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera);
-            if(!float.IsInfinity(screenScale) && !float.IsNaN(screenScale))
+            if (!float.IsInfinity(screenScale) && !float.IsNaN(screenScale))
             {
                 screenScale = Mathf.Max(0, screenScale);
 
@@ -743,7 +743,7 @@ namespace Battlehub.RTHandles
                 lossyScale.z = 1 / Mathf.Max(0.00001f, lossyScale.z);
 
                 Vector3 prevScale = Model.transform.localScale;
-                Vector3 newScale =  Vector3.Scale(scale, lossyScale);
+                Vector3 newScale = Vector3.Scale(scale, lossyScale);
                 Model.transform.localScale = newScale;
                 if (prevScale == Vector3.zero && prevScale != newScale)
                 {
@@ -768,7 +768,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (!IsWindowActive )
+            if (!IsWindowActive)
             {
                 return;
             }
@@ -791,11 +791,11 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                if(Editor.Tools.ActiveTool == this)
+                if (Editor.Tools.ActiveTool == this)
                 {
                     Editor.Tools.ActiveTool = null;
                 }
-                
+
             }
         }
 
@@ -810,7 +810,7 @@ namespace Battlehub.RTHandles
                 m_isDragging = false;
             }
 
-            if(Drop != null)
+            if (Drop != null)
             {
                 Drop.Invoke(this);
             }
@@ -819,7 +819,7 @@ namespace Battlehub.RTHandles
         /// Drag And Drop virtual methods
         protected virtual bool OnBeginDrag()
         {
-            if(!IsWindowActive)
+            if (!IsWindowActive)
             {
                 return false;
             }
@@ -851,23 +851,23 @@ namespace Battlehub.RTHandles
 
             if (Editor.Tools.PivotMode != RuntimePivotMode.Center)
             {
-                m_realTargets = null;   
+                m_realTargets = null;
             }
-            
-            if(Target != null)
+
+            if (Target != null)
             {
                 transform.position = Target.position;
-            }            
+            }
         }
 
         private void OnLockAxesChanged()
         {
-            if(LockObject != null)
+            if (LockObject != null)
             {
                 LockObject.SetGlobalLock(Editor.Tools.LockAxes);
             }
 
-            if(Model != null)
+            if (Model != null)
             {
                 if (!Model.gameObject.IsPrefab())
                 {
@@ -901,11 +901,11 @@ namespace Battlehub.RTHandles
         {
             if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
             {
-                if(m_realTargets != null)
+                if (m_realTargets != null)
                 {
                     Targets = m_realTargets;
                 }
-             
+
             }
         }
 
@@ -917,7 +917,7 @@ namespace Battlehub.RTHandles
                 {
                     Targets = m_realTargets;
                 }
-              
+
             }
         }
 
@@ -1002,9 +1002,9 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                 toCam = Window.Camera.cameraToWorldMatrix.MultiplyVector(Vector3.forward); 
+                toCam = Window.Camera.cameraToWorldMatrix.MultiplyVector(Vector3.forward);
             }
-            
+
             Plane dragPlane = new Plane(toCam.normalized, transform.position);
             return dragPlane;
         }
@@ -1046,12 +1046,12 @@ namespace Battlehub.RTHandles
 
         void IGL.Draw(int cullingMask, Camera camera)
         {
-            if((cullingMask & (1 << (Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index))) == 0)
+            if ((cullingMask & (1 << (Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index))) == 0)
             {
                 return;
             }
 
-            if(Model == null)
+            if (Model == null)
             {
                 DrawOverride(camera);
             }

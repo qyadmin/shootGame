@@ -458,6 +458,9 @@ namespace Battlehub.RTHandles
                     }
                 }
 
+
+
+
                 activeTarget.position += (bestHit.point - activeTarget.position);
                 if (rotate)
                 {
@@ -645,6 +648,7 @@ namespace Battlehub.RTHandles
 
         private RuntimeHandleAxis Hit()
         {
+            
             m_matrix = Matrix4x4.TRS(HandlePosition, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
 
@@ -713,6 +717,8 @@ namespace Battlehub.RTHandles
 
         protected override bool OnBeginDrag()
         {
+            
+
             SelectedAxis = Hit();           
             m_currentPosition = HandlePosition;
             m_cursorPosition = HandlePosition;

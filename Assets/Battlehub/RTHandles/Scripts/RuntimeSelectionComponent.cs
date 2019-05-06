@@ -58,6 +58,8 @@ namespace Battlehub.RTHandles
     [DefaultExecutionOrder(-55)]
     public class RuntimeSelectionComponent : RTEComponent, IScenePivot
     {
+        public BaseHandle handle;
+
         [SerializeField]
         private PositionHandle m_positionHandle = null;
         [SerializeField]
@@ -336,8 +338,9 @@ namespace Battlehub.RTHandles
 
         private void OnRuntimeToolChanged()
         {
+            handle = null;
             if (Editor.Selection.activeTransform == null)
-            {
+            {              
                 return;
             }
 
@@ -348,6 +351,7 @@ namespace Battlehub.RTHandles
                     m_positionHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_positionHandle.Targets = GetTargets();
                     m_positionHandle.gameObject.SetActive(m_positionHandle.Targets.Length > 0);
+                    handle = m_positionHandle;
                 }
                 else
                 {
@@ -361,6 +365,7 @@ namespace Battlehub.RTHandles
                     m_rotationHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_rotationHandle.Targets = GetTargets();
                     m_rotationHandle.gameObject.SetActive(m_rotationHandle.Targets.Length > 0);
+                    handle = m_rotationHandle;
                 }
                 else
                 {
@@ -374,6 +379,7 @@ namespace Battlehub.RTHandles
                     m_scaleHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_scaleHandle.Targets = GetTargets();
                     m_scaleHandle.gameObject.SetActive(m_scaleHandle.Targets.Length > 0);
+                    handle = m_scaleHandle;
                 }
                 else
                 {
