@@ -46,12 +46,9 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             }
             else if (go.tag.Equals("PlayerPetItem"))//鼠标终点位置下是： 也是一个物体（所以需要交换位置）
             {//交换位置要注意可能需要把物品下的子物体的Raycast Target关掉（不去掉可能无法交换）
-                SetParentAndPosition(transform, go.transform.parent);//将被拖拽的物体1放到鼠标终点下的格子2里面
-                SetParentAndPosition(go.transform, nowParent);//将鼠标终点格子2里面物体2 放到 原来物体1的格子1里面
-                if (transform.position == go.transform.position)
-                {
-                    Debug.Log("error");
-                }
+                //SetParentAndPosition(transform, go.transform.parent);//将被拖拽的物体1放到鼠标终点下的格子2里面
+                //SetParentAndPosition(go.transform, nowParent);//将鼠标终点格子2里面物体2 放到 原来物体1的格子1里面
+                SetChild(go.transform, nowParent);             
             }
             else//鼠标终点是：无效位置（所以物体放回原来的位置）
             {
@@ -69,6 +66,23 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     {
         child.SetParent(parent);
         child.position = parent.position;
+    }
+
+    private void SetChild(Transform change_child, Transform paren)
+    {
+        int changeChildNum;
+        for (int i = 0; i < change_child.parent.childCount; i++)
+        {
+            if (change_child.parent.GetChild(i) == change_child)
+            {
+                changeChildNum = i;
+
+                transform.SetParent(paren);
+                transform.SetSiblingIndex(changeChildNum);
+                break;
+            }
+        }
+        
     }
 
     public bool IsRaycastLocationValid(Vector2 sp, Camera eventCamera)//UI事件穿透：如置为false即可以穿透，被图片覆盖的按钮可以被点击到

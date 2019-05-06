@@ -102,6 +102,7 @@ namespace Battlehub.RTHandles
                 Bounds bounds = m_exposeToEditor.Bounds;
                 Transform trform = m_exposeToEditor.BoundsObject.transform;
                 Appearance.DrawBounds(camera, ref bounds, trform.position, trform.rotation, trform.lossyScale);
+
             }
         }
 

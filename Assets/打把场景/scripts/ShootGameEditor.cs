@@ -35,8 +35,18 @@ public class ShootGameEditor : SimpleEditor, IRTEState
     }
     #endregion
 
-    private void Awake()
+    protected override void Start()
     {
+        base.Start();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+    }
+    protected override void Awake()
+    {
+        base.Awake();
         Add.onClick.AddListener(delegate ()
         {
             Add_Arealist();
@@ -62,11 +72,12 @@ public class ShootGameEditor : SimpleEditor, IRTEState
             if (value == i)
             {
                 List<Object> selection;
+
                 selection = new List<Object>();
 
-                selection.Insert(0, i.Perfab);
+                selection.Insert(0, value.Perfab);
 
-                Editor.Undo.Select(selection.ToArray(), i.Perfab);
+                Editor.Undo.Select(selection.ToArray(), value.Perfab);
             }
         }
     }

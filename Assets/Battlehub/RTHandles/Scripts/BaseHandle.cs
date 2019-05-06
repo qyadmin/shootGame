@@ -639,7 +639,7 @@ namespace Battlehub.RTHandles
                     }
                     else
                     {
-                        EffectiveGridUnitSize = 0;
+                        EffectiveGridUnitSize = CurrentGridUnitSize;
                     }
 
                     OnDrag();
