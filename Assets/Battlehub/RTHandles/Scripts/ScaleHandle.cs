@@ -228,9 +228,9 @@ namespace Battlehub.RTHandles
                 for (int i = 0; i < m_refScales.Length; ++i)
                 {
                     Quaternion rotation =  Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
-                    Vector3 newvector = new Vector3(m_refScales[i].x + (m_roundedScale.x <= 1 ? 0 : m_roundedScale.x), 
-                                                    m_refScales[i].y + (m_roundedScale.y <= 1 ? 0 : m_roundedScale.y), 
-                                                    m_refScales[i].z + (m_roundedScale.z <= 1 ? 0 : m_roundedScale.z));
+                    Vector3 newvector = new Vector3((m_refScales[i].x + (m_roundedScale.x == 1 ? 0 : m_roundedScale.x))<1?1: m_refScales[i].x + (m_roundedScale.x == 1 ? 0 : m_roundedScale.x), 
+                                                    (m_refScales[i].y + (m_roundedScale.y == 1 ? 0 : m_roundedScale.y))<1?1: m_refScales[i].y + (m_roundedScale.y == 1 ? 0 : m_roundedScale.y), 
+                                                    (m_refScales[i].z + (m_roundedScale.z == 1 ? 0 : m_roundedScale.z))<1?1: m_refScales[i].z + (m_roundedScale.z == 1 ? 0 : m_roundedScale.z));
                     ActiveTargets[i].localScale = Quaternion.Inverse(rotation) * newvector;
                 }
                 

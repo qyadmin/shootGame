@@ -44,6 +44,12 @@ public class ShootGameEditor : SimpleEditor
         EditorUI._Instance.runtimeToolUI.Move_Button.onClick.AddListener(delegate() { SetRuntimeTool(RuntimeTool.Move); });
         EditorUI._Instance.runtimeToolUI.Rotate_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Rotate); });
         EditorUI._Instance.runtimeToolUI.Scale_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Scale); });
+
+        Editor.Tools.LockAxes = new LockObject
+        {
+            PositionY = true,
+            ScaleY = true
+        };
     }
 
     protected override void OnDestroy()
@@ -53,6 +59,7 @@ public class ShootGameEditor : SimpleEditor
     protected override void Awake()
     {
         base.Awake();
+
     }
 
     void Add_Arealist()
@@ -76,7 +83,7 @@ public class ShootGameEditor : SimpleEditor
                 selection.Insert(0, value.Perfab);
 
                 Editor.Undo.Select(selection.ToArray(), value.Perfab);
-                
+
 
                 //Component.handle.LockObject.PositionY = true;
                 //Editor.Selection.activeTransform.position;

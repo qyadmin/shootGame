@@ -259,8 +259,7 @@ namespace Battlehub.RTCommon
         public void Reset()
         {
             ActiveTool = null;
-            LockAxes = new LockObject();
-            LockAxes.PositionY = true;
+            LockAxes = null;
             m_isViewing = false;
             m_isSnapping = false;
             m_showSelectionGizmos = true;
@@ -268,6 +267,8 @@ namespace Battlehub.RTCommon
             m_unitSnapping = false;
             m_pivotMode = RuntimePivotMode.Center;
         }
+
+
 
         //public bool IsPointerOverGameObject()
         //{
