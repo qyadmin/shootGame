@@ -57,20 +57,33 @@ public class InteractiveSwitch : MonoBehaviour
 
 	private void Awake()
 	{
-		player = GameObject.FindGameObjectWithTag("Player");
+        ShootGame.m_SwitchAwake += OnAwake;
+    }
+
+    private void OnStart()
+    {
+        timer.LevelTimerEvent += mandatory_nextStage;
+
+        if (startVisible)
+            Moving();
+    }
+
+    void OnAwake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
         effectiveShooting = targets.Count * 2;
 
         this.ToggleState(false, startVisible);
-		timer = GameObject.Find("Timer").GetComponent<TimeTrialManager>();
+        timer = GameObject.Find("Timer").GetComponent<TimeTrialManager>();
         orbitcam = GameObject.Find("Main Camera").GetComponent<ThirdPersonOrbitCam>();
         bullet_num = GameObject.Find("bullet_num").GetComponent<Text>();
 
         if (levelEnd)
-		{
-			currentState = State.END;
-		}
-		else
-			currentState = State.DISABLED;
+        {
+            currentState = State.END;
+        }
+        else
+            currentState = State.DISABLED;
 
 
         foreach (TargetHealth i in targets)
@@ -78,15 +91,10 @@ public class InteractiveSwitch : MonoBehaviour
             if (i.transform.parent.gameObject.GetComponent<obstacles_event>())
                 i.transform.parent.gameObject.GetComponent<obstacles_event>().swich = false;
         }
-	}
 
-    private void Start()
-    {
-        timer.LevelTimerEvent += mandatory_nextStage;
-
-        if (startVisible)
-            Moving();
+        OnStart();
     }
+
 
     void Update()
 	{
