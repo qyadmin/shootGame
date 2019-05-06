@@ -16,6 +16,7 @@ public class ShootingArea : MonoBehaviour
     public General m_ShootPos;
     public GameObject Perfab;
     public GameObject PerfabUI;
+    
 
     public void Instantiate_obj(GameObject perfab,GameObject perfabUI,GameObject perfab_father,GameObject perfabUI_father,System.Action clickevent)
     {
