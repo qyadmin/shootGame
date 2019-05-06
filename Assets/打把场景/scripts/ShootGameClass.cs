@@ -22,6 +22,7 @@ public class ShootingArea : MonoBehaviour
     {
         Perfab = Instantiate(perfab);
         Perfab.transform.parent = perfab_father.transform;
+        Perfab.transform.localPosition = new Vector3(0,0,0);
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.parent = perfabUI_father.transform;
         PerfabUI.AddComponent<Button>().onClick.AddListener(delegate() { clickevent(); } );

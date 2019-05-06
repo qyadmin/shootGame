@@ -203,6 +203,7 @@ namespace Battlehub.RTHandles
                         m_scale.x += sign * mag;
                         m_scale.y += sign * mag;
                         m_scale.z += sign * mag;
+
                     }
                 }
 
@@ -210,9 +211,13 @@ namespace Battlehub.RTHandles
 
                 if(EffectiveGridUnitSize > 0.01)
                 {
+                    Debug.Log(Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize);
                     m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+
                     m_roundedScale.y = Mathf.RoundToInt(m_roundedScale.y / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+
                     m_roundedScale.z = Mathf.RoundToInt(m_roundedScale.z / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+
                 }
 
                 if (Model != null)
@@ -223,8 +228,10 @@ namespace Battlehub.RTHandles
                 for (int i = 0; i < m_refScales.Length; ++i)
                 {
                     Quaternion rotation =  Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
-                    
-                    ActiveTargets[i].localScale = Quaternion.Inverse(rotation) * Vector3.Scale(m_refScales[i], m_roundedScale);
+                    Vector3 newvector = new Vector3(m_refScales[i].x + (m_roundedScale.x <= 1 ? 0 : m_roundedScale.x), 
+                                                    m_refScales[i].y + (m_roundedScale.y <= 1 ? 0 : m_roundedScale.y), 
+                                                    m_refScales[i].z + (m_roundedScale.z <= 1 ? 0 : m_roundedScale.z));
+                    ActiveTargets[i].localScale = Quaternion.Inverse(rotation) * newvector;
                 }
                 
                 m_prevPoint = point;
