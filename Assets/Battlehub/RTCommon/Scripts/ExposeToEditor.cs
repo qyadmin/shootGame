@@ -15,7 +15,12 @@ namespace Battlehub.RTCommon
         Sprite,
     }
 
-
+    public enum DisabledToolsType
+    {
+        Position,
+        Roation,
+        Scale
+    }
     public delegate void ExposeToEditorChangeEvent<T>(ExposeToEditor obj, T oldValue, T newValue);
     public delegate void ExposeToEditorEvent(ExposeToEditor obj);
     public delegate void ExposeToEditorEvent<T>(ExposeToEditor obj, T arg);
@@ -71,6 +76,7 @@ namespace Battlehub.RTCommon
         public ExposeToEditorUnityEvent Unselected;
         public GameObject BoundsObject;
         public BoundsType BoundsType;
+        public DisabledToolsType[] DisabledToolsType;
         public Bounds CustomBounds;
 
         [HideInInspector]

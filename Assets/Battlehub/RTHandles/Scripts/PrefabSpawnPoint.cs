@@ -10,16 +10,16 @@ namespace Battlehub.RTHandles
     public class PrefabSpawnPoint : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField]
-        private GameObject m_prefab = null;
+        public GameObject m_prefab = null;
 
         [SerializeField]
-        private Image m_preview = null;
+        public Image m_preview = null;
 
         [SerializeField]
-        private Text m_prefabName = null;
+        public Text m_prefabName = null;
 
         [SerializeField]
-        private Vector3 m_prefabScale = Vector3.one;
+        public Vector3 m_prefabScale = Vector3.one;
         protected Vector3 PrefabScale
         {
             get { return m_prefabScale; }
