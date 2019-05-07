@@ -32,6 +32,7 @@ public class ShootingArea : MonoBehaviour
     public List<ShootingItem> m_ShootingItem;
     public General m_General;
     public General m_ShootPos;
+    public int m_Number;
     public GameObject Perfab;
     public GameObject PerfabUI;
     public ShootingItemList ItemList;
@@ -61,10 +62,12 @@ public class ShootingArea : MonoBehaviour
         }
     }
 
-    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent)
+    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent,int Number)
     {
         Perfab = Instantiate(perfab);
+        m_Number = Number;
         Perfab.transform.parent = perfab_father.transform;
+        Perfab.transform.name = "Area"+Number;
         Perfab.transform.localPosition = new Vector3(0, 0, 0);
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.parent = perfabUI_father.transform;

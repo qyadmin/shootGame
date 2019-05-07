@@ -65,7 +65,17 @@ public class ShootGameEditor : SimpleEditor
     void Add_Arealist()
     {
         ShootingArea newArea = new ShootingArea();
-        newArea.Instantiate_obj(Resources.Load<GameObject>("ShootingArea"), EditorUI._Instance.areaListUI.AreaPerfabUI, AreaCount, EditorUI._Instance.areaListUI.AreaUICount, delegate () { UIClickEvent(newArea); });
+        int num = 1;
+        if (m_Arealist.Count != 0)
+        m_Arealist.ForEach(item => {
+            if (item.m_Number == num)
+                ++num;
+        });
+        newArea.Instantiate_obj(Resources.Load<GameObject>("ShootingArea")
+                                , EditorUI._Instance.areaListUI.AreaPerfabUI
+                                , AreaCount, EditorUI._Instance.areaListUI.AreaUICount
+                                , delegate () { UIClickEvent(newArea); }
+                                , num);
         newArea.ItemList = new ShootingArea.ShootingItemList();
         newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"));
         
@@ -84,6 +94,7 @@ public class ShootGameEditor : SimpleEditor
     }
     void ToolsUIChange(Object[] selected)
     {
+
         bool Postion = true;
         bool Rotation = true;
         bool Scale = true;
@@ -93,7 +104,7 @@ public class ShootGameEditor : SimpleEditor
             Destroy(EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.GetChild(0).gameObject);
         }
 
-        if (selected != null)
+        if (selected != null && selected.Length != 0)
         {
             if (selected.Length == 1)
                 m_Arealist.ForEach(item => {
@@ -121,6 +132,12 @@ public class ShootGameEditor : SimpleEditor
                     }
                 }
             }
+        }
+        else
+        {
+            Postion = false;
+            Rotation = false;
+            Scale = false;
         }
             
         EditorUI._Instance.runtimeToolUI.Move_Button.interactable = Postion;
@@ -174,30 +191,39 @@ public class ShootGameEditor : SimpleEditor
     }
     void Subtract_Arealist(GameObject[] area)
     {
+        Debug.Log(area.Length);
+
         if (area.Length == 0)
             return;
 
-        List<ShootingArea> m_Area = getShootingArea(area);
+        List<int> m_Area = getShootingArea(area);
 
-        foreach (ShootingArea i in m_Area)
+        foreach(int i in m_Area)
         {
-            i.Destroy_obj();
-            m_Arealist.Remove(i);
+            Debug.LogError(i);
+            m_Arealist[i].Destroy_obj();
+            m_Arealist.RemoveAt(i);
         }
+
+
     }
 
-    List<ShootingArea> getShootingArea(GameObject[] values)
+    List<int> getShootingArea(GameObject[] values)
     {
-        List<ShootingArea> m_Area = new List<ShootingArea>();
-        foreach (GameObject i in values)
+        List<int> m_Area = new List<int>();
+        for (int i = 0;i<m_Arealist.Count;i++)
         {
-            foreach (ShootingArea j in m_Arealist)
+            foreach (GameObject j in values)
             {
-                if (j.Perfab == i)
-                    m_Area.Add(j);
+                Debug.Log(m_Arealist[i].Perfab.gameObject.name + "   " + j.name);
+                if (m_Arealist[i].Perfab.name == j.name)
+                {   
+                    m_Area.Add(i);
+                    Debug.LogError(i);
+                }
+                   
             }
         }
-
         return m_Area;
     }
     
