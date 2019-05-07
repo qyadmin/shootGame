@@ -9,6 +9,7 @@ namespace Battlehub.RTCommon
     public interface IRuntimeSelection : IEnumerable
     {
         event RuntimeSelectionChanged SelectionChanged;
+        event RuntimeSelectionChanged Selectioned;
         bool Enabled
         {
             get;
@@ -71,7 +72,7 @@ namespace Battlehub.RTCommon
     public class RuntimeSelection : IRuntimeSelectionInternal
     {
         public event RuntimeSelectionChanged SelectionChanged;
-
+        public event RuntimeSelectionChanged Selectioned;
         public Object INTERNAL_activeObjectProperty
         {
             get { return m_activeObject; }
@@ -111,6 +112,15 @@ namespace Battlehub.RTCommon
             if (SelectionChanged != null)
             {
                 SelectionChanged(unselectedObjects);
+            }
+        }
+
+
+        protected void RaiseSelectioned(Object[] selectedObjects)
+        {
+            if (Selectioned != null)
+            {
+                Selectioned(selectedObjects);
             }
         }
 
@@ -260,6 +270,7 @@ namespace Battlehub.RTCommon
 
             UpdateHS();
             RaiseSelectionChanged(oldObjects);
+            RaiseSelectioned(value);
         }
 
         public GameObject[] gameObjects

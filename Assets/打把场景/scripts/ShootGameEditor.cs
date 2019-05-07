@@ -13,11 +13,6 @@ public class ShootGameEditor : SimpleEditor
     private List<ShootingArea> m_Arealist = new List<ShootingArea>();
 
     [SerializeField]
-    RuntimeSceneComponent Component;
-
-    [SerializeField]
-    private GameObject AreaPerfab;
-    [SerializeField]
     private GameObject AreaCount;
 
 
@@ -45,10 +40,15 @@ public class ShootGameEditor : SimpleEditor
         EditorUI._Instance.runtimeToolUI.Rotate_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Rotate); });
         EditorUI._Instance.runtimeToolUI.Scale_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Scale); });
 
+        //Editor.Selection.SelectionChanged += test;
+        Editor.Selection.Selectioned += ToolsUIChange;
+        
         Editor.Tools.LockAxes = new LockObject
         {
             PositionY = true,
-            ScaleY = true
+            ScaleY = true,
+            RotationX = true,
+            RotationZ = true      
         };
     }
 
@@ -65,13 +65,75 @@ public class ShootGameEditor : SimpleEditor
     void Add_Arealist()
     {
         ShootingArea newArea = new ShootingArea();
-        newArea.Instantiate_obj(AreaPerfab, EditorUI._Instance.areaListUI.AreaPerfabUI, AreaCount, EditorUI._Instance.areaListUI.AreaUICount, delegate () { UIClickEvent(newArea); });
+        newArea.Instantiate_obj(Resources.Load<GameObject>("ShootingArea"), EditorUI._Instance.areaListUI.AreaPerfabUI, AreaCount, EditorUI._Instance.areaListUI.AreaUICount, delegate () { UIClickEvent(newArea); });
+        newArea.ItemList = new ShootingArea.ShootingItemList();
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"));
+        
+
         m_Arealist.Add(newArea);
+    }
+
+    void test(Object[] unselected)
+    {
+        if (unselected != null)
+            for (int i = 0; i < unselected.Length; ++i)
+            {
+                GameObject unselectedObj = unselected[i] as GameObject;
+                Debug.Log(unselectedObj.name);
+            }
+    }
+    void ToolsUIChange(Object[] selected)
+    {
+        bool Postion = true;
+        bool Rotation = true;
+        bool Scale = true;
+
+        for (int i = 0; i < EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.childCount; i++)
+        {
+            Destroy(EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.GetChild(0).gameObject);
+        }
+
+        if (selected != null)
+        {
+            if (selected.Length == 1)
+                m_Arealist.ForEach(item => {
+                    if (item.Perfab == selected[0] as GameObject)
+                    {
+                        item.ItemList.Instantiate_obj(EditorUI._Instance.itemListUI.Prefab, EditorUI._Instance.itemListUI.ItemListUICount.gameObject);
+                    }
+                });
+              
+
+            for (int i = 0; i < selected.Length; ++i)
+            {
+                GameObject selectedObj = selected[i] as GameObject;
+                ExposeToEditor ObjEditor = selectedObj.GetComponent<ExposeToEditor>();
+                if (ObjEditor)
+                {
+                    foreach (DisabledToolsType item in ObjEditor.DisabledToolsType)
+                    {
+                        if (item == DisabledToolsType.Position && Postion)
+                            Postion = false;
+                        if (item == DisabledToolsType.Roation && Rotation)
+                            Rotation = false;
+                        if (item == DisabledToolsType.Scale && Scale)
+                            Scale = false;
+                    }
+                }
+            }
+        }
+            
+        EditorUI._Instance.runtimeToolUI.Move_Button.interactable = Postion;
+        EditorUI._Instance.runtimeToolUI.Rotate_Button.interactable = Rotation;
+        EditorUI._Instance.runtimeToolUI.Scale_Button.interactable = Scale;
+
+        
+
     }
 
     void UIClickEvent(ShootingArea value)
     {
-        
+        //Editor.Tools.Reset();
         foreach (ShootingArea i in m_Arealist)
         {
             if (value == i)
@@ -84,9 +146,9 @@ public class ShootGameEditor : SimpleEditor
 
                 Editor.Undo.Select(selection.ToArray(), value.Perfab);
 
-
+                
                 //Component.handle.LockObject.PositionY = true;
-                //Editor.Selection.activeTransform.position;
+                
                 //Debug.Log(Editor.Tools.PivotRotation);
             }
         }
@@ -138,7 +200,7 @@ public class ShootGameEditor : SimpleEditor
 
         return m_Area;
     }
-
+    
 
     void refreshUI()
     {

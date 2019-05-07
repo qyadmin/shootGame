@@ -9,8 +9,11 @@ public class AreaListUI : MonoBehaviour
     public GameObject AreaPerfabUI;
     [SerializeField]
     public GameObject AreaUICount;
-
-
     [SerializeField]
     public Button Add, Subtract;
+
+    private void Start()
+    {
+        AreaPerfabUI = Resources.Load<GameObject>("UI/ShootAreaUIPerfab");
+    }
 }
