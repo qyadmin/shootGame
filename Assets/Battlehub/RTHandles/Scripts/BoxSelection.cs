@@ -112,7 +112,7 @@ namespace Battlehub.RTHandles
 
             if(!GetComponent<BoxSelectionInput>())
             {
-                gameObject.AddComponent<BoxSelectionInput>();
+                //gameObject.AddComponent<BoxSelectionInput>();
             }
 
             m_rectTransform = GetComponent<RectTransform>();

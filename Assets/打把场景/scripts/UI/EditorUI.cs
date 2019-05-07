@@ -8,8 +8,10 @@ public class EditorUI : MonoBehaviour
     public static EditorUI _Instance;
 
     public RuntimeToolUI runtimeToolUI;
+
     public AreaListUI areaListUI;
 
+    public ItemListUI itemListUI;
     private void Awake()
     {
         _Instance = this;

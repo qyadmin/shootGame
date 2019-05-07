@@ -11,8 +11,7 @@ using Battlehub.RTHandles;
 public class ShootGameEditor : SimpleEditor
 {
     private List<ShootingArea> m_Arealist = new List<ShootingArea>();
-    [SerializeField]
-    private GameObject AreaPerfab;
+
     [SerializeField]
     private GameObject AreaCount;
 
@@ -43,11 +42,13 @@ public class ShootGameEditor : SimpleEditor
 
         //Editor.Selection.SelectionChanged += test;
         Editor.Selection.Selectioned += ToolsUIChange;
-
+        
         Editor.Tools.LockAxes = new LockObject
         {
             PositionY = true,
-            ScaleY = true
+            ScaleY = true,
+            RotationX = true,
+            RotationZ = true      
         };
     }
 
@@ -64,7 +65,11 @@ public class ShootGameEditor : SimpleEditor
     void Add_Arealist()
     {
         ShootingArea newArea = new ShootingArea();
-        newArea.Instantiate_obj(AreaPerfab, EditorUI._Instance.areaListUI.AreaPerfabUI, AreaCount, EditorUI._Instance.areaListUI.AreaUICount, delegate () { UIClickEvent(newArea); });
+        newArea.Instantiate_obj(Resources.Load<GameObject>("ShootingArea"), EditorUI._Instance.areaListUI.AreaPerfabUI, AreaCount, EditorUI._Instance.areaListUI.AreaUICount, delegate () { UIClickEvent(newArea); });
+        newArea.ItemList = new ShootingArea.ShootingItemList();
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"));
+        
+
         m_Arealist.Add(newArea);
     }
 
@@ -83,7 +88,22 @@ public class ShootGameEditor : SimpleEditor
         bool Rotation = true;
         bool Scale = true;
 
+        for (int i = 0; i < EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.childCount; i++)
+        {
+            Destroy(EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.GetChild(0).gameObject);
+        }
+
         if (selected != null)
+        {
+            if (selected.Length == 1)
+                m_Arealist.ForEach(item => {
+                    if (item.Perfab == selected[0] as GameObject)
+                    {
+                        item.ItemList.Instantiate_obj(EditorUI._Instance.itemListUI.Prefab, EditorUI._Instance.itemListUI.ItemListUICount.gameObject);
+                    }
+                });
+              
+
             for (int i = 0; i < selected.Length; ++i)
             {
                 GameObject selectedObj = selected[i] as GameObject;
@@ -101,9 +121,13 @@ public class ShootGameEditor : SimpleEditor
                     }
                 }
             }
+        }
+            
         EditorUI._Instance.runtimeToolUI.Move_Button.interactable = Postion;
         EditorUI._Instance.runtimeToolUI.Rotate_Button.interactable = Rotation;
         EditorUI._Instance.runtimeToolUI.Scale_Button.interactable = Scale;
+
+        
 
     }
 
@@ -176,7 +200,7 @@ public class ShootGameEditor : SimpleEditor
 
         return m_Area;
     }
-
+    
 
     void refreshUI()
     {

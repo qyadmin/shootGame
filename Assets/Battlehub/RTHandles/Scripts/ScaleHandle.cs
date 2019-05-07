@@ -211,7 +211,6 @@ namespace Battlehub.RTHandles
 
                 if(EffectiveGridUnitSize > 0.01)
                 {
-                    Debug.Log(Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize);
                     m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize;
 
                     m_roundedScale.y = Mathf.RoundToInt(m_roundedScale.y / EffectiveGridUnitSize) * EffectiveGridUnitSize;

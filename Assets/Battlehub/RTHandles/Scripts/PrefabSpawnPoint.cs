@@ -39,6 +39,7 @@ namespace Battlehub.RTHandles
         private Plane m_dragPlane;
                 
         private IRTE m_editor;
+        private IResourcePreviewUtility resourcePreview;
         private RuntimeWindow m_scene;
         protected RuntimeWindow Scene
         {
@@ -47,24 +48,29 @@ namespace Battlehub.RTHandles
         
         protected virtual void Start()
         {
-            if(m_prefab == null)
+            m_editor = IOC.Resolve<IRTE>();
+            m_scene = m_editor.GetWindow(RuntimeWindowType.Scene);
+            resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
+        }
+
+        public void OnStart()
+        {
+            if (m_prefab == null)
             {
                 Debug.LogWarning("m_prefab is not set");
                 return;
             }
 
-            m_editor = IOC.Resolve<IRTE>();
-            m_scene = m_editor.GetWindow(RuntimeWindowType.Scene);
 
-            IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
-            m_texture = resourcePreview.TakeSnapshot(m_prefab);
-            if (m_preview != null)
-            {
-                m_preview.sprite = Sprite.Create(m_texture, new Rect(0, 0, m_texture.width, m_texture.height), new Vector2(0.5f, 0.5f));
-                m_preview.color = Color.white;
-            }
 
-            if(m_prefabName != null)
+            //m_texture = resourcePreview.TakeSnapshot(m_prefab);
+            //if (m_preview != null)
+            //{
+            //    m_preview.sprite = Sprite.Create(m_texture, new Rect(0, 0, m_texture.width, m_texture.height), new Vector2(0.5f, 0.5f));
+            //    m_preview.color = Color.white;
+            //}
+
+            if (m_prefabName != null)
             {
                 m_prefabName.text = m_prefab.name;
             }

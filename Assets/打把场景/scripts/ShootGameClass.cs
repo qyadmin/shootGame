@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTHandles;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,23 +9,8 @@ public class ShootingItem
 {
     public General m_General;
     public action Event;
-}
-
-public class ShootingItemList
-{
     private Image m_minImage;
-    public Image MinImage
-    {   
-        get
-        {
-            return m_minImage;
-        }
-        set
-        {
-            m_minImage = value;
-            PrefabComponet.m_preview = value;
-        }
-    }
+   
     private GameObject m_prefab;
 
     public GameObject Prefab
@@ -36,25 +22,10 @@ public class ShootingItemList
         set
         {
             m_prefab = value;
-            PrefabComponet.m_prefab = value;
         }
     }
-    private Vector3 m_scale;
-    public Vector3 Scale
-    {
-        get
-        {
-            return m_scale;
-        }
-        set
-        {
-            m_scale = value;
-            PrefabComponet.m_prefabScale = value;
-        }
-    }
-    public string Name;
-    public PrefabSpawnPoint PrefabComponet = new PrefabSpawnPoint();
 }
+
 
 public class ShootingArea : MonoBehaviour
 {
@@ -63,17 +34,41 @@ public class ShootingArea : MonoBehaviour
     public General m_ShootPos;
     public GameObject Perfab;
     public GameObject PerfabUI;
-    
+    public ShootingItemList ItemList;
+    public class ShootingItemList
+    {
+        public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
+        public void Instantiate_obj(GameObject prefab, GameObject perfab_father)
+        {
+            for (int i = 0; i < perfab_father.transform.childCount; i++)
+            {
+                Destroy(perfab_father.transform.GetChild(0).gameObject);
+            }
+            m_ShootingItem.ForEach(item => {
+                GameObject newItem = Instantiate(prefab);
+                newItem.transform.parent = perfab_father.transform;
+                newItem.GetComponent<PrefabSpawnPoint>().m_prefab = item.Prefab;
+                newItem.GetComponent<PrefabSpawnPoint>().OnStart();
+            });
+        }
 
-    public void Instantiate_obj(GameObject perfab,GameObject perfabUI,GameObject perfab_father,GameObject perfabUI_father,System.Action clickevent)
+        public void AddItem(GameObject prefab)
+        {
+            ShootingItem newItem = new ShootingItem();
+            newItem.Prefab = prefab;
+            m_ShootingItem.Add(newItem);
+        }
+    }
+
+    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent)
     {
         Perfab = Instantiate(perfab);
         Perfab.transform.parent = perfab_father.transform;
-        Perfab.transform.localPosition = new Vector3(0,0,0);
+        Perfab.transform.localPosition = new Vector3(0, 0, 0);
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.parent = perfabUI_father.transform;
-        PerfabUI.AddComponent<Button>().onClick.AddListener(delegate() { clickevent(); } );
+        PerfabUI.AddComponent<Button>().onClick.AddListener(delegate () { clickevent(); });
     }
 
     public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father)
