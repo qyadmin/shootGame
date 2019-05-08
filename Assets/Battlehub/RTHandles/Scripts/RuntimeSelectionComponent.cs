@@ -240,14 +240,13 @@ namespace Battlehub.RTHandles
                     GameObject go = selectedObjects[i];
                     if (go != null)
                     {
-                        SelectionGizmo[] selectionGizmo = go.GetComponents<SelectionGizmo>();
-                        for (int g = 0; g < selectionGizmo.Length; ++g)
-                        {
-                            if (selectionGizmo[g] != null && selectionGizmo[g].Window == Window)
+                        SelectionGizmo selectionGizmo = go.GetComponent<SelectionGizmo>();
+                       
+                            if (selectionGizmo != null && selectionGizmo.Window == Window)
                             {
-                                Destroy(selectionGizmo[g]);
+                                Destroy(selectionGizmo);
                             }
-                        }
+                        
                     }
                 }
             }
@@ -276,7 +275,9 @@ namespace Battlehub.RTHandles
             Ray ray = Window.Pointer;
             RaycastHit hitInfo;
 
-            if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
+            LayerMask layerMask = Editor.Mask;
+
+            if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layerMask))
             {
                 GameObject hitGO = hitInfo.collider.gameObject;
                 bool canSelect = CanSelect(hitGO);
@@ -432,16 +433,15 @@ namespace Battlehub.RTHandles
                     GameObject unselectedObj = unselected[i] as GameObject;
                     if (unselectedObj != null)
                     {
-                        SelectionGizmo[] selectionGizmo = unselectedObj.GetComponents<SelectionGizmo>();
-                        for(int g = 0; g < selectionGizmo.Length; ++g)
-                        {
-                            if (selectionGizmo[g] != null && selectionGizmo[g].Window == Window)
+                        SelectionGizmo selectionGizmo = unselectedObj.GetComponent<SelectionGizmo>();
+                       
+                            if (selectionGizmo != null && selectionGizmo.Window == Window)
                             {
                                 //DestroyImmediate(selectionGizmo[g]);
-                                selectionGizmo[g].Internal_Destroyed = true;
-                                Destroy(selectionGizmo[g]);
+                                selectionGizmo.Internal_Destroyed = true;
+                                Destroy(selectionGizmo);
                             }
-                        }
+                        
                        
                         ExposeToEditor exposeToEditor = unselectedObj.GetComponent<ExposeToEditor>();
                         if (exposeToEditor)

@@ -12,6 +12,7 @@ namespace Battlehub.RTCommon
         Rotate,
         Scale,
         View,
+        Lock
     }
 
     public enum RuntimePivotRotation

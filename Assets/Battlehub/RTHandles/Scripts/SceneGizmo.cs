@@ -524,7 +524,6 @@ namespace Battlehub.RTHandles
         private Collider HitTest()
         {
             Ray ray = m_camera.ScreenPointToRay(ScreenPointToViewPoint(m_window.Editor.Input.GetPointerXY(0)));
-
             float minDistance = float.MaxValue;
             Collider result = null;
             for(int i = 0; i < m_colliders.Length; ++i)

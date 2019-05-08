@@ -12,6 +12,8 @@ public class EditorUI : MonoBehaviour
     public AreaListUI areaListUI;
 
     public ItemListUI itemListUI;
+
+    public AreaItemListUI areaItemListUI;
     private void Awake()
     {
         _Instance = this;

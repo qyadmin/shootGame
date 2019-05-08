@@ -37,7 +37,8 @@ namespace Battlehub.RTCommon
         {
             get
             {
-                return ~(((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer);
+                //return ~(((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer);
+                return (1 << MaxGraphicsLayers);
             }
         }
         
@@ -93,6 +94,12 @@ namespace Battlehub.RTCommon
         IRuntimeSelectionInternal Selection
         {
             get;
+        }
+
+        LayerMask Mask
+        {
+            get;
+            set;
         }
 
         IRuntimeUndo Undo
@@ -235,6 +242,8 @@ namespace Battlehub.RTCommon
 
         private IInput m_input;
         private RuntimeSelection m_selection;
+
+        private LayerMask m_mask;
         private RuntimeTools m_tools = new RuntimeTools();
         private CursorHelper m_cursorHelper = new CursorHelper();
         private IRuntimeUndo m_undo;
@@ -311,6 +320,12 @@ namespace Battlehub.RTCommon
         public virtual IRuntimeSelectionInternal Selection
         {
             get { return m_selection; }
+        }
+
+        public virtual LayerMask Mask
+        {
+            get { return m_mask; }
+            set { m_mask = value; }
         }
 
         public virtual IRuntimeUndo Undo
