@@ -16,7 +16,7 @@ public class ShootGameEditor : SimpleEditor
     private List<ShootingArea> m_Arealist = new List<ShootingArea>();
 
     [SerializeField]
-    private GameObject AreaCount;
+    private GameObject AreaCount = null;
 
     bool Lock = false;
 
@@ -49,8 +49,6 @@ public class ShootGameEditor : SimpleEditor
     {
         base.Start();
 
-        Editor.Mask = (1 << 10);
-
         EditorUI._Instance.areaListUI.Add.onClick.AddListener(delegate () { Add_Arealist(); });
         EditorUI._Instance.areaListUI.Subtract.onClick.AddListener(delegate () { Subtract_Arealist(Editor.Selection.gameObjects); });
         EditorUI._Instance.runtimeToolUI.Move_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Move); });
@@ -59,7 +57,7 @@ public class ShootGameEditor : SimpleEditor
         EditorUI._Instance.runtimeToolUI.Lock_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Lock); });
         //Editor.Selection.SelectionChanged += test;
         Editor.Selection.Selectioned += ToolsUIChange;
-
+        Editor.Mask = (1 << 10);
         Editor.Tools.LockAxes = new LockObject
         {
             PositionY = true,
@@ -73,7 +71,7 @@ public class ShootGameEditor : SimpleEditor
     {
         base.OnDestroy();
     }
-
+    //增加Area
     void Add_Arealist()
     {
         ShootingArea newArea = new ShootingArea();
@@ -97,7 +95,7 @@ public class ShootGameEditor : SimpleEditor
 
         m_Arealist.Add(newArea);
     }
-
+    //增加Area的Item
     public void Add_AreaItemList(string name)
     {
         int number = int.Parse(Regex.Replace(name, "[a-z]", "", RegexOptions.IgnoreCase));
@@ -107,7 +105,7 @@ public class ShootGameEditor : SimpleEditor
                 GetEditorArea().m_ShootingItem.Add(item);
         });
     }
-
+    //获取锁定Area的GameObject类型
     GameObject[] GetEditorAreaObj()
     {
         GameObject[] selection = new GameObject[1];
@@ -123,9 +121,9 @@ public class ShootGameEditor : SimpleEditor
                 Debug.Log(unselectedObj.name);
             }
     }
+    //监听选中物体的的UI变化
     void ToolsUIChange(Object[] selected)
     {
-
         bool Postion = true;
         bool Rotation = true;
         bool Scale = true;
@@ -135,10 +133,15 @@ public class ShootGameEditor : SimpleEditor
 
         if (selected != null && selected.Length != 0)
         {
-            if (selected.Length == 1)
+            GameObject[] m_selected = new GameObject[1];
+            if (EditorArea != null)
+                m_selected[0] = EditorArea;
+            else
+                m_selected[0] = selected[0] as GameObject;
+                if (m_selected.Length == 1)
                 m_Arealist.ForEach(item =>
                 {
-                    if (item.Perfab == selected[0] as GameObject)
+                    if (item.Perfab == m_selected[0])
                     {
                         item.ItemList.Instantiate_obj(EditorUI._Instance.itemListUI.Prefab, EditorUI._Instance.itemListUI.ItemListUICount.gameObject);
                         item.Instantiate_Item(EditorUI._Instance.areaItemListUI.AreaItemListPrefabUI, EditorUI._Instance.areaItemListUI.AreaItemListUICount);
@@ -173,8 +176,11 @@ public class ShootGameEditor : SimpleEditor
         EditorUI._Instance.runtimeToolUI.Move_Button.interactable = Postion;
         EditorUI._Instance.runtimeToolUI.Rotate_Button.interactable = Rotation;
         EditorUI._Instance.runtimeToolUI.Scale_Button.interactable = Scale;
+        Set_LockItemList(Lock);
     }
 
+
+    //清除itemList和AreaItemList
     void CleanItemList()
     {
         for (int i = 0; i < EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.childCount; i++)
@@ -187,15 +193,21 @@ public class ShootGameEditor : SimpleEditor
             Destroy(EditorUI._Instance.areaItemListUI.AreaItemListUICount.gameObject.transform.GetChild(i).gameObject);
         }
     }
-
+    //设置锁定状态下itemList是否可拖动
     void Set_LockItemList(bool value)
     {
         for (int i = 0; i < EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.childCount; i++)
         {
             EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.GetChild(i).GetComponent<PrefabSpawnPoint>().CanDrag = value;
         }
+        for (int i = 0; i < EditorUI._Instance.areaListUI.AreaUICount.gameObject.transform.childCount; i++)
+        {
+            EditorUI._Instance.areaListUI.AreaUICount.gameObject.transform.GetChild(i).GetComponent<Button>().interactable = !value;
+        }
+        EditorUI._Instance.areaListUI.Add.interactable = !value;
+        EditorUI._Instance.areaListUI.Subtract.interactable = !value;
     }
-
+    //ShootingArea列表的点击事件
     void UIClickEvent(ShootingArea value)
     {
         //Editor.Tools.Reset();
@@ -219,8 +231,7 @@ public class ShootGameEditor : SimpleEditor
         }
     }
 
-
-
+    //设置Tools种类
     void SetRuntimeTool(RuntimeTool runtimeTool)
     {
         switch (runtimeTool)
@@ -244,7 +255,7 @@ public class ShootGameEditor : SimpleEditor
 
     }
 
-
+    //锁定Area
     void LockAcitiveArea()
     {
         GameObject[] selected = Editor.Selection.gameObjects;
@@ -267,11 +278,11 @@ public class ShootGameEditor : SimpleEditor
             }
         }
         Editor.Mask = Editor.Mask = (1 << 11);
-        Set_LockItemList(true);
+        //Set_LockItemList(true);
         Lock = true;
     }
 
-
+    //解锁Area
     void UnLockAcitiveArea()
     {
         List<Object> selection;
@@ -284,13 +295,13 @@ public class ShootGameEditor : SimpleEditor
 
         Editor.Mask = Editor.Mask = (1 << 10);
 
-        Set_LockItemList(false);
+        //Set_LockItemList(false);
 
         Lock = false;
+        EditorArea = null;
     }
 
-
-
+    //ShootAreaList选定删除
     void Subtract_Arealist(GameObject[] area)
     {
         if (area.Length == 0)
@@ -303,10 +314,8 @@ public class ShootGameEditor : SimpleEditor
             m_Arealist[i].Destroy_obj();
             m_Arealist.RemoveAt(i);
         }
-
-
     }
-
+    //获取参数中物体在ShootAreaList中的标记
     List<int> getShootingArea(GameObject[] values)
     {
         List<int> m_Area = new List<int>();
@@ -322,11 +331,14 @@ public class ShootGameEditor : SimpleEditor
         }
         return m_Area;
     }
-
+    //获取锁定Area的ShootingArea属性结构
     ShootingArea GetEditorArea()
     {
         return m_Arealist[getShootingArea(GetEditorAreaObj())[0]];
     }
+
+
+    //
 
 
     void refreshUI()

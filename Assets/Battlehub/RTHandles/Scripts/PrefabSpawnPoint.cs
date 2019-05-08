@@ -9,7 +9,7 @@ namespace Battlehub.RTHandles
 {
     public class PrefabSpawnPoint : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        [HideInInspector]
+
         public bool CanDrag = false;
 
         [SerializeField]
@@ -197,13 +197,12 @@ namespace Battlehub.RTHandles
         {
             if (m_prefabInstance != null)
             {
+                ShootGameEditor._Instance.Add_AreaItemList(this.name);
                 ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
                 m_editor.Undo.BeginRecord();
                 m_editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
                 m_editor.Selection.activeObject = m_prefabInstance;
                 m_editor.Undo.EndRecord();
-
-                ShootGameEditor._Instance.Add_AreaItemList(this.name);
             }
 
             m_prefabInstance = null;
