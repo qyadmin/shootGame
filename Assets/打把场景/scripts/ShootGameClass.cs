@@ -1,11 +1,12 @@
-﻿using Battlehub.RTHandles;
+﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-public class ShootingItem
+public struct ShootingItem
 {
     public General m_General;
     public action Event;
@@ -60,6 +61,7 @@ public class ShootingItem
             m_Name = value;
         }
     }
+
 }
 
 
@@ -67,19 +69,30 @@ public class ShootingArea : MonoBehaviour
 {
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
-    public void Instantiate_Item(GameObject prefab, GameObject perfab_father)
+    public void Instantiate_Item(GameObject prefab, GameObject perfab_father, IRTE editor)
     {
         for (int i = 0; i < perfab_father.transform.childCount; i++)
         {
             Destroy(perfab_father.transform.GetChild(i).gameObject);
         }
-        m_ShootingItem.ForEach(item => {
+        m_ShootingItem.ForEach(item =>
+        {
             GameObject newItem = Instantiate(prefab);
             newItem.name = "Area_Item" + item.Number;
             newItem.transform.Find("Text").gameObject.GetComponent<Text>().text = item.Name;
             newItem.transform.Find("Image").gameObject.GetComponent<Image>().sprite = item.MinImage;
             newItem.transform.parent = perfab_father.transform;
-            //newItem.AddComponent<Button>().onClick.AddListener(delegate () { clickevent(); });
+            newItem.AddComponent<Button>().onClick.AddListener(delegate ()
+            {
+                List<UnityEngine.Object> selection;
+
+                selection = new List<UnityEngine.Object>();
+
+                selection.Insert(0, item.Prefab);
+
+                editor.Undo.Select(selection.ToArray(), item.Prefab);
+
+            });
         });
     }
 
@@ -99,18 +112,19 @@ public class ShootingArea : MonoBehaviour
             {
                 Destroy(perfab_father.transform.GetChild(i).gameObject);
             }
-            m_ShootingItem.ForEach(item => {
-                item.Name = item.Prefab.name;
+            m_ShootingItem.ForEach(item =>
+            {                              
                 GameObject newItem = Instantiate(prefab);
-                newItem.name = "ItemList" + item.Number;
+                newItem.name = item.Name;
                 newItem.transform.parent = perfab_father.transform;
                 newItem.GetComponent<PrefabSpawnPoint>().m_prefab = item.Prefab;
+                newItem.GetComponent<PrefabSpawnPoint>().m_prefabNum = item.Number;
                 newItem.GetComponent<PrefabSpawnPoint>().m_preview.sprite = item.MinImage;
                 newItem.GetComponent<PrefabSpawnPoint>().OnStart();
             });
         }
 
-        public void AddItem(GameObject prefab,Sprite sprite)
+        public void AddItem(GameObject prefab, Sprite sprite)
         {
             int num = 1;
             if (m_ShootingItem.Count != 0)
@@ -123,16 +137,17 @@ public class ShootingArea : MonoBehaviour
             newItem.Prefab = prefab;
             newItem.MinImage = sprite;
             newItem.Number = num;
+            newItem.Name = newItem.Prefab.name;
             m_ShootingItem.Add(newItem);
         }
     }
 
-    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent,int Number)
+    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent, int Number)
     {
         Perfab = Instantiate(perfab);
         m_Number = Number;
         Perfab.transform.parent = perfab_father.transform;
-        Perfab.transform.name = "Area"+Number;
+        Perfab.transform.name = "Area" + Number;
         Perfab.transform.localPosition = new Vector3(0, 0, 0);
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.parent = perfabUI_father.transform;
@@ -153,7 +168,7 @@ public class ShootingArea : MonoBehaviour
     }
 }
 
-public class General
+public struct General
 {
     public Vector3 position;
     public Quaternion rotation;

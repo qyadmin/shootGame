@@ -22,6 +22,9 @@ namespace Battlehub.RTHandles
         public Text m_prefabName = null;
 
         [SerializeField]
+        public int m_prefabNum;
+
+        [SerializeField]
         public Vector3 m_prefabScale = Vector3.one;
         protected Vector3 PrefabScale
         {
@@ -197,7 +200,7 @@ namespace Battlehub.RTHandles
         {
             if (m_prefabInstance != null)
             {
-                ShootGameEditor._Instance.Add_AreaItemList(this.name);
+                ShootGameEditor._Instance.Add_AreaItemList(m_prefabInstance,m_prefabNum);
                 ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
                 m_editor.Undo.BeginRecord();
                 m_editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });

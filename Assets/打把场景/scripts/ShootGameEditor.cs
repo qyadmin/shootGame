@@ -89,20 +89,25 @@ public class ShootGameEditor : SimpleEditor
                                 , num);
         newArea.ItemList = new ShootingArea.ShootingItemList();
         newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
-        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
-        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子1"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子2"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
 
 
         m_Arealist.Add(newArea);
     }
     //增加Area的Item
-    public void Add_AreaItemList(string name)
-    {
-        int number = int.Parse(Regex.Replace(name, "[a-z]", "", RegexOptions.IgnoreCase));
+    public void Add_AreaItemList(GameObject prefabInstance,int number)
+    {        
         GetEditorArea().ItemList.m_ShootingItem.ForEach(item =>
         {
             if (item.Number == number)
-                GetEditorArea().m_ShootingItem.Add(item);
+            {
+                ShootingItem newItem = new ShootingItem();
+                newItem = item;
+                newItem.Prefab = prefabInstance;
+                GetEditorArea().m_ShootingItem.Add(newItem);
+                Debug.Log(item.Name);
+            }
         });
     }
     //获取锁定Area的GameObject类型
@@ -138,13 +143,13 @@ public class ShootGameEditor : SimpleEditor
                 m_selected[0] = EditorArea;
             else
                 m_selected[0] = selected[0] as GameObject;
-                if (m_selected.Length == 1)
+            if (m_selected.Length == 1)
                 m_Arealist.ForEach(item =>
                 {
                     if (item.Perfab == m_selected[0])
                     {
                         item.ItemList.Instantiate_obj(EditorUI._Instance.itemListUI.Prefab, EditorUI._Instance.itemListUI.ItemListUICount.gameObject);
-                        item.Instantiate_Item(EditorUI._Instance.areaItemListUI.AreaItemListPrefabUI, EditorUI._Instance.areaItemListUI.AreaItemListUICount);
+                        item.Instantiate_Item(EditorUI._Instance.areaItemListUI.AreaItemListPrefabUI, EditorUI._Instance.areaItemListUI.AreaItemListUICount,Editor);
                     }
                 });
 
@@ -204,32 +209,27 @@ public class ShootGameEditor : SimpleEditor
         {
             EditorUI._Instance.areaListUI.AreaUICount.gameObject.transform.GetChild(i).GetComponent<Button>().interactable = !value;
         }
+        for (int i = 0; i < EditorUI._Instance.areaItemListUI.AreaItemListUICount.gameObject.transform.childCount; i++)
+        {
+            EditorUI._Instance.areaItemListUI.AreaItemListUICount.gameObject.transform.GetChild(i).GetComponent<Button>().interactable = value;
+        }
         EditorUI._Instance.areaListUI.Add.interactable = !value;
+
         EditorUI._Instance.areaListUI.Subtract.interactable = !value;
     }
     //ShootingArea列表的点击事件
     void UIClickEvent(ShootingArea value)
     {
-        //Editor.Tools.Reset();
-        foreach (ShootingArea i in m_Arealist)
-        {
-            if (value == i)
-            {
-                List<Object> selection;
+        List<Object> selection;
 
-                selection = new List<Object>();
+        selection = new List<Object>();
 
-                selection.Insert(0, value.Perfab);
+        selection.Insert(0, value.Perfab);
 
-                Editor.Undo.Select(selection.ToArray(), value.Perfab);
-
-
-                //Component.handle.LockObject.PositionY = true;
-
-                //Debug.Log(Editor.Tools.PivotRotation);
-            }
-        }
+        Editor.Undo.Select(selection.ToArray(), value.Perfab);
     }
+
+  
 
     //设置Tools种类
     void SetRuntimeTool(RuntimeTool runtimeTool)
@@ -252,14 +252,13 @@ public class ShootGameEditor : SimpleEditor
                     UnLockAcitiveArea();
                 break;
         }
-
     }
 
     //锁定Area
     void LockAcitiveArea()
     {
-        GameObject[] selected = Editor.Selection.gameObjects;
-
+        GameObject[] selected = Editor.Selection.gameObjects;     
+        Lock = true;
         if (selected != null)
         {
             for (int i = 0; i < selected.Length; ++i)
@@ -267,9 +266,8 @@ public class ShootGameEditor : SimpleEditor
                 GameObject selectedObj = selected[i];
                 EditorArea = selectedObj;
                 Debug.Log(selectedObj.name);
-                ExposeToEditor exposeToEditor = selectedObj.GetComponent<ExposeToEditor>();
-                SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
-                selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
+                ExposeToEditor exposeToEditor = EditorArea.GetComponent<ExposeToEditor>();
+                SelectionGizmo selectionGizmo = EditorArea.AddComponent<SelectionGizmo>();
 
                 if (exposeToEditor.Selected != null)
                 {
@@ -277,14 +275,15 @@ public class ShootGameEditor : SimpleEditor
                 }
             }
         }
+        //Editor.Selection.activeObject = null;
+
         Editor.Mask = Editor.Mask = (1 << 11);
-        //Set_LockItemList(true);
-        Lock = true;
     }
 
     //解锁Area
     void UnLockAcitiveArea()
     {
+        Lock = false;
         List<Object> selection;
 
         selection = new List<Object>();
@@ -297,7 +296,7 @@ public class ShootGameEditor : SimpleEditor
 
         //Set_LockItemList(false);
 
-        Lock = false;
+        
         EditorArea = null;
     }
 
