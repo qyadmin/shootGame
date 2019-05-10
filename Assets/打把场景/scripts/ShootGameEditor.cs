@@ -90,7 +90,7 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList = new ShootingArea.ShootingItemList();
         newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
         newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子1"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
-        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子2"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("瓶子"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
 
 
         m_Arealist.Add(newArea);
@@ -276,6 +276,7 @@ public class ShootGameEditor : SimpleEditor
             }
         }
         //Editor.Selection.activeObject = null;
+        Editor.Tools.Current = RuntimeTool.Move;
 
         Editor.Mask = Editor.Mask = (1 << 11);
     }
@@ -296,7 +297,7 @@ public class ShootGameEditor : SimpleEditor
 
         //Set_LockItemList(false);
 
-        
+        Editor.Tools.Current = RuntimeTool.Move;
         EditorArea = null;
     }
 
