@@ -170,7 +170,7 @@ namespace Battlehub.RTHandles
             {
                 GameObject pivot = new GameObject("Pivot");
                 pivot.transform.SetParent(transform, true);
-                pivot.transform.position = Vector3.zero;
+                pivot.transform.position = GameObject.Find("Zero").transform.position;
                 m_pivot = pivot.transform;
             }
 

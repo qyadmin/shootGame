@@ -45,7 +45,7 @@ namespace Battlehub.RTHandles.Demo
         {
             m_editor = IOC.Resolve<IRTE>();
 
-            m_editor.Tools.ToolChanged += OnToolChanged;
+            //m_editor.Tools.ToolChanged += OnToolChanged;
             m_editor.Tools.PivotModeChanged += OnPivotModeChanged;
             m_editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
 
@@ -62,7 +62,7 @@ namespace Battlehub.RTHandles.Demo
         {
             if (m_editor != null)
             {
-                m_editor.Tools.ToolChanged -= OnToolChanged;
+                //m_editor.Tools.ToolChanged -= OnToolChanged;
                 m_editor.Tools.PivotModeChanged -= OnPivotModeChanged;
                 m_editor.Tools.PivotRotationChanged -= OnPivotRotationChanged;
 

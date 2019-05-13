@@ -55,6 +55,7 @@ public class ShootGameEditor : SimpleEditor
         EditorUI._Instance.runtimeToolUI.Rotate_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Rotate); });
         EditorUI._Instance.runtimeToolUI.Scale_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Scale); });
         EditorUI._Instance.runtimeToolUI.Lock_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Lock); });
+        EditorUI._Instance.runtimeToolUI.View_Button.onClick.AddListener(delegate() { OnPlayClick(); });
         //Editor.Selection.SelectionChanged += test;
         Editor.Selection.Selectioned += ToolsUIChange;
         Editor.Mask = (1 << 10);
@@ -88,10 +89,11 @@ public class ShootGameEditor : SimpleEditor
                                 , delegate () { UIClickEvent(newArea); }
                                 , num);
         newArea.ItemList = new ShootingArea.ShootingItemList();
-        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
-        newArea.ItemList.AddItem(Resources.Load<GameObject>("纸靶子1"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
-        newArea.ItemList.AddItem(Resources.Load<GameObject>("瓶子"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
-
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("区域射击点"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("钢靶(红)"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("钢靶(黄)"), Resources.Load<Sprite>("UI/Sprite/纸靶子"));
+        newArea.ItemList.AddItem(Resources.Load<GameObject>("钢靶(灰)"), Resources.Load<Sprite>("UI/Sprite/纸靶子")); 
+        
 
         m_Arealist.Add(newArea);
     }
@@ -132,7 +134,6 @@ public class ShootGameEditor : SimpleEditor
         bool Postion = true;
         bool Rotation = true;
         bool Scale = true;
-
         if (!Lock)
             CleanItemList();
 
@@ -181,6 +182,7 @@ public class ShootGameEditor : SimpleEditor
         EditorUI._Instance.runtimeToolUI.Move_Button.interactable = Postion;
         EditorUI._Instance.runtimeToolUI.Rotate_Button.interactable = Rotation;
         EditorUI._Instance.runtimeToolUI.Scale_Button.interactable = Scale;
+        
         Set_LockItemList(Lock);
     }
 
@@ -337,9 +339,34 @@ public class ShootGameEditor : SimpleEditor
         return m_Arealist[getShootingArea(GetEditorAreaObj())[0]];
     }
 
+    [SerializeField]
+    bool isPlaying = false;
+    private void OnPlayClick()
+    {
+        isPlaying = !isPlaying;
+        if (isPlaying)
+        {
+            //Editor.Undo.Purge();
+            StartCoroutine(CoPlay());
+        }
+        else
+            OnStopClick();
+    }
 
-    //
-
+    private IEnumerator CoPlay()
+    {
+        yield return new WaitForEndOfFrame();
+        Editor.Selection.Enabled = false;
+        Editor.Undo.Select(null,null);
+        EditorUI._Instance.playingModle();
+        
+    }
+    private void OnStopClick()
+    {
+        Editor.Selection.Enabled = true;
+        Editor.Undo.Select(null, null);
+        EditorUI._Instance.editorModle();
+    }
 
     void refreshUI()
     {

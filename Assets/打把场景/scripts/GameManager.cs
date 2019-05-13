@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour
 
     IEnumerator delate()
     {
-        Debug.Log("1212");
         yield return new WaitForSeconds(5);
         StartGame();
     }

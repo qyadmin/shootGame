@@ -18,23 +18,20 @@ public class InteractiveSwitch : MonoBehaviour
         public float delate_time;
     }
 
-    [SerializeField]
-    private MovePoint[] movingstate;
+    public List<TargetHealth> targets;
+    public bool startVisible;
+    public InteractiveSwitch nextStage;
+    public bool levelEnd;
+    public AudioClip activateSound;
 
-	public List<TargetHealth> targets;
-	public bool startVisible;
-	public InteractiveSwitch nextStage;
-	public bool levelEnd;
-	public AudioClip activateSound;
-
-	private GameObject player;
-	private TargetHealth boss;
-	private int minionsDead = 0;
-	private State currentState;
+    private GameObject player;
+    private TargetHealth boss;
+    private int minionsDead = 0;
+    private State currentState;
 
     private bool isnow = false;
 
-	private TimeTrialManager timer;
+    private TimeTrialManager timer;
 
     private ThirdPersonOrbitCam orbitcam;
 
@@ -42,21 +39,16 @@ public class InteractiveSwitch : MonoBehaviour
 
     private Text bullet_num;
 
-    [SerializeField]
-    action movingtype;
-
-    [SerializeField]
-    action actiontype;
 
     private enum State
-	{
-		DISABLED,
-		MINIONS,
-		END
-	}
+    {
+        DISABLED,
+        MINIONS,
+        END
+    }
 
-	private void Awake()
-	{
+    private void Awake()
+    {
         ShootGame.m_SwitchAwake += OnAwake;
     }
 
@@ -97,20 +89,20 @@ public class InteractiveSwitch : MonoBehaviour
 
 
     void Update()
-	{
-		switch (currentState)
-		{
-			case State.MINIONS:
-				minionsDead = 0;
-				foreach (TargetHealth target in targets)
-				{
-					if (!target.boss && target.IsDead)
-					{
-						minionsDead++;
-					}
-				}
-				if (minionsDead == targets.Count)
-				{
+    {
+        switch (currentState)
+        {
+            case State.MINIONS:
+                minionsDead = 0;
+                foreach (TargetHealth target in targets)
+                {
+                    if (!target.boss && target.IsDead)
+                    {
+                        minionsDead++;
+                    }
+                }
+                if (minionsDead == targets.Count)
+                {
                     timer.EndLevelTimer();
                     this.ToggleState(false, false);
                     isnow = false;
@@ -121,12 +113,12 @@ public class InteractiveSwitch : MonoBehaviour
                     }
                     bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting * 1.5 - player.GetComponent<ShootBehaviour>().Level_shoot_num);
                 }
-				break;
-		}
+                break;
+        }
 
-        
 
-       
+
+
 
         if (!isnow)
             return;
@@ -136,10 +128,10 @@ public class InteractiveSwitch : MonoBehaviour
         {
             mandatory_nextStage();
         }
-	}
+    }
 
 
- 
+
 
     void mandatory_nextStage()
     {
@@ -156,73 +148,65 @@ public class InteractiveSwitch : MonoBehaviour
 
     }
 
-	public void ToggleState(bool active, bool visible)
-	{
-		if (active)
-			currentState = State.MINIONS;
-		else
-			currentState = State.DISABLED;
-		this.GetComponent<BoxCollider>().enabled = visible;
-		this.GetComponent<MeshRenderer>().enabled = visible;
-        
-	}
+    public void ToggleState(bool active, bool visible)
+    {
+        if (active)
+            currentState = State.MINIONS;
+        else
+            currentState = State.DISABLED;
+        this.GetComponent<BoxCollider>().enabled = visible;
+        this.GetComponent<MeshRenderer>().enabled = visible;
 
-	private void OnTriggerEnter(Collider other)
-	{
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
         if (other.gameObject == player)
-		{
-			if (levelEnd)
-			{
-				timer.EndTimer();
+        {
+            if (levelEnd)
+            {
+                timer.EndTimer();
                 timer.EndLevelTimer();
-				ToggleState(false, false);
+                ToggleState(false, false);
 
-				if (nextStage)
-				{
-					nextStage.ToggleState(false, true);
-				}
-			}
-			else
-			{
-				if(GameManager._Instance.timeTrial && !timer.IsRunning)
-				{
-					timer.StartTimer();
-                    
-				}
-				ToggleState(true, false);
+                if (nextStage)
+                {
+                    nextStage.ToggleState(false, true);
+                }
+            }
+            else
+            {
+                if (GameManager._Instance.timeTrial && !timer.IsRunning)
+                {
+                    timer.StartTimer();
+
+                }
+                ToggleState(true, false);
                 timer.StartLevelTimer();
                 foreach (TargetHealth i in targets)
                 {
                     if (i.transform.parent.gameObject.GetComponent<obstacles_event>())
                         i.transform.parent.gameObject.GetComponent<obstacles_event>().swich = true;
                 }
-                switch (actiontype)
-                {
-                    case action.StandUp:
-                        orbitcam.StandUp();
-                        break;
-                    case action.SquatDown:
-                        orbitcam.SquatDown();
-                        break;
-                }
+
                 player.GetComponent<ShootBehaviour>().Level_shoot_num = 0;
                 isnow = true;
                 foreach (TargetHealth target in targets)
-				{
-					if (!target.boss)
-					{
-						target.Revive();
-					}
-					else
-					{
-						boss = target;
-						boss.Kill();
-					}
-				}
-			}
-			AudioSource.PlayClipAtPoint(activateSound, transform.position + Vector3.up);
-		}
-	}
+                {
+                    if (!target.boss)
+                    {
+                        target.Revive();
+                    }
+                    else
+                    {
+                        boss = target;
+                        boss.Kill();
+                    }
+                }
+            }
+            AudioSource.PlayClipAtPoint(activateSound, transform.position + Vector3.up);
+        }
+    }
 
     public void Moving()
     {
@@ -231,25 +215,12 @@ public class InteractiveSwitch : MonoBehaviour
 
     IEnumerator move_to_point()
     {
-        switch (movingtype)
+        while (Vector3.Distance(player.transform.position, this.transform.position) > 0.1f)
         {
-            case action.StandUp:
-                orbitcam.StandUp();
-                break;
-            case action.SquatDown:
-                orbitcam.SquatDown();
-                break;
+            player.transform.position = Vector3.Lerp(player.transform.position, this.transform.position, 1 * Time.deltaTime);
+            player.transform.rotation = Quaternion.Lerp(player.transform.rotation, this.transform.rotation, 1 * Time.deltaTime);
+            yield return null;
         }
-        foreach (MovePoint i in movingstate)
-        {
-            while (Vector3.Distance(player.transform.position, i.point.position) > 0.1f)
-            {
-                player.transform.position = Vector3.Lerp(player.transform.position,i.point.position,i.move_speed * Time.deltaTime);
-                player.transform.rotation = Quaternion.Lerp(player.transform.rotation,i.point.rotation,i.rotate_speed * Time.deltaTime);
-                yield return null;
-            }
-        }
-        yield return null;
     }
 
 }

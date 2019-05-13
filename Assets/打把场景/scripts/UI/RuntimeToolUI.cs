@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class RuntimeToolUI : MonoBehaviour
 {
 
-    public Button Move_Button, Rotate_Button, Scale_Button,Lock_Button;
+    public Button Move_Button, Rotate_Button, Scale_Button,Lock_Button,View_Button;
 
 
     private void OnEnable()
@@ -14,5 +14,6 @@ public class RuntimeToolUI : MonoBehaviour
         Move_Button.interactable = false;
         Rotate_Button.interactable = false;
         Scale_Button.interactable = false;
+        //Lock_Button.interactable = false;
     }
 }

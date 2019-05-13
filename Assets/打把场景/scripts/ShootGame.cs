@@ -19,7 +19,7 @@ public class ShootGame : MonoBehaviour
     public static event SwitchAwake m_SwitchAwake;
 
 
-    private void Start()
+    public void Start()
     {
         if (isEditor)
         {
