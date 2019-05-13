@@ -48,7 +48,7 @@ public class ShootGameEditor : SimpleEditor
     protected override void Start()
     {
         base.Start();
-
+        
         EditorUI._Instance.areaListUI.Add.onClick.AddListener(delegate () { Add_Arealist(); });
         EditorUI._Instance.areaListUI.Subtract.onClick.AddListener(delegate () { Subtract_Arealist(Editor.Selection.gameObjects); });
         EditorUI._Instance.runtimeToolUI.Move_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Move); });
@@ -254,6 +254,26 @@ public class ShootGameEditor : SimpleEditor
                     UnLockAcitiveArea();
                 break;
         }
+    }
+
+    //list换位排序
+    public void ShootAreaSorting()
+    {
+        List<ShootingArea> newlist = new List<ShootingArea>();
+
+        foreach(Transform i in EditorUI._Instance.areaListUI.AreaUICount.transform)
+        {
+            m_Arealist.ForEach(item => {
+                if (i.gameObject == item.PerfabUI)
+                    newlist.Add(item);
+            });
+        }
+
+        m_Arealist = newlist;
+
+        m_Arealist.ForEach(item => {
+            Debug.Log(item.m_Number);
+        });
     }
 
     //锁定Area
