@@ -113,9 +113,8 @@ public class ShootBehaviour : GenericBehaviour
 		shotMask = ~((1 << LayerMask.NameToLayer("Ignore Shot")) | 1 << LayerMask.NameToLayer("Ignore Raycast"));
 
         Weapon.Addweapon();
-        
-
     }
+
 
 	// Update is used to set features regardless the active behaviour.
 	private void Update()

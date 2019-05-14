@@ -22,7 +22,7 @@ public class InteractiveSwitch : MonoBehaviour
     public bool startVisible;
     public InteractiveSwitch nextStage;
     public bool levelEnd;
-    public AudioClip activateSound;
+    public AudioClip StartSound,EndSound;
 
     private GameObject player;
     private TargetHealth boss;
@@ -49,7 +49,7 @@ public class InteractiveSwitch : MonoBehaviour
 
     private void Awake()
     {
-        ShootGame.m_SwitchAwake += OnAwake;
+        ShootGame._Instance.m_SwitchAwake += OnAwake;
     }
 
     private void OnStart()
@@ -57,7 +57,11 @@ public class InteractiveSwitch : MonoBehaviour
         timer.LevelTimerEvent += mandatory_nextStage;
 
         if (startVisible)
+        {
+            StopAllCoroutines();
             Moving();
+        }
+            
     }
 
     void OnAwake()
@@ -78,11 +82,6 @@ public class InteractiveSwitch : MonoBehaviour
             currentState = State.DISABLED;
 
 
-        foreach (TargetHealth i in targets)
-        {
-            if (i.transform.parent.gameObject.GetComponent<obstacles_event>())
-                i.transform.parent.gameObject.GetComponent<obstacles_event>().swich = false;
-        }
 
         OnStart();
     }
@@ -109,10 +108,27 @@ public class InteractiveSwitch : MonoBehaviour
                     if (nextStage)
                     {
                         nextStage.ToggleState(false, true);
+                        StopAllCoroutines();
                         nextStage.Moving();
                     }
+                    else
+                    {
+                        if (levelEnd)
+                        {
+                            timer.EndTimer();
+                            timer.EndLevelTimer();
+                            ToggleState(false, false);
+
+                            if (nextStage)
+                            {
+                                nextStage.ToggleState(false, true);
+                            }
+                            AudioSource.PlayClipAtPoint(EndSound, transform.position + Vector3.up);
+                        }
+                    }
+
                     bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting * 1.5 - player.GetComponent<ShootBehaviour>().Level_shoot_num);
-                }
+                }               
                 break;
         }
 
@@ -143,6 +159,7 @@ public class InteractiveSwitch : MonoBehaviour
         if (nextStage)
         {
             nextStage.ToggleState(false, true);
+            StopAllCoroutines();
             nextStage.Moving();
         }
 
@@ -155,7 +172,7 @@ public class InteractiveSwitch : MonoBehaviour
         else
             currentState = State.DISABLED;
         this.GetComponent<BoxCollider>().enabled = visible;
-        this.GetComponent<MeshRenderer>().enabled = visible;
+        //this.GetComponent<MeshRenderer>().enabled = visible;
 
     }
 
@@ -163,48 +180,34 @@ public class InteractiveSwitch : MonoBehaviour
     {
         if (other.gameObject == player)
         {
-            if (levelEnd)
+            if (ShootGame._Instance.timeTrial && !timer.IsRunning)
             {
-                timer.EndTimer();
-                timer.EndLevelTimer();
-                ToggleState(false, false);
-
-                if (nextStage)
-                {
-                    nextStage.ToggleState(false, true);
-                }
+                timer.StartTimer();
+                if(startVisible)
+                AudioSource.PlayClipAtPoint(StartSound, transform.position + Vector3.up);
             }
-            else
+            ToggleState(true, false);
+            timer.StartLevelTimer();
+            //foreach (TargetHealth i in targets)
+            //{
+            //    if (i.transform.parent && i.transform.parent.gameObject.GetComponent<obstacles_event>())
+            //        i.transform.parent.gameObject.GetComponent<obstacles_event>().swich = true;
+            //}
+
+            player.GetComponent<ShootBehaviour>().Level_shoot_num = 0;
+            isnow = true;
+            foreach (TargetHealth target in targets)
             {
-                if (GameManager._Instance.timeTrial && !timer.IsRunning)
+                if (!target.boss)
                 {
-                    timer.StartTimer();
-
+                    target.Revive();
                 }
-                ToggleState(true, false);
-                timer.StartLevelTimer();
-                foreach (TargetHealth i in targets)
+                else
                 {
-                    if (i.transform.parent.gameObject.GetComponent<obstacles_event>())
-                        i.transform.parent.gameObject.GetComponent<obstacles_event>().swich = true;
+                    boss = target;
+                    boss.Kill();
                 }
-
-                player.GetComponent<ShootBehaviour>().Level_shoot_num = 0;
-                isnow = true;
-                foreach (TargetHealth target in targets)
-                {
-                    if (!target.boss)
-                    {
-                        target.Revive();
-                    }
-                    else
-                    {
-                        boss = target;
-                        boss.Kill();
-                    }
-                }
-            }
-            AudioSource.PlayClipAtPoint(activateSound, transform.position + Vector3.up);
+            }           
         }
     }
 

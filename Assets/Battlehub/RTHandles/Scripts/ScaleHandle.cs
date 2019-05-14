@@ -94,7 +94,7 @@ namespace Battlehub.RTHandles
             
             return RuntimeHandleAxis.None;
         }
-
+        Transform temporary_Parent;
         protected override bool OnBeginDrag()
         {
             if(!base.OnBeginDrag())
@@ -140,6 +140,13 @@ namespace Battlehub.RTHandles
             {
                 SelectedAxis = RuntimeHandleAxis.None;
             }
+
+            //for (int i = 0; i < m_refScales.Length; ++i)
+            //{
+            //    Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? ActiveTargets[i].rotation : Quaternion.identity;
+            //    m_refScales[i] = rotation * ActiveTargets[i].localScale;
+            //}
+            Debug.Log("开始拖动");
             return result;
         }
 
@@ -235,6 +242,7 @@ namespace Battlehub.RTHandles
                 
                 m_prevPoint = point;
             }
+            Debug.Log("拖动");
         }
 
         protected override void OnDrop()
@@ -247,6 +255,7 @@ namespace Battlehub.RTHandles
             {
                 Model.SetScale(m_roundedScale);
             }
+            Debug.Log("结束");
         }
 
         protected override void DrawOverride(Camera camera)

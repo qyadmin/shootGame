@@ -69,6 +69,31 @@ public class ShootingArea : MonoBehaviour
 {
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
+    public void AddItem(GameObject prefab, Sprite sprite)
+    {
+        int num = 1;
+        if (m_ShootingItem.Count != 0)
+            m_ShootingItem.ForEach(item =>
+            {
+                if (item.Number == num)
+                    ++num;
+            });
+        ShootingItem newItem = new ShootingItem();
+        newItem.Prefab = Instantiate(prefab);
+        newItem.Prefab.name = prefab.name;
+        newItem.Prefab.transform.position = Perfab.transform.position;
+        newItem.Prefab.transform.parent = Perfab.transform;
+
+        newItem.MinImage = sprite;
+        newItem.Number = num;
+        newItem.Name = newItem.Prefab.name;
+        m_ShootingItem.Add(newItem);
+
+        
+       
+    }
+
+
     public void Instantiate_Item(GameObject prefab, GameObject perfab_father, IRTE editor)
     {
         for (int i = 0; i < perfab_father.transform.childCount; i++)
@@ -150,6 +175,7 @@ public class ShootingArea : MonoBehaviour
         Perfab.transform.name = "Area" + Number;
         Perfab.transform.localPosition = new Vector3(0, 0, 0);
         PerfabUI = Instantiate(perfabUI);
+        PerfabUI.transform.Find("Text").GetComponent<Text>().text = m_Number.ToString();
         PerfabUI.transform.parent = perfabUI_father.transform;
         PerfabUI.AddComponent<Button>().onClick.AddListener(delegate () { clickevent(); });
     }
