@@ -11,7 +11,8 @@ public class AreaListUI : MonoBehaviour
     public GameObject AreaUICount;
     [SerializeField]
     public Button Add, Subtract;
-
+    public Transform LockUI;
+    public Sprite ordinary, active;
     private void Start()
     {
         AreaPerfabUI = Resources.Load<GameObject>("UI/ShootAreaUIPerfab");

@@ -29,7 +29,7 @@ namespace Battlehub.RTHandles
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-        
+
             m_scale = Vector3.one;
             m_roundedScale = m_scale;
         }
@@ -91,24 +91,24 @@ namespace Battlehub.RTHandles
                     return RuntimeHandleAxis.Z;
                 }
             }
-            
+
             return RuntimeHandleAxis.None;
         }
-        Transform temporary_Parent;
+        GameObject temporary_Parent;
         protected override bool OnBeginDrag()
         {
-            if(!base.OnBeginDrag())
+            if (!base.OnBeginDrag())
             {
                 return false;
             }
 
             SelectedAxis = Hit();
 
-            if(SelectedAxis == RuntimeHandleAxis.Free)
+            if (SelectedAxis == RuntimeHandleAxis.Free)
             {
                 DragPlane = GetDragPlane(Vector3.zero);
             }
-            else if(SelectedAxis == RuntimeHandleAxis.None)
+            else if (SelectedAxis == RuntimeHandleAxis.None)
             {
                 return false;
             }
@@ -136,16 +136,29 @@ namespace Battlehub.RTHandles
 
             DragPlane = GetDragPlane(axis);
             bool result = GetPointOnDragPlane(Window.Pointer, out m_prevPoint);
-            if(!result)
+            if (!result)
             {
                 SelectedAxis = RuntimeHandleAxis.None;
             }
-
-            //for (int i = 0; i < m_refScales.Length; ++i)
-            //{
-            //    Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? ActiveTargets[i].rotation : Quaternion.identity;
-            //    m_refScales[i] = rotation * ActiveTargets[i].localScale;
-            //}
+            temporary_Parent = new GameObject();
+            temporary_Parent.name = "temporary_Parent";
+            for (int i = 0; i < m_refScales.Length; ++i)
+            {
+                Debug.Log(ActiveTargets[i].childCount+"    "+ ActiveTargets[i].name);
+                int num = ActiveTargets[i].childCount;
+                
+                if (num > 0)
+                {
+                    GameObject child = new GameObject();
+                    child.name = ActiveTargets[i].name;
+                    child.transform.parent = temporary_Parent.transform;
+                    for (int j = 0; j < num; j++)
+                    {                        
+                        ActiveTargets[i].GetChild(0).transform.parent = child.transform;                       
+                    }
+                }
+                    
+            }
             Debug.Log("开始拖动");
             return result;
         }
@@ -171,24 +184,24 @@ namespace Battlehub.RTHandles
                 else if (SelectedAxis == RuntimeHandleAxis.Y)
                 {
                     offset.x = offset.z = 0.0f;
-                    if(LockObject == null || !LockObject.ScaleY)
+                    if (LockObject == null || !LockObject.ScaleY)
                     {
                         m_scale.y += Mathf.Sign(offset.y) * mag;
                     }
                 }
-                else if(SelectedAxis == RuntimeHandleAxis.Z)
+                else if (SelectedAxis == RuntimeHandleAxis.Z)
                 {
                     offset.x = offset.y = 0.0f;
-                    if(LockObject == null || !LockObject.ScaleZ)
+                    if (LockObject == null || !LockObject.ScaleZ)
                     {
                         m_scale.z += Mathf.Sign(offset.z) * mag;
                     }
                 }
-                if(SelectedAxis == RuntimeHandleAxis.Free)
+                if (SelectedAxis == RuntimeHandleAxis.Free)
                 {
                     float sign = Mathf.Sign(offset.x + offset.y);
 
-                    if(LockObject != null)
+                    if (LockObject != null)
                     {
                         if (!LockObject.ScaleX)
                         {
@@ -216,7 +229,7 @@ namespace Battlehub.RTHandles
 
                 m_roundedScale = m_scale;
 
-                if(EffectiveGridUnitSize > 0.01)
+                if (EffectiveGridUnitSize > 0.01)
                 {
                     m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize;
 
@@ -233,13 +246,13 @@ namespace Battlehub.RTHandles
 
                 for (int i = 0; i < m_refScales.Length; ++i)
                 {
-                    Quaternion rotation =  Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
-                    Vector3 newvector = new Vector3((m_refScales[i].x + (m_roundedScale.x == 1 ? 0 : m_roundedScale.x))<1?1: m_refScales[i].x + (m_roundedScale.x == 1 ? 0 : m_roundedScale.x), 
-                                                    (m_refScales[i].y + (m_roundedScale.y == 1 ? 0 : m_roundedScale.y))<1?1: m_refScales[i].y + (m_roundedScale.y == 1 ? 0 : m_roundedScale.y), 
-                                                    (m_refScales[i].z + (m_roundedScale.z == 1 ? 0 : m_roundedScale.z))<1?1: m_refScales[i].z + (m_roundedScale.z == 1 ? 0 : m_roundedScale.z));
+                    Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
+                    Vector3 newvector = new Vector3((m_refScales[i].x + (m_roundedScale.x == 1 ? 0 : m_roundedScale.x)) < 1 ? 1 : m_refScales[i].x + (m_roundedScale.x == 1 ? 0 : m_roundedScale.x),
+                                                    (m_refScales[i].y),
+                                                    (m_refScales[i].z + (m_roundedScale.z == 1 ? 0 : m_roundedScale.z)) < 1 ? 1 : m_refScales[i].z + (m_roundedScale.z == 1 ? 0 : m_roundedScale.z));
                     ActiveTargets[i].localScale = Quaternion.Inverse(rotation) * newvector;
                 }
-                
+
                 m_prevPoint = point;
             }
             Debug.Log("拖动");
@@ -251,16 +264,28 @@ namespace Battlehub.RTHandles
 
             m_scale = Vector3.one;
             m_roundedScale = m_scale;
-            if(Model != null)
+            if (Model != null)
             {
                 Model.SetScale(m_roundedScale);
             }
             Debug.Log("结束");
+
+            if (temporary_Parent.transform.childCount > 0)
+                for (int i = 0; i < temporary_Parent.transform.childCount; i++)
+                {
+                    int num = temporary_Parent.transform.GetChild(i).childCount;
+
+                    for (int j = 0; j < num; j++)
+                    {
+                        temporary_Parent.transform.GetChild(i).GetChild(0).transform.parent = ActiveTargets[i];
+                    }
+                }
+            Destroy(temporary_Parent);
         }
 
         protected override void DrawOverride(Camera camera)
         {
-            Appearance.DoScaleHandle(camera, m_roundedScale, Target.position, Rotation,  SelectedAxis, LockObject);
+            Appearance.DoScaleHandle(camera, m_roundedScale, Target.position, Rotation, SelectedAxis, LockObject);
         }
     }
 }

@@ -10,6 +10,8 @@ public class ItemListUI : MonoBehaviour
 
     public Transform ItemListUICount;
 
+    public Transform LockUI;
+
     private void Start()
     {
         Prefab = Resources.Load<GameObject>("UI/PrefabSpawnPoint");

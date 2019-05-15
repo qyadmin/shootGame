@@ -12,6 +12,7 @@ public struct ShootingItem
     public action Event;
     private Sprite m_minImage;
     private GameObject m_prefab;
+    private GameObject m_prefabUI;
     private int m_Number;
     private string m_Name;
     public GameObject Prefab
@@ -23,6 +24,17 @@ public struct ShootingItem
         set
         {
             m_prefab = value;
+        }
+    }
+    public GameObject PrefabUI
+    {
+        get
+        {
+            return m_prefabUI;
+        }
+        set
+        {
+            m_prefabUI = value;
         }
     }
 
@@ -70,7 +82,7 @@ public class ShootingArea : MonoBehaviour
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
     public void AddItem(GameObject prefab, Sprite sprite)
-    {
+    {       
         int num = 1;
         if (m_ShootingItem.Count != 0)
             m_ShootingItem.ForEach(item =>
@@ -81,16 +93,13 @@ public class ShootingArea : MonoBehaviour
         ShootingItem newItem = new ShootingItem();
         newItem.Prefab = Instantiate(prefab);
         newItem.Prefab.name = prefab.name;
-        newItem.Prefab.transform.position = Perfab.transform.position;
+        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0,0.3f,0);
         newItem.Prefab.transform.parent = Perfab.transform;
 
         newItem.MinImage = sprite;
         newItem.Number = num;
         newItem.Name = newItem.Prefab.name;
-        m_ShootingItem.Add(newItem);
-
-        
-       
+        m_ShootingItem.Add(newItem);            
     }
 
 
@@ -100,29 +109,41 @@ public class ShootingArea : MonoBehaviour
         {
             Destroy(perfab_father.transform.GetChild(i).gameObject);
         }
-        m_ShootingItem.ForEach(item =>
+
+        for (int i = 0; i < m_ShootingItem.Count; i++)
         {
-            GameObject newItem = Instantiate(prefab);
-            newItem.name = "Area_Item" + item.Number;
-            newItem.transform.Find("Text").gameObject.GetComponent<Text>().text = item.Name;
-            newItem.transform.Find("Image").gameObject.GetComponent<Image>().sprite = item.MinImage;
-            newItem.transform.parent = perfab_father.transform;
-            newItem.AddComponent<Button>().onClick.AddListener(delegate ()
+            ShootingItem newItem = m_ShootingItem[i];
+            GameObject prefabUI = Instantiate(prefab);
+            prefabUI.name = "Area_Item_UI" + m_ShootingItem[i].Number;
+            prefabUI.transform.Find("Text").gameObject.GetComponent<Text>().text = m_ShootingItem[i].Name;
+            prefabUI.transform.Find("Image").gameObject.GetComponent<Image>().sprite = m_ShootingItem[i].MinImage;
+            prefabUI.transform.parent = perfab_father.transform;
+            prefabUI.AddComponent<Button>().onClick.AddListener(delegate ()
             {
                 List<UnityEngine.Object> selection;
 
                 selection = new List<UnityEngine.Object>();
 
-                selection.Insert(0, item.Prefab);
+                selection.Insert(0, newItem.Prefab);
 
-                editor.Undo.Select(selection.ToArray(), item.Prefab);
+                editor.Undo.Select(selection.ToArray(), newItem.Prefab);
 
             });
+            newItem.PrefabUI = prefabUI;
+            m_ShootingItem[i] = newItem;
+        }
+        m_ShootingItem.ForEach(item =>
+        {
+           
         });
     }
 
     public General m_General;
     public General m_ShootPos;
+
+    public int m_AreaTime;
+    public int m_AreaShootNum;
+
     public int m_Number;
     public GameObject Perfab;
     public GameObject PerfabUI;
@@ -139,13 +160,13 @@ public class ShootingArea : MonoBehaviour
             }
             m_ShootingItem.ForEach(item =>
             {                              
-                GameObject newItem = Instantiate(prefab);
-                newItem.name = item.Name;
-                newItem.transform.parent = perfab_father.transform;
-                newItem.GetComponent<PrefabSpawnPoint>().m_prefab = item.Prefab;
-                newItem.GetComponent<PrefabSpawnPoint>().m_prefabNum = item.Number;
-                newItem.GetComponent<PrefabSpawnPoint>().m_preview.sprite = item.MinImage;
-                newItem.GetComponent<PrefabSpawnPoint>().OnStart();
+                GameObject PrefabUI = Instantiate(prefab);
+                PrefabUI.name = item.Name;
+                PrefabUI.transform.parent = perfab_father.transform;
+                PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefab = item.Prefab;
+                PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefabNum = item.Number;
+                PrefabUI.GetComponent<PrefabSpawnPoint>().m_preview.sprite = item.MinImage;
+                PrefabUI.GetComponent<PrefabSpawnPoint>().OnStart();
             });
         }
 

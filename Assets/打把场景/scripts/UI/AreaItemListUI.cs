@@ -9,6 +9,9 @@ public class AreaItemListUI : MonoBehaviour
     [HideInInspector]
     public GameObject AreaItemListPrefabUI;
 
+    public Transform LockUI;
+
+    public Sprite ordinary,active;
     private void Start()
     {
         AreaItemListPrefabUI = Resources.Load<GameObject>("UI/AreaItemListPrefab");
