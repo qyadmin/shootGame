@@ -139,7 +139,7 @@ public class ShootingArea : MonoBehaviour
     }
 
     public General m_General;
-    public General m_ShootPos;
+    public ShootingItem m_ShootPos = new ShootingItem();
 
     public int m_AreaTime;
     public int m_AreaShootNum;

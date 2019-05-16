@@ -468,35 +468,38 @@ public class ShootGameEditor : SimpleEditor
     {
         m_Arealist.ForEach(item =>
         {
-            InteractiveSwitch Point = new InteractiveSwitch();
+            //InteractiveSwitch Point = new InteractiveSwitch();
             List<TargetHealth> targets = new List<TargetHealth>();
             item.m_ShootingItem.ForEach(obj =>
             {
                 if (obj.Prefab.GetComponent<InteractiveSwitch>())
-                    Point = obj.Prefab.GetComponent<InteractiveSwitch>();
+                {
+                    //Point = obj.Prefab.GetComponent<InteractiveSwitch>();
+                    item.m_ShootPos = obj;
+                }                   
                 if (obj.Prefab.GetComponent<TargetHealth>())
                     targets.Add(obj.Prefab.GetComponent<TargetHealth>());
             });
-            Point.targets = targets;
+            item.m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().targets = targets;
         });
         if (m_Arealist.Count == 1)
         {
-            m_Arealist.First<ShootingArea>().m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>().startVisible = true;
-            m_Arealist.First<ShootingArea>().m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>().levelEnd = true;
+            m_Arealist.First<ShootingArea>().m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().startVisible = true;
+            m_Arealist.First<ShootingArea>().m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().levelEnd = true;
         }
         if (m_Arealist.Count > 1)
         {
-            m_Arealist.First<ShootingArea>().m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>().startVisible = true;
-            m_Arealist.First<ShootingArea>().m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>().levelEnd = false;
-            m_Arealist.Last<ShootingArea>().m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>().startVisible = false;
-            m_Arealist.Last<ShootingArea>().m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>().levelEnd = true;
+            m_Arealist.First<ShootingArea>().m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().startVisible = true;
+            m_Arealist.First<ShootingArea>().m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().levelEnd = false;
+            m_Arealist.Last<ShootingArea>().m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().startVisible = false;
+            m_Arealist.Last<ShootingArea>().m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().levelEnd = true;
         }
 
         for (int i = 0; i < m_Arealist.Count; i++)
         {
             if (i + 1 < m_Arealist.Count)
-                m_Arealist[i].m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>().nextStage =
-                    m_Arealist[i + 1].m_ShootingItem.First<ShootingItem>().Prefab.GetComponent<InteractiveSwitch>();
+                m_Arealist[i].m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().nextStage =
+                    m_Arealist[i + 1].m_ShootPos.Prefab.GetComponent<InteractiveSwitch>();
         }
     }
 
