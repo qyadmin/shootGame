@@ -164,12 +164,10 @@ public class ShootGameEditor : SimpleEditor
                         item.Instantiate_Item(EditorUI._Instance.areaItemListUI.AreaItemListPrefabUI, EditorUI._Instance.areaItemListUI.AreaItemListUICount, Editor);
                     }
                 });
-
-
-
-            for (int i = 0; i < m_selected.Length; ++i)
+            if(selected != null)
+            for (int i = 0; i < selected.Length; ++i)
             {
-                GameObject selectedObj = m_selected[i] as GameObject;
+                GameObject selectedObj = selected[i] as GameObject;
                 ExposeToEditor ObjEditor = selectedObj.GetComponent<ExposeToEditor>();
                 if (ObjEditor)
                 {

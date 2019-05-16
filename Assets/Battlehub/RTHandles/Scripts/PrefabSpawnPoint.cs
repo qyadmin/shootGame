@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -192,7 +193,7 @@ namespace Battlehub.RTHandles
                     if (hit.transform != null && hit.transform.gameObject == ShootGameEditor._Instance.m_editorArea)
                     {
                         m_prefabInstance.SetActive(true);
-                        m_prefabInstance.transform.position = hit.point;
+                        m_prefabInstance.transform.position = new Vector3(Mathf.RoundToInt(hit.point.x),hit.point.y,Mathf.RoundToInt(hit.point.z));
                     }
                     else
                         m_prefabInstance.SetActive(false);
