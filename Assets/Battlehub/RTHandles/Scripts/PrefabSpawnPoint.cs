@@ -172,7 +172,7 @@ namespace Battlehub.RTHandles
             ExposeToEditor exposeToEditor = ExposeToEditor(m_prefabInstance); 
 
             exposeToEditor.SetName(this.transform.name);
-            m_prefabInstance.SetActive(true);
+            m_prefabInstance.SetActive(false);
         }
 
       
@@ -185,13 +185,17 @@ namespace Battlehub.RTHandles
             {
                 if (m_prefabInstance != null)
                 {
-                    m_prefabInstance.transform.position = point;
+                    //m_prefabInstance.transform.position = point;
                     m_prefabInstance.transform.rotation = rotation;
                     RaycastHit hit = Physics.RaycastAll(m_scene.Pointer).Where(h => !m_prefabInstanceTransforms.Contains(h.transform)).FirstOrDefault();
-                    if (hit.transform != null)
+
+                    if (hit.transform != null && hit.transform.gameObject == ShootGameEditor._Instance.m_editorArea)
                     {
+                        m_prefabInstance.SetActive(true);
                         m_prefabInstance.transform.position = hit.point;
                     }
+                    else
+                        m_prefabInstance.SetActive(false);
                 }
             }
         }
@@ -200,14 +204,20 @@ namespace Battlehub.RTHandles
         {
             if (m_prefabInstance != null)
             {
-                ShootGameEditor._Instance.Add_AreaItemList(m_prefabInstance,m_prefabNum);
-                ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
-                m_editor.Undo.BeginRecord();
-                m_editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
-                m_editor.Selection.activeObject = m_prefabInstance;
-                m_editor.Undo.EndRecord();
-            }
 
+                if (m_prefabInstance.activeSelf)
+                {
+                    ShootGameEditor._Instance.Add_AreaItemList(m_prefabInstance, m_prefabNum);
+                    ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
+                    m_editor.Undo.BeginRecord();
+                    m_editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
+                    m_editor.Selection.activeObject = m_prefabInstance;
+                    m_editor.Undo.EndRecord();
+                }
+                else
+                    Destroy(m_prefabInstance);
+
+            }
             m_prefabInstance = null;
             m_prefabInstanceTransforms = null;
         }

@@ -28,6 +28,13 @@ public class ShootGameEditor : SimpleEditor
 
     private GameObject EditorArea;
 
+    public GameObject m_editorArea
+    {
+        get
+        {
+            return EditorArea;
+        }
+    }
 
     #region IRTEState implementation
     public event System.Action<object> Created;
