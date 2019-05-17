@@ -35,7 +35,9 @@ public class InteractiveSwitch : MonoBehaviour
 
     private ThirdPersonOrbitCam orbitcam;
 
-    private int effectiveShooting;
+    public int effectiveShooting;
+
+    public int shootingTime;
 
     private Text bullet_num;
 
@@ -67,7 +69,7 @@ public class InteractiveSwitch : MonoBehaviour
     void OnAwake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        effectiveShooting = targets.Count * 2;
+        //effectiveShooting = targets.Count * 2;
 
         this.ToggleState(false, startVisible);
         timer = GameObject.Find("Timer").GetComponent<TimeTrialManager>();
@@ -100,6 +102,8 @@ public class InteractiveSwitch : MonoBehaviour
                         minionsDead++;
                     }
                 }
+
+                Debug.Log(minionsDead+"  "+ targets.Count);
                 if (minionsDead == targets.Count)
                 {
                     timer.EndLevelTimer();
@@ -127,7 +131,7 @@ public class InteractiveSwitch : MonoBehaviour
                         }
                     }
 
-                    bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting * 1.5 - player.GetComponent<ShootBehaviour>().Level_shoot_num);
+                    bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting - player.GetComponent<ShootBehaviour>().Level_shoot_num);
                 }               
                 break;
         }
@@ -138,9 +142,9 @@ public class InteractiveSwitch : MonoBehaviour
 
         if (!isnow)
             return;
-        bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting * 1.5 - player.GetComponent<ShootBehaviour>().Level_shoot_num);
+        bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting - player.GetComponent<ShootBehaviour>().Level_shoot_num);
 
-        if (player.GetComponent<ShootBehaviour>().Level_shoot_num >= effectiveShooting * 1.5)
+        if (player.GetComponent<ShootBehaviour>().Level_shoot_num >= effectiveShooting)
         {
             mandatory_nextStage();
         }
@@ -161,6 +165,21 @@ public class InteractiveSwitch : MonoBehaviour
             nextStage.ToggleState(false, true);
             StopAllCoroutines();
             nextStage.Moving();
+        }
+        else
+        {
+            if (levelEnd)
+            {
+                timer.EndTimer();
+                timer.EndLevelTimer();
+                ToggleState(false, false);
+
+                if (nextStage)
+                {
+                    nextStage.ToggleState(false, true);
+                }
+                AudioSource.PlayClipAtPoint(EndSound, transform.position + Vector3.up);
+            }
         }
 
     }
@@ -187,7 +206,7 @@ public class InteractiveSwitch : MonoBehaviour
                 AudioSource.PlayClipAtPoint(StartSound, transform.position + Vector3.up);
             }
             ToggleState(true, false);
-            timer.StartLevelTimer();
+            timer.StartLevelTimer(shootingTime);
             //foreach (TargetHealth i in targets)
             //{
             //    if (i.transform.parent && i.transform.parent.gameObject.GetComponent<obstacles_event>())

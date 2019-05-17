@@ -14,6 +14,8 @@ public class EditorUI : MonoBehaviour
     public ItemListUI itemListUI;
 
     public AreaItemListUI areaItemListUI;
+
+    public AreaEditorUI areaEditorUI;
     private void Awake()
     {
         _Instance = this;
@@ -25,13 +27,15 @@ public class EditorUI : MonoBehaviour
         areaListUI.gameObject.SetActive(true);
         itemListUI.gameObject.SetActive(true);
         areaItemListUI.gameObject.SetActive(true);
+        areaEditorUI.gameObject.SetActive(true);
     }
 
     public void playingModle()
     {
-        runtimeToolUI.gameObject.SetActive(true);
+        runtimeToolUI.gameObject.SetActive(false);
         areaListUI.gameObject.SetActive(false);
         itemListUI.gameObject.SetActive(false);
         areaItemListUI.gameObject.SetActive(false);
+        areaEditorUI.gameObject.SetActive(false);
     }
 }

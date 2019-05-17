@@ -54,11 +54,12 @@ public class TimeTrialManager : MonoBehaviour
 		{
             currentTimeLabel.text = string.Format("当局所用时间:{0}", (Time.time - startTime).ToString("n2"));
 		}
-
         if (level_time_start)
         {
             level_runtime -= Time.deltaTime;
             levelTimeLabel.text = string.Format("打靶剩余时间:{0}", level_runtime.ToString("n2")); 
+
+
 
             if (level_runtime <= 0)
             {
@@ -67,10 +68,10 @@ public class TimeTrialManager : MonoBehaviour
         }
 	}
 
-    public void StartLevelTimer()
+    public void StartLevelTimer(int value)
     {
         level_time_start = true;
-        level_runtime = level_time;
+        level_runtime = value;
         levelTimeLabel.gameObject.SetActive(true);
     }
 

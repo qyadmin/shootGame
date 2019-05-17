@@ -141,8 +141,46 @@ public class ShootingArea : MonoBehaviour
     public General m_General;
     public ShootingItem m_ShootPos = new ShootingItem();
 
-    public int m_AreaTime;
-    public int m_AreaShootNum;
+    private int m_areaTime = 0;
+    private int m_areaShootNum = 0;
+
+
+    public int AreaTime
+    {
+        get
+        {
+            return m_areaTime;
+        }
+        set
+        {
+            m_areaTime = value;
+            m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().shootingTime = AreaTime;
+        }
+    }
+
+    public int AreaShootNum
+    {
+        get
+        {
+            return m_areaShootNum;
+        }
+        set
+        {
+            m_areaShootNum = value;
+            m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().effectiveShooting = AreaShootNum;
+        }
+    }
+    public void getAreaMessage(out int areaTime,out int areaShootNum)
+    {
+        areaTime = AreaTime;
+        areaShootNum = AreaShootNum;
+    }
+
+    public void setAreaMessage(int areaTine,int areaShootNum)
+    {
+        AreaTime = areaTine;
+        AreaShootNum = areaShootNum;
+    }
 
     public int m_Number;
     public GameObject Perfab;
