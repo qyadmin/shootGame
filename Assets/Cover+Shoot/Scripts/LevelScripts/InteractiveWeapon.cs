@@ -234,7 +234,9 @@ public class InteractiveWeapon : MonoBehaviour
 	{
 		mag = fullMag;
 		totalBullets = maxBullets;
-	}
+        UpdateHud();
+
+    }
 
 	// Update weapon screen HUD.
 	private void UpdateHud()

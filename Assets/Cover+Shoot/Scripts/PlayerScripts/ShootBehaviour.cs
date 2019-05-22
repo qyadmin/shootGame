@@ -60,7 +60,7 @@ public class ShootBehaviour : GenericBehaviour
 
 
     [SerializeField]
-    private InteractiveWeapon Weapon;
+    public InteractiveWeapon Weapon;
 
 	// Start is always called after any Awake functions.
 	void Start()

@@ -34,7 +34,7 @@ public class TargetHealth : HealthManager
 
 	void Update ()
 	{
-		this.transform.localRotation = Quaternion.Slerp(this.transform.localRotation, Quaternion.Euler(targetRotation), 20 * Time.deltaTime);
+		//this.transform.localRotation = Quaternion.Slerp(this.transform.localRotation, Quaternion.Euler(targetRotation), 20 * Time.deltaTime);
 	}
 
 	public bool IsDead { get { return dead; } }
@@ -48,15 +48,19 @@ public class TargetHealth : HealthManager
 			if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
 			{
 				Kill();
-			}
-		}
+               
+            }
+            AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+        }
 		else if ((int)this.transform.localEulerAngles.x >= -15 && !dead)
 		{
             health -= damage;
             if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
             {
                 Kill();
+                
             }
+            AudioSource.PlayClipAtPoint(toggleSound, transform.position);
         }
 	}
 
@@ -66,23 +70,23 @@ public class TargetHealth : HealthManager
 			healthBar.parent.gameObject.SetActive(false);
 		dead = true;
 		//targetRotation.x = -90;
-		AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+		
 	}
 
 	public void Revive()
 	{
-       
 
-		if (boss)
+        health = totalHealth;
+        if (boss)
 		{
-			health = totalHealth;
+			
 			healthBar.parent.gameObject.SetActive(true);
 			UpdateHealthBar();
 		}
 		dead = false;
         if (!isStatic)
             targetRotation.x = 0;
-		AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+		//AudioSource.PlayClipAtPoint(toggleSound, transform.position);
 	}
 
 	private void UpdateHealthBar()

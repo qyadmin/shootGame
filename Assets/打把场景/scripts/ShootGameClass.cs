@@ -6,8 +6,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+
+public enum ItemType
+{
+    shootingPos,
+    shootingPaperTargets,
+    shootingMoveTarget,
+    shootingSteelTarget,
+    ambientTarget,
+    EnvironmentTarget
+}
 public struct ShootingItem
 {
+    public ItemType Type;
     public General m_General;
     public action Event;
     private Sprite m_minImage;
@@ -15,6 +26,10 @@ public struct ShootingItem
     private GameObject m_prefabUI;
     private int m_Number;
     private string m_Name;
+    public bool CanThought;
+    public bool ProhibitShooting;
+    public bool InvalidItem;
+
     public GameObject Prefab
     {
         get
@@ -84,12 +99,22 @@ public class ShootingArea : MonoBehaviour
     public void AddItem(GameObject prefab, Sprite sprite)
     {       
         int num = 1;
-        if (m_ShootingItem.Count != 0)
-            m_ShootingItem.ForEach(item =>
-            {
-                if (item.Number == num)
-                    ++num;
-            });
+        bool iscreat = false;
+
+        while (!iscreat)
+        {
+            iscreat = true;
+            if (m_ShootingItem.Count != 0)
+                for (int i = 0; i < m_ShootingItem.Count; i++)
+                {
+                    if (m_ShootingItem[i].Number == num)
+                    {
+                        iscreat = false;
+                        ++num;
+                        break;
+                    }
+                }
+        }
         ShootingItem newItem = new ShootingItem();
         newItem.Prefab = Instantiate(prefab);
         newItem.Prefab.name = prefab.name;
@@ -99,9 +124,45 @@ public class ShootingArea : MonoBehaviour
         newItem.MinImage = sprite;
         newItem.Number = num;
         newItem.Name = newItem.Prefab.name;
+        newItem.Type = ItemType.shootingPos;
         m_ShootingItem.Add(newItem);            
     }
 
+
+    public void AddItem(GameObject prefab, Sprite sprite,ItemType type)
+    {
+        int num = 1;
+        bool iscreat = false;
+
+        while (!iscreat)
+        {
+            iscreat = true;
+            if (m_ShootingItem.Count != 0)
+                for (int i = 0; i < m_ShootingItem.Count; i++)
+                {
+                    if (m_ShootingItem[i].Number == num)
+                    {
+                        iscreat = false;
+                        ++num;
+                        break;
+                    }
+                }
+        }
+        ShootingItem newItem = new ShootingItem();
+        newItem.Prefab = Instantiate(prefab);
+        newItem.Prefab.name = prefab.name;
+        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0, 0.3f, 0);
+        newItem.Prefab.transform.parent = Perfab.transform;
+
+        newItem.MinImage = sprite;
+        newItem.Number = num;
+        newItem.Name = newItem.Prefab.name;
+        newItem.Type = type;
+        newItem.CanThought = false;
+        newItem.ProhibitShooting = false;
+        newItem.InvalidItem = false;
+        m_ShootingItem.Add(newItem);
+    }
 
     public void Instantiate_Item(GameObject prefab, GameObject perfab_father, IRTE editor)
     {
@@ -190,38 +251,83 @@ public class ShootingArea : MonoBehaviour
     {
         public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
-        public void Instantiate_obj(GameObject prefab, GameObject perfab_father)
+        public void Instantiate_obj(GameObject prefab, GameObject perfab_father,ItemType type)
         {
             for (int i = 0; i < perfab_father.transform.childCount; i++)
             {
                 Destroy(perfab_father.transform.GetChild(i).gameObject);
             }
             m_ShootingItem.ForEach(item =>
-            {                              
-                GameObject PrefabUI = Instantiate(prefab);
-                PrefabUI.name = item.Name;
-                PrefabUI.transform.parent = perfab_father.transform;
-                PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefab = item.Prefab;
-                PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefabNum = item.Number;
-                PrefabUI.GetComponent<PrefabSpawnPoint>().m_preview.sprite = item.MinImage;
-                PrefabUI.GetComponent<PrefabSpawnPoint>().OnStart();
+            {
+                if (item.Type == type)
+                {
+                    GameObject PrefabUI = Instantiate(prefab);
+                    PrefabUI.name = item.Name;
+                    PrefabUI.transform.parent = perfab_father.transform;
+                    PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefab = item.Prefab;
+                    PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefabNum = item.Number;
+                    PrefabUI.GetComponent<PrefabSpawnPoint>().m_preview.sprite = item.MinImage;
+                    PrefabUI.GetComponent<PrefabSpawnPoint>().OnStart();
+                }               
             });
         }
 
-        public void AddItem(GameObject prefab, Sprite sprite)
+        public void AddItem(GameObject prefab, Sprite sprite,ItemType type)
         {
             int num = 1;
-            if (m_ShootingItem.Count != 0)
-                m_ShootingItem.ForEach(item =>
-                {
-                    if (item.Number == num)
-                        ++num;
-                });
+            bool iscreat = false;
+
+            while (!iscreat)
+            {
+                iscreat = true;
+                if (m_ShootingItem.Count != 0)
+                    for (int i = 0; i < m_ShootingItem.Count; i++)
+                    {
+                        if (m_ShootingItem[i].Number == num)
+                        {
+                            iscreat = false;
+                            ++num;
+                            break;
+                        }
+                    }
+            }
             ShootingItem newItem = new ShootingItem();
             newItem.Prefab = prefab;
             newItem.MinImage = sprite;
             newItem.Number = num;
             newItem.Name = newItem.Prefab.name;
+            newItem.CanThought = false;
+            newItem.ProhibitShooting = false;
+            newItem.InvalidItem = false;
+            newItem.Type = type;
+            m_ShootingItem.Add(newItem);
+        }
+        public void AddItem(GameObject prefab, Sprite sprite,bool CanThought)
+        {
+            int num = 1;
+            bool iscreat = false;
+
+            while (!iscreat)
+            {
+                iscreat = true;
+                if (m_ShootingItem.Count != 0)
+                    for (int i = 0; i < m_ShootingItem.Count; i++)
+                    {
+                        if (m_ShootingItem[i].Number == num)
+                        {
+                            iscreat = false;
+                            ++num;
+                            break;
+                        }
+                    }
+            }
+            ShootingItem newItem = new ShootingItem();
+            newItem.Prefab = prefab;
+            newItem.MinImage = sprite;
+            newItem.Number = num;
+            newItem.Name = newItem.Prefab.name;
+            newItem.CanThought = CanThought;
+            newItem.Type = ItemType.EnvironmentTarget;
             m_ShootingItem.Add(newItem);
         }
     }

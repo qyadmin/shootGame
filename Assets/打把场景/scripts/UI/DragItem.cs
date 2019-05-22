@@ -36,7 +36,7 @@ public class DragItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     {
         GameObject go = eventData.pointerCurrentRaycast.gameObject;//获取到鼠标终点位置下 可能的物体
 
-        Debug.Log(go.gameObject.name);
+        
         if (go != null)
         {
             Debug.Log(go.name);

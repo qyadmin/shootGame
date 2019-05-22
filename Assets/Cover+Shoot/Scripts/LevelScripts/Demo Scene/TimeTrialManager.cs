@@ -92,7 +92,13 @@ public class TimeTrialManager : MonoBehaviour
         
 	}
 
-	public void EndTimer()
+    public void suspended()
+    {
+        isTimerRunning = false;
+    }
+
+
+    public void EndTimer()
 	{
 		totalTime = Time.time - startTime;
 		isTimerRunning = false;

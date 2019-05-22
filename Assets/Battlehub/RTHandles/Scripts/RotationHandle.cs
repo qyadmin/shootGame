@@ -337,7 +337,9 @@ namespace Battlehub.RTHandles
 
             return Quaternion.identity;
         }
+        GameObject temporary_Parent;
 
+        Transform Parent;
         private bool m_forceScreenRotationMode;
         protected override bool OnBeginDrag()
         {
@@ -403,13 +405,22 @@ namespace Battlehub.RTHandles
 
                 m_targetInverse = Quaternion.Inverse(Target.rotation);
             }
+            temporary_Parent = new GameObject();
+            temporary_Parent.name = "temporary_Parent";
 
+            Parent = Target.parent;
+            Target.parent = temporary_Parent.transform;
+
+            Debug.Log("开始拖动");
             return SelectedAxis != RuntimeHandleAxis.None;
         }
 
         protected override void OnDrag()
         {
             base.OnDrag();
+
+            
+
 
             Vector2 point;
             if (!Window.Pointer.XY(Target.position, out point))
@@ -435,6 +446,8 @@ namespace Battlehub.RTHandles
 
             Vector3 delta = StartingRotation * Quaternion.Inverse(Target.rotation) * toWorldMatrix.MultiplyVector(new Vector3(m_deltaY, -m_deltaX, 0));
             Quaternion rotation = Quaternion.identity;
+
+            Debug.Log(SelectedAxis);
 
             if (SelectedAxis == RuntimeHandleAxis.Screen || m_forceScreenRotationMode)
             {
@@ -567,6 +580,12 @@ namespace Battlehub.RTHandles
         {
             base.OnDrop();
             m_targetRotation = Target.rotation;
+
+            Debug.Log("结束");
+
+            Target.parent = Parent;
+
+            Destroy(temporary_Parent);
         }
 
         protected override void SyncModelTransform()

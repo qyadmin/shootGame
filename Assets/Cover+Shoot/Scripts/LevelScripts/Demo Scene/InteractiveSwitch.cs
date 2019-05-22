@@ -31,6 +31,19 @@ public class InteractiveSwitch : MonoBehaviour
 
     private bool isnow = false;
 
+    public bool Isnow
+    {
+        get
+        {
+            return isnow;
+        }
+        set
+        {
+            isnow = value;
+            StopAllCoroutines();
+        }
+    }
+
     private TimeTrialManager timer;
 
     private ThirdPersonOrbitCam orbitcam;
@@ -232,7 +245,9 @@ public class InteractiveSwitch : MonoBehaviour
 
     public void Moving()
     {
-        StartCoroutine(move_to_point());
+        //StartCoroutine(move_to_point());
+        if (!IsMove)
+            StartCoroutine(AutoMove(new Vector3(0,0,0), new Vector3(0, 0, 0)));
     }
 
     IEnumerator move_to_point()
@@ -243,6 +258,68 @@ public class InteractiveSwitch : MonoBehaviour
             player.transform.rotation = Quaternion.Lerp(player.transform.rotation, this.transform.rotation, 1 * Time.deltaTime);
             yield return null;
         }
+    }
+    public float moveSpeed = 10f;//角色前进速度
+    private CharacterController cc;//角色控制器
+    private bool IsMove = false;//是否正在寻路过程
+
+    IEnumerator AutoMove(Vector3 starPoint, Vector3 targetPoint)
+    {
+        IsMove = true;
+
+        yield return new WaitForFixedUpdate();
+        //运用A星算法计算出到起点到目标点的最佳路径
+        Vector3[] ways = AStarRun._Instance.AStarFindWay(starPoint, targetPoint);
+
+
+        if (ways.Length == 0)
+        {
+            IsMove = false;
+            yield break;
+        }
+
+        ////打印显示出寻路线
+        //foreach (var v in ways)
+        //{
+        //    GameObject way = Instantiate<GameObject>(wayLook);
+
+        //    way.transform.parent = waysParent;
+        //    way.transform.localPosition = v;
+        //    way.transform.rotation = Quaternion.identity;
+        //    way.transform.localScale = Vector3.one;
+        //}
+
+
+        //让玩家开始沿着寻路线移动
+        int i = 0;
+        Vector3 target = new Vector3(ways[i].x, transform.position.y, ways[i].z);
+        player.transform.LookAt(target);
+        while (true)
+        {
+            yield return new WaitForFixedUpdate();
+            Debug.Log("run run run !!!");
+
+            //cc.SimpleMove(transform.forward * moveSpeed * Time.deltaTime);
+            player.transform.position = Vector3.Lerp(player.transform.position, this.transform.position, 1 * Time.deltaTime);
+
+            if (Vector3.Distance(player.transform.position, target) < 1f)
+            {
+                Debug.Log("run is ok !!!");
+                ++i;
+                if (i >= ways.Length)
+                    break;
+                target = new Vector3(ways[i].x, player.transform.position.y, ways[i].z);
+                player.transform.LookAt(target);
+            }
+        }
+
+        //移动完毕，删除移动路径
+        //for (int child = waysParent.childCount - 1; child >= 0; --child)
+        //    Destroy(waysParent.GetChild(child).gameObject);
+
+        //等待执行下一次自动寻路
+        IsMove = false;
+
     }
 
 }
