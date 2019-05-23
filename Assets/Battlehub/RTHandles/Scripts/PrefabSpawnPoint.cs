@@ -193,7 +193,7 @@ namespace Battlehub.RTHandles
                     if (hit.transform != null && hit.transform.gameObject == ShootGameEditor._Instance.m_editorArea)
                     {
                         m_prefabInstance.SetActive(true);
-                        m_prefabInstance.transform.position = new Vector3(float.Parse(string.Format("{0:f1}", hit.point.x)), hit.point.y + 0.2f, float.Parse(string.Format("{0:f1}", hit.point.z)));
+                        m_prefabInstance.transform.position = new Vector3(float.Parse(string.Format("{0:f1}", hit.point.x)), hit.point.y, float.Parse(string.Format("{0:f1}", hit.point.z)));
                     }
                     else
                         m_prefabInstance.SetActive(false);

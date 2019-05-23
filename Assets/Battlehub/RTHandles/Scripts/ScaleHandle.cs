@@ -140,26 +140,7 @@ namespace Battlehub.RTHandles
             {
                 SelectedAxis = RuntimeHandleAxis.None;
             }
-            temporary_Parent = new GameObject();
-            temporary_Parent.name = "temporary_Parent";
-            for (int i = 0; i < m_refScales.Length; ++i)
-            {
-                Debug.Log(ActiveTargets[i].childCount+"    "+ ActiveTargets[i].name);
-                int num = ActiveTargets[i].childCount;
-                
-                if (num > 0)
-                {
-                    GameObject child = new GameObject();
-                    child.name = ActiveTargets[i].name;
-                    child.transform.parent = temporary_Parent.transform;
-                    for (int j = 0; j < num; j++)
-                    {                        
-                        ActiveTargets[i].GetChild(0).transform.parent = child.transform;                       
-                    }
-                }
-                    
-            }
-            Debug.Log("开始拖动");
+           
             return result;
         }
 
@@ -268,19 +249,7 @@ namespace Battlehub.RTHandles
             {
                 Model.SetScale(m_roundedScale);
             }
-            Debug.Log("结束");
 
-            if (temporary_Parent.transform.childCount > 0)
-                for (int i = 0; i < temporary_Parent.transform.childCount; i++)
-                {
-                    int num = temporary_Parent.transform.GetChild(i).childCount;
-
-                    for (int j = 0; j < num; j++)
-                    {
-                        temporary_Parent.transform.GetChild(i).GetChild(0).transform.parent = ActiveTargets[i];
-                    }
-                }
-            Destroy(temporary_Parent);
         }
 
         protected override void DrawOverride(Camera camera)

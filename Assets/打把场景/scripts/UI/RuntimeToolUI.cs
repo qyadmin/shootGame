@@ -14,6 +14,6 @@ public class RuntimeToolUI : MonoBehaviour
         Move_Button.interactable = false;
         Rotate_Button.interactable = false;
         Scale_Button.interactable = false;
-        //Lock_Button.interactable = false;
+        Lock_Button.interactable = false;
     }
 }

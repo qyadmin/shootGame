@@ -246,8 +246,9 @@ public class InteractiveSwitch : MonoBehaviour
     public void Moving()
     {
         //StartCoroutine(move_to_point());
+        Debug.Log(player.transform.position+"   "+this.transform.position);
         if (!IsMove)
-            StartCoroutine(AutoMove(new Vector3(0,0,0), new Vector3(0, 0, 0)));
+            StartCoroutine(AutoMove(player.transform.position, this.transform.position));
     }
 
     IEnumerator move_to_point()
@@ -293,24 +294,27 @@ public class InteractiveSwitch : MonoBehaviour
         //让玩家开始沿着寻路线移动
         int i = 0;
         Vector3 target = new Vector3(ways[i].x, transform.position.y, ways[i].z);
-        player.transform.LookAt(target);
         while (true)
         {
             yield return new WaitForFixedUpdate();
             Debug.Log("run run run !!!");
 
             //cc.SimpleMove(transform.forward * moveSpeed * Time.deltaTime);
-            player.transform.position = Vector3.Lerp(player.transform.position, this.transform.position, 1 * Time.deltaTime);
-
-            if (Vector3.Distance(player.transform.position, target) < 1f)
+            //player.transform.position = Vector3.Lerp(player.transform.position, this.transform.position, 1 * Time.deltaTime);
+            //player.transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+            player.transform.position = Vector3.Lerp(player.transform.position, target, 20 * Time.deltaTime);           
+            player.transform.rotation = Quaternion.Lerp(player.transform.rotation, getlookatRoation(target), 5 * Time.deltaTime);
+            if (Vector3.Distance(player.transform.position, target) < 0.1f)
             {
                 Debug.Log("run is ok !!!");
                 ++i;
                 if (i >= ways.Length)
                     break;
                 target = new Vector3(ways[i].x, player.transform.position.y, ways[i].z);
-                player.transform.LookAt(target);
+                //player.transform.LookAt(target);
+               // player.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target), 0.3f);
             }
+            
         }
 
         //移动完毕，删除移动路径
@@ -322,5 +326,13 @@ public class InteractiveSwitch : MonoBehaviour
 
     }
 
+    Quaternion getlookatRoation(Vector3 target)
+    {
+        Quaternion lookat_rotation = new Quaternion();
+        Transform raw_rotation = player.transform;
+        raw_rotation.LookAt(target);
+        lookat_rotation = raw_rotation.rotation;
+        return lookat_rotation;
+    }
 }
 

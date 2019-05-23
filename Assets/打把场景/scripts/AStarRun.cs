@@ -19,6 +19,11 @@ public class AStarRun : MonoBehaviour
     private ArrayList way = new ArrayList();
 
 
+    private void Start()
+    {
+        _Instance = this;
+    }
+
     //判断某点是否在开启列表中
     private bool IsInOpenList(int x, int z)
     {
@@ -28,11 +33,6 @@ public class AStarRun : MonoBehaviour
                 return true;
         }
         return false;
-    }
-
-    private void Start()
-    {
-        _Instance = this;
     }
 
     //判断某点是否在关闭列表中
@@ -161,7 +161,7 @@ public class AStarRun : MonoBehaviour
 
         //检测该点周边是否有障碍物
         //障碍物层级为8
-        Collider[] colliders = Physics.OverlapSphere(p, 1, 1 << 11);
+        Collider[] colliders = Physics.OverlapSphere(p, 1, 1 << 8);
         if (colliders.Length > 0)
             return true;//有障碍物，说明该点不可通过，是障碍物点
 

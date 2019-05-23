@@ -783,6 +783,13 @@ namespace Battlehub.RTHandles
             }
 
             Vector3 point;
+
+
+            if (Target != null && Target.gameObject.layer == LayerMask.NameToLayer("Area"))
+            {
+                GameObject.Find("ItemCount").transform.Find(Target.name).position = Target.position;
+            }
+
             if (GetPointOnDragPlane(Window.Pointer, out point))
             {
                 Vector3 offset = m_inverse.MultiplyVector(point - m_prevPoint);

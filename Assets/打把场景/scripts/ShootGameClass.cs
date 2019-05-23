@@ -96,7 +96,7 @@ public class ShootingArea : MonoBehaviour
 {
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
-    public void AddItem(GameObject prefab, Sprite sprite)
+    public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather)
     {       
         int num = 1;
         bool iscreat = false;
@@ -118,8 +118,14 @@ public class ShootingArea : MonoBehaviour
         ShootingItem newItem = new ShootingItem();
         newItem.Prefab = Instantiate(prefab);
         newItem.Prefab.name = prefab.name;
-        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0,0.3f,0);
-        newItem.Prefab.transform.parent = Perfab.transform;
+        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0,0.05f,0);
+
+        GameObject AreaIteamFather = new GameObject();
+        AreaIteamFather.transform.parent = ItemFather;
+        AreaIteamFather.transform.localPosition = Vector3.zero;
+        AreaIteamFather.name = Perfab.name;
+        newItem.Prefab.transform.parent = AreaIteamFather.transform;
+
 
         newItem.MinImage = sprite;
         newItem.Number = num;
@@ -129,7 +135,7 @@ public class ShootingArea : MonoBehaviour
     }
 
 
-    public void AddItem(GameObject prefab, Sprite sprite,ItemType type)
+    public void AddItem(GameObject prefab, Sprite sprite ,Transform ItemFather,ItemType type)
     {
         int num = 1;
         bool iscreat = false;
@@ -152,7 +158,12 @@ public class ShootingArea : MonoBehaviour
         newItem.Prefab = Instantiate(prefab);
         newItem.Prefab.name = prefab.name;
         newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0, 0.3f, 0);
-        newItem.Prefab.transform.parent = Perfab.transform;
+
+        GameObject AreaIteamFather = new GameObject();
+        AreaIteamFather.transform.parent = ItemFather;
+        AreaIteamFather.transform.localPosition = Vector3.zero;
+        AreaIteamFather.name = Perfab.name;
+        newItem.Prefab.transform.parent = AreaIteamFather.transform;
 
         newItem.MinImage = sprite;
         newItem.Number = num;
@@ -178,6 +189,8 @@ public class ShootingArea : MonoBehaviour
             prefabUI.name = "Area_Item_UI" + m_ShootingItem[i].Number;
             prefabUI.transform.Find("Text").gameObject.GetComponent<Text>().text = m_ShootingItem[i].Name;
             prefabUI.transform.Find("Image").gameObject.GetComponent<Image>().sprite = m_ShootingItem[i].MinImage;
+            
+
             prefabUI.transform.parent = perfab_father.transform;
             prefabUI.AddComponent<Button>().onClick.AddListener(delegate ()
             {
@@ -191,13 +204,24 @@ public class ShootingArea : MonoBehaviour
 
             });
             newItem.PrefabUI = prefabUI;
+            if (newItem.Prefab.layer == LayerMask.NameToLayer("Item"))
+            {
+                newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().interactable = true;
+                newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().onClick.AddListener(delegate () { DeleteItem(newItem); });
+            }              
             m_ShootingItem[i] = newItem;
         }
-        m_ShootingItem.ForEach(item =>
-        {
-           
-        });
+       
     }
+
+    void DeleteItem(ShootingItem item)
+    {
+        Destroy(item.PrefabUI.gameObject);
+        Destroy(item.Prefab.gameObject);
+        m_ShootingItem.Remove(item);
+    }
+
+
 
     public General m_General;
     public ShootingItem m_ShootPos = new ShootingItem();
@@ -352,10 +376,18 @@ public class ShootingArea : MonoBehaviour
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.parent = perfabUI_father.transform;
     }
-    public void Destroy_obj()
-    {
+    public void Destroy_obj(GameObject Itemfather)
+    {    
         Destroy(Perfab);
         Destroy(PerfabUI);
+        for (int i = 0; i < Itemfather.transform.childCount; i++)
+        {
+            if (Itemfather.transform.GetChild(i).name == Perfab.name)
+            {
+                Destroy(Itemfather.transform.GetChild(i).gameObject);
+                break;
+            }                
+        }
     }
 }
 

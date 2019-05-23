@@ -25,7 +25,8 @@ public class ShootGameEditor : SimpleEditor
 
     [SerializeField]
     private GameObject AreaCount = null;
-
+    [SerializeField]
+    private GameObject AreaItemCount = null;
     bool Lock = false;
 
 
@@ -120,7 +121,7 @@ public class ShootGameEditor : SimpleEditor
         });
         //Editor.Selection.SelectionChanged += test;
         Editor.Selection.Selectioned += refreshUI;
-        Editor.Mask = (1 << 10);
+        Editor.Mask = (1 << LayerMask.NameToLayer("Area"));
         Set_LockItemList(Lock, null);
         Editor.Tools.LockAxes = new LockObject
         {
@@ -167,15 +168,28 @@ public class ShootGameEditor : SimpleEditor
                                 , delegate () { UIClickEvent(newArea); }
                                 , num);
         newArea.ItemList = new ShootingArea.ShootingItemList();
-        newArea.AddItem(Resources.Load<GameObject>("区域射击点"), getAreaItemListSprit("西瓜"));
+        newArea.AddItem(Resources.Load<GameObject>("区域射击点"), getAreaItemListSprit("区域射击点"), AreaItemCount.transform);
         newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(红)大"), getShootingAreaItemListSprit("钢靶(红)大"),ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(白)大"), getShootingAreaItemListSprit("钢靶(白)大"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(蓝)大"), getShootingAreaItemListSprit("钢靶(蓝)大"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网"), getShootingAreaItemListSprit("钢靶(蓝)大"), ItemType.ambientTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("钢靶(蓝)大"), ItemType.ambientTarget);
 
+        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网"), getShootingAreaItemListSprit("铁丝网"), ItemType.ambientTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("铁丝网(门)"), ItemType.ambientTarget);
 
+        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(白)"), getShootingAreaItemListSprit("方形钢靶(白)"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(蓝)"), getShootingAreaItemListSprit("方形钢靶(蓝)"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(红)"), getShootingAreaItemListSprit("方形钢靶(红)"), ItemType.shootingSteelTarget);
+
+        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(白)"), getShootingAreaItemListSprit("圆形钢靶(白)"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(蓝)"), getShootingAreaItemListSprit("圆形钢靶(蓝)"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(红)"), getShootingAreaItemListSprit("圆形钢靶(红)"), ItemType.shootingSteelTarget);
         m_Arealist.Add(newArea);
+
+        List<Object> selection;
+        selection = new List<Object>();
+        selection.Insert(0, newArea.Perfab);
+        Editor.Undo.Select(selection.ToArray(), newArea.Perfab);
+
         Associated();
     }
 
@@ -203,7 +217,7 @@ public class ShootGameEditor : SimpleEditor
                 newItem = item;
                 newItem.MinImage = getAreaItemListSprit(newItem.MinImage.name);
                 newItem.Prefab = prefabInstance;
-                newItem.Prefab.transform.parent = GetEditorArea().Perfab.transform;
+                newItem.Prefab.transform.parent = AreaItemCount.transform.Find(GetEditorArea().Perfab.name);
                 GetEditorArea().m_ShootingItem.Add(newItem);
                 Debug.Log(item.Name);
             }
@@ -231,6 +245,7 @@ public class ShootGameEditor : SimpleEditor
         bool Postion = true;
         bool Rotation = true;
         bool Scale = true;
+        bool Locks = true;
         if (!Lock)
             CleanItemList();
 
@@ -245,6 +260,7 @@ public class ShootGameEditor : SimpleEditor
             else
                 m_selected[0] = selected[0] as GameObject;
             if (m_selected[0].layer == 10)
+            {
                 m_Arealist.ForEach(item =>
                 {
                     if (item.Perfab == m_selected[0])
@@ -262,6 +278,11 @@ public class ShootGameEditor : SimpleEditor
                         EditorUI._Instance.areaEditorUI.setvalue(areaTime, areaShootNum);
                     }
                 });
+            }
+            else
+                Locks = false;
+
+
 
             if (selected != null)
             {
@@ -282,7 +303,7 @@ public class ShootGameEditor : SimpleEditor
                         }
                     }
 
-                    if (selectedObj.layer == 11)
+                    if (selectedObj.layer == LayerMask.NameToLayer("Item"))
                     {
                         EditorUI._Instance.itemEditorUI.gameObject.SetActive(true);
                         ShootingItem item = getActiveItem(selectedObj);
@@ -327,7 +348,7 @@ public class ShootGameEditor : SimpleEditor
                                 break;
                            
                         }
-                    }
+                    }                    
                 }
             }
              
@@ -337,12 +358,14 @@ public class ShootGameEditor : SimpleEditor
             Postion = false;
             Rotation = false;
             Scale = false;
+            Locks = false;
             EditorUI._Instance.areaEditorUI.gameObject.SetActive(false);
             
         }
         EditorUI._Instance.runtimeToolUI.Move_Button.interactable = Postion;
         EditorUI._Instance.runtimeToolUI.Rotate_Button.interactable = Rotation;
         EditorUI._Instance.runtimeToolUI.Scale_Button.interactable = Scale;
+        EditorUI._Instance.runtimeToolUI.Lock_Button.interactable = Locks;
 
         Set_LockItemList(Lock, selected);
     }
@@ -370,6 +393,10 @@ public class ShootGameEditor : SimpleEditor
 
         EditorUI._Instance.areaItemListUI.LockUI.gameObject.SetActive(!value);
 
+        m_Arealist.ForEach(item => {
+            item.Perfab.GetComponent<MeshRenderer>().enabled = false;
+        });
+
         for (int i = 0; i < EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.childCount; i++)
         {
             EditorUI._Instance.itemListUI.ItemListUICount.gameObject.transform.GetChild(i).GetComponent<PrefabSpawnPoint>().CanDrag = value;
@@ -391,16 +418,20 @@ public class ShootGameEditor : SimpleEditor
         EditorUI._Instance.areaListUI.Subtract.interactable = !value;
 
         if (EditorArea)
+        {
             GetEditorArea().PerfabUI.transform.Find("Sprite").GetComponent<Image>().sprite = EditorUI._Instance.areaListUI.active;
+            GetEditorArea().Perfab.GetComponent<MeshRenderer>().enabled = true;
+        }
 
 
         if (selected != null && selected.Length > 0)
         {
-            if ((selected[0] as GameObject).layer == 10)
+            if ((selected[0] as GameObject).layer == LayerMask.NameToLayer("Area"))
             {
                 GetActiveArea(selected[0] as GameObject).PerfabUI.transform.Find("Sprite").GetComponent<Image>().sprite = EditorUI._Instance.areaListUI.active;
+                GetActiveArea(selected[0] as GameObject).Perfab.GetComponent<MeshRenderer>().enabled = true;
             }
-            if ((selected[0] as GameObject).layer == 11)
+            if ((selected[0] as GameObject).layer == LayerMask.NameToLayer("Item") || (selected[0] as GameObject).layer == LayerMask.NameToLayer("ShootPos") )
             {
                 getActiveItem(selected[0] as GameObject).PrefabUI.transform.Find("Sprite").GetComponent<Image>().sprite = EditorUI._Instance.areaItemListUI.active;
             }
@@ -507,7 +538,7 @@ public class ShootGameEditor : SimpleEditor
 
         Editor.Tools.Current = RuntimeTool.Move;
 
-        Editor.Mask = Editor.Mask = (1 << 11);
+        Editor.Mask = Editor.Mask = (1 << LayerMask.NameToLayer("ShootPos") | 1<<LayerMask.NameToLayer("Item"));
     }
 
     //解锁Area
@@ -522,7 +553,7 @@ public class ShootGameEditor : SimpleEditor
 
         Editor.Undo.Select(selection.ToArray(), EditorArea);
 
-        Editor.Mask = Editor.Mask = (1 << 10);
+        Editor.Mask = Editor.Mask = (1 << LayerMask.NameToLayer("Area"));
 
         //Set_LockItemList(false);
 
@@ -540,7 +571,7 @@ public class ShootGameEditor : SimpleEditor
 
         foreach (int i in m_Area)
         {
-            m_Arealist[i].Destroy_obj();
+            m_Arealist[i].Destroy_obj(AreaItemCount);
             m_Arealist.RemoveAt(i);
         }
     }
