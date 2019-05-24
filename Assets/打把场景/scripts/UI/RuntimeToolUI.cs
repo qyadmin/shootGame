@@ -8,6 +8,8 @@ public class RuntimeToolUI : MonoBehaviour
 
     public Button Move_Button, Rotate_Button, Scale_Button,Lock_Button,View_Button;
 
+    public Sprite Lock, UnLock;
+
     public Transform toolsGroup;
     private void OnEnable()
     {
@@ -15,5 +17,5 @@ public class RuntimeToolUI : MonoBehaviour
         Rotate_Button.interactable = false;
         Scale_Button.interactable = false;
         Lock_Button.interactable = false;
-    }
+    }    
 }

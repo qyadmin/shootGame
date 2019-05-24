@@ -255,7 +255,10 @@ public class ShootBehaviour : GenericBehaviour
         if (value.GetComponent<HealthManager>())
             return value.GetComponent<HealthManager>();
         else
-            return getTarget(value.transform.parent.gameObject);
+            if (!value.transform.parent)
+                return null;
+            else
+                return getTarget(value.transform.parent.gameObject);
     }
 
     // Manage the shot visual effects.

@@ -16,6 +16,12 @@ public enum ItemType
     ambientTarget,
     EnvironmentTarget
 }
+
+public enum SceneType
+{
+    OutSide,
+    InSide
+}
 public struct ShootingItem
 {
     public ItemType Type;
@@ -356,7 +362,7 @@ public class ShootingArea : MonoBehaviour
         }
     }
 
-    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent, int Number)
+    public void Instantiate_obj(GameObject perfab, GameObject perfabUI,Sprite perfabUI_sprite, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent, int Number)
     {
         Perfab = Instantiate(perfab);
         m_Number = Number;
@@ -365,6 +371,7 @@ public class ShootingArea : MonoBehaviour
         Perfab.transform.localPosition = new Vector3(0, 0, 0);
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.Find("Text").GetComponent<Text>().text = m_Number.ToString();
+        PerfabUI.transform.Find("Image").GetComponent<Image>().sprite = perfabUI_sprite;
         PerfabUI.transform.parent = perfabUI_father.transform;
         PerfabUI.AddComponent<Button>().onClick.AddListener(delegate () { clickevent(); });
     }

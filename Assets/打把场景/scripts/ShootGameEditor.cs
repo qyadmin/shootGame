@@ -15,6 +15,8 @@ public class ShootGameEditor : SimpleEditor
 
     private List<ShootingArea> m_Arealist = new List<ShootingArea>();
 
+    SceneType scenetype = SceneType.OutSide;
+
     public List<ShootingArea> Arealist
     {
         get
@@ -27,7 +29,22 @@ public class ShootGameEditor : SimpleEditor
     private GameObject AreaCount = null;
     [SerializeField]
     private GameObject AreaItemCount = null;
-    bool Lock = false;
+    bool m_Lock = false;
+
+    bool Lock
+    {
+        get { return m_Lock; }
+        set
+        {
+            m_Lock = value;
+            if (Lock)
+                EditorUI._Instance.runtimeToolUI.Lock_Button.GetComponent<Image>().sprite = EditorUI._Instance.runtimeToolUI.UnLock;
+            else
+                EditorUI._Instance.runtimeToolUI.Lock_Button.GetComponent<Image>().sprite = EditorUI._Instance.runtimeToolUI.Lock;
+        }
+    }
+
+
 
 
     public bool IsCreated
@@ -139,6 +156,9 @@ public class ShootGameEditor : SimpleEditor
     {
         base.OnDestroy();
     }
+
+   
+
     //增加Area
     void Add_Arealist()
     {
@@ -164,7 +184,9 @@ public class ShootGameEditor : SimpleEditor
             
         newArea.Instantiate_obj(Resources.Load<GameObject>("ShootingArea")
                                 , EditorUI._Instance.areaListUI.AreaPerfabUI
-                                , AreaCount, EditorUI._Instance.areaListUI.AreaUICount
+                                , getSceneSprit()
+                                , AreaCount
+                                , EditorUI._Instance.areaListUI.AreaUICount
                                 , delegate () { UIClickEvent(newArea); }
                                 , num);
         newArea.ItemList = new ShootingArea.ShootingItemList();
@@ -180,6 +202,10 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黑)"), getShootingAreaItemListSprit("IDPA纸靶(黑)"), ItemType.shootingPaperTargets);
         newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黄)"), getShootingAreaItemListSprit("IDPA纸靶(黄)"), ItemType.shootingPaperTargets);
 
+        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(黑)"), getShootingAreaItemListSprit("IPSC纸靶(黑)"), ItemType.shootingPaperTargets);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(白)"), getShootingAreaItemListSprit("IPSC纸靶(白)"), ItemType.shootingPaperTargets);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(黄)"), getShootingAreaItemListSprit("IPSC纸靶(黄)"), ItemType.shootingPaperTargets);
+
         newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(白)"), getShootingAreaItemListSprit("方形钢靶(白)"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(蓝)"), getShootingAreaItemListSprit("方形钢靶(蓝)"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(红)"), getShootingAreaItemListSprit("方形钢靶(红)"), ItemType.shootingSteelTarget);
@@ -192,6 +218,12 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶(双)"), getShootingAreaItemListSprit("滑道移动靶(双)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(单)"), getShootingAreaItemListSprit("旋转靶(单)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(双)"), getShootingAreaItemListSprit("旋转靶(双)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(白)"), getShootingAreaItemListSprit("左右移动靶(白)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黄)"), getShootingAreaItemListSprit("左右移动靶(黄)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黑)"), getShootingAreaItemListSprit("左右移动靶(黑)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(白)"), getShootingAreaItemListSprit("上下移动靶(白)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黄)"), getShootingAreaItemListSprit("上下移动靶(黄)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黑)"), getShootingAreaItemListSprit("上下移动靶(黑)"), ItemType.shootingMoveTarget);
 
         m_Arealist.Add(newArea);
 
@@ -214,6 +246,16 @@ public class ShootGameEditor : SimpleEditor
     Sprite getAreaItemListSprit(string name)
     {
         return Resources.Load<Sprite>("UI/Sprite/small/" + name);
+    }
+
+    Sprite getSceneSprit()
+    {
+        if(scenetype == SceneType.OutSide)
+            return Resources.Load<Sprite>("UI/Sprite/" + "OutSide");
+        if(scenetype == SceneType.InSide)
+            return Resources.Load<Sprite>("UI/Sprite/" + "InSide");
+
+        return null;
     }
 
     //增加Area的Item
@@ -269,7 +311,7 @@ public class ShootGameEditor : SimpleEditor
                 m_selected[0] = EditorArea;
             else
                 m_selected[0] = selected[0] as GameObject;
-            if (m_selected[0].layer == 10)
+            if (m_selected[0].layer == LayerMask.NameToLayer("Area"))
             {
                 m_Arealist.ForEach(item =>
                 {
@@ -313,7 +355,7 @@ public class ShootGameEditor : SimpleEditor
                         }
                     }
 
-                    if (selectedObj.layer == LayerMask.NameToLayer("Item"))
+                    if (selectedObj.layer == LayerMask.NameToLayer("Item") || selectedObj.layer == LayerMask.NameToLayer("ShootPos"))
                     {
                         EditorUI._Instance.itemEditorUI.gameObject.SetActive(true);
                         ShootingItem item = getActiveItem(selectedObj);
@@ -322,6 +364,12 @@ public class ShootGameEditor : SimpleEditor
                         switch (type)
                         {
                             case ItemType.EnvironmentTarget:
+                                EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(true);
+                                EditorUI._Instance.itemEditorUI.CanThought.isOn = item.CanThought;
+                                EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(false);
+                                EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(false);
+                                break;
+                            case ItemType.ambientTarget:
                                 EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(true);
                                 EditorUI._Instance.itemEditorUI.CanThought.isOn = item.CanThought;
                                 EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(false);
@@ -356,21 +404,24 @@ public class ShootGameEditor : SimpleEditor
                                 EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(false);
                                 EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(false);
                                 break;
-                           
+
                         }
-                    }                    
+                    }
                 }
+            }
+            else
+            {
+                Postion = false;
+                Rotation = false;
+                Scale = false;
+                
             }
              
         }
         else
         {
-            Postion = false;
-            Rotation = false;
-            Scale = false;
             Locks = false;
-            EditorUI._Instance.areaEditorUI.gameObject.SetActive(false);
-            
+            EditorUI._Instance.areaEditorUI.gameObject.SetActive(false);           
         }
         EditorUI._Instance.runtimeToolUI.Move_Button.interactable = Postion;
         EditorUI._Instance.runtimeToolUI.Rotate_Button.interactable = Rotation;
