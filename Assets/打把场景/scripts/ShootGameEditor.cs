@@ -176,6 +176,10 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网"), getShootingAreaItemListSprit("铁丝网"), ItemType.ambientTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("铁丝网(门)"), ItemType.ambientTarget);
 
+        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(白)"), getShootingAreaItemListSprit("IDPA纸靶(白)"), ItemType.shootingPaperTargets);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黑)"), getShootingAreaItemListSprit("IDPA纸靶(黑)"), ItemType.shootingPaperTargets);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黄)"), getShootingAreaItemListSprit("IDPA纸靶(黄)"), ItemType.shootingPaperTargets);
+
         newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(白)"), getShootingAreaItemListSprit("方形钢靶(白)"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(蓝)"), getShootingAreaItemListSprit("方形钢靶(蓝)"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(红)"), getShootingAreaItemListSprit("方形钢靶(红)"), ItemType.shootingSteelTarget);
@@ -183,6 +187,12 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(白)"), getShootingAreaItemListSprit("圆形钢靶(白)"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(蓝)"), getShootingAreaItemListSprit("圆形钢靶(蓝)"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(红)"), getShootingAreaItemListSprit("圆形钢靶(红)"), ItemType.shootingSteelTarget);
+
+        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶(单)"), getShootingAreaItemListSprit("滑道移动靶(单)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶(双)"), getShootingAreaItemListSprit("滑道移动靶(双)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(单)"), getShootingAreaItemListSprit("旋转靶(单)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(双)"), getShootingAreaItemListSprit("旋转靶(双)"), ItemType.shootingMoveTarget);
+
         m_Arealist.Add(newArea);
 
         List<Object> selection;

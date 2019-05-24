@@ -228,17 +228,17 @@ public class ShootBehaviour : GenericBehaviour
                 DrawShoot(weapons[weapon].gameObject, hit.point, hit.normal, hit.collider.transform);
 
                 // Call the damage behaviour of target if exists.
-                if (hit.collider.gameObject.GetComponent<HealthManager>())
+                if (getTarget(hit.collider.gameObject))
                 {
-                    hit.collider.gameObject.GetComponent<HealthManager>().TakeDamage(hit.point, ray.direction, weapons[weapon].bulletDamage);
-                    if (hit.collider.gameObject.GetComponent<HealthManager>().Can_Through)
+                    getTarget(hit.collider.gameObject).TakeDamage(hit.point, ray.direction, weapons[weapon].bulletDamage);
+                    if (getTarget(hit.collider.gameObject).Can_Through)
                     {
                         Ray ray_ = new Ray(hit.point + ray.direction*0.01f, ray.direction);
                         RaycastHit hit_ = default(RaycastHit);
                         ShootThough(ray_, hit_, weapon);
                     }
-                }            }
-
+                }
+            }
         }
         // No target was hit.
         else
@@ -249,6 +249,14 @@ public class ShootBehaviour : GenericBehaviour
         }
     }
 
+
+    HealthManager getTarget(GameObject value)
+    {
+        if (value.GetComponent<HealthManager>())
+            return value.GetComponent<HealthManager>();
+        else
+            return getTarget(value.transform.parent.gameObject);
+    }
 
     // Manage the shot visual effects.
     private void DrawShoot(GameObject weapon, Vector3 destination, Vector3 targetNormal, Transform parent,

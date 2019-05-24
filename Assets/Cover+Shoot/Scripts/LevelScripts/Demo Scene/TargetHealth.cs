@@ -41,6 +41,7 @@ public class TargetHealth : HealthManager
 
 	public override void TakeDamage(Vector3 location, Vector3 direction, float damage)
 	{
+        Debug.Log("中弹了");
 		if (boss)
 		{
 			health -= damage;
