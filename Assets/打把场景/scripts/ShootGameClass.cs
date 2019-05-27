@@ -97,13 +97,49 @@ public struct ShootingItem
 
 }
 
+public class Vector3Data
+{
+    public float x;
+    public float y;
+    public float z;
+}
+
+public class GetDate
+{
+    public int m_number;
+    public string m_name;
+
+    public int m_areaTime;
+    public int m_areaShootNum;
+
+    public Vector3Data m_Item_pos;
+    public Vector3Data m_Item_rot;
+    public Vector3Data m_Item_sca;
+
+}
+
 
 public class ShootingArea : MonoBehaviour
 {
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
+    public GetDate getDates()
+    {
+        GetDate savedate = new GetDate();
+        savedate.m_number = m_Number;
+        savedate.m_name = Perfab.name;
+        savedate.m_areaTime = m_areaTime;
+        savedate.m_areaShootNum = m_areaShootNum;
+
+        savedate.m_Item_pos = new Vector3Data() { x = m_General.position.x, y = m_General.position.y, z = m_General.position.z };
+        savedate.m_Item_rot = new Vector3Data() { x = m_General.rotation.x, y = m_General.rotation.y, z = m_General.rotation.z };
+        savedate.m_Item_sca = new Vector3Data() { x = m_General.scale.x, y = m_General.scale.y, z = m_General.scale.z };
+
+        return savedate;
+    }
+
     public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather)
-    {       
+    {
         int num = 1;
         bool iscreat = false;
 
@@ -124,7 +160,7 @@ public class ShootingArea : MonoBehaviour
         ShootingItem newItem = new ShootingItem();
         newItem.Prefab = Instantiate(prefab);
         newItem.Prefab.name = prefab.name;
-        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0,0.05f,0);
+        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0, 0.05f, 0);
 
         GameObject AreaIteamFather = new GameObject();
         AreaIteamFather.transform.parent = ItemFather;
@@ -137,11 +173,11 @@ public class ShootingArea : MonoBehaviour
         newItem.Number = num;
         newItem.Name = newItem.Prefab.name;
         newItem.Type = ItemType.shootingPos;
-        m_ShootingItem.Add(newItem);            
+        m_ShootingItem.Add(newItem);
     }
 
 
-    public void AddItem(GameObject prefab, Sprite sprite ,Transform ItemFather,ItemType type)
+    public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather, ItemType type)
     {
         int num = 1;
         bool iscreat = false;
@@ -195,7 +231,7 @@ public class ShootingArea : MonoBehaviour
             prefabUI.name = "Area_Item_UI" + m_ShootingItem[i].Number;
             prefabUI.transform.Find("Text").gameObject.GetComponent<Text>().text = m_ShootingItem[i].Name;
             prefabUI.transform.Find("Image").gameObject.GetComponent<Image>().sprite = m_ShootingItem[i].MinImage;
-            
+
 
             prefabUI.transform.parent = perfab_father.transform;
             prefabUI.AddComponent<Button>().onClick.AddListener(delegate ()
@@ -214,10 +250,10 @@ public class ShootingArea : MonoBehaviour
             {
                 newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().interactable = true;
                 newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().onClick.AddListener(delegate () { DeleteItem(newItem); });
-            }              
+            }
             m_ShootingItem[i] = newItem;
         }
-       
+
     }
 
     void DeleteItem(ShootingItem item)
@@ -261,13 +297,13 @@ public class ShootingArea : MonoBehaviour
             m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().effectiveShooting = AreaShootNum;
         }
     }
-    public void getAreaMessage(out int areaTime,out int areaShootNum)
+    public void getAreaMessage(out int areaTime, out int areaShootNum)
     {
         areaTime = AreaTime;
         areaShootNum = AreaShootNum;
     }
 
-    public void setAreaMessage(int areaTine,int areaShootNum)
+    public void setAreaMessage(int areaTine, int areaShootNum)
     {
         AreaTime = areaTine;
         AreaShootNum = areaShootNum;
@@ -281,7 +317,7 @@ public class ShootingArea : MonoBehaviour
     {
         public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
 
-        public void Instantiate_obj(GameObject prefab, GameObject perfab_father,ItemType type)
+        public void Instantiate_obj(GameObject prefab, GameObject perfab_father, ItemType type)
         {
             for (int i = 0; i < perfab_father.transform.childCount; i++)
             {
@@ -298,11 +334,11 @@ public class ShootingArea : MonoBehaviour
                     PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefabNum = item.Number;
                     PrefabUI.GetComponent<PrefabSpawnPoint>().m_preview.sprite = item.MinImage;
                     PrefabUI.GetComponent<PrefabSpawnPoint>().OnStart();
-                }               
+                }
             });
         }
 
-        public void AddItem(GameObject prefab, Sprite sprite,ItemType type)
+        public void AddItem(GameObject prefab, Sprite sprite, ItemType type)
         {
             int num = 1;
             bool iscreat = false;
@@ -332,7 +368,7 @@ public class ShootingArea : MonoBehaviour
             newItem.Type = type;
             m_ShootingItem.Add(newItem);
         }
-        public void AddItem(GameObject prefab, Sprite sprite,bool CanThought)
+        public void AddItem(GameObject prefab, Sprite sprite, bool CanThought)
         {
             int num = 1;
             bool iscreat = false;
@@ -362,7 +398,7 @@ public class ShootingArea : MonoBehaviour
         }
     }
 
-    public void Instantiate_obj(GameObject perfab, GameObject perfabUI,Sprite perfabUI_sprite, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent, int Number)
+    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, Sprite perfabUI_sprite, GameObject perfab_father, GameObject perfabUI_father, System.Action clickevent, int Number)
     {
         Perfab = Instantiate(perfab);
         m_Number = Number;
@@ -387,7 +423,7 @@ public class ShootingArea : MonoBehaviour
         PerfabUI.transform.parent = perfabUI_father.transform;
     }
     public void Destroy_obj(GameObject Itemfather)
-    {    
+    {
         Destroy(Perfab);
         Destroy(PerfabUI);
         for (int i = 0; i < Itemfather.transform.childCount; i++)
@@ -396,7 +432,7 @@ public class ShootingArea : MonoBehaviour
             {
                 Destroy(Itemfather.transform.GetChild(i).gameObject);
                 break;
-            }                
+            }
         }
     }
 }
@@ -416,7 +452,6 @@ public struct General
         set
         {
             m_position = value;
-            Debug.Log(value);
         }
     }
     public Quaternion rotation
@@ -428,7 +463,6 @@ public struct General
         set
         {
             m_rotation = value;
-            Debug.Log(value);
         }
     }
     public Vector3 scale
@@ -436,12 +470,11 @@ public struct General
         get
         {
             return m_scale;
-           
+
         }
         set
         {
             m_scale = value;
-            Debug.Log(value);
         }
     }
 }
