@@ -405,10 +405,25 @@ namespace Battlehub.RTHandles
                 }
 
                 m_targetInverse = Quaternion.Inverse(Target.rotation);
-            }            
+            }
+
+
+            if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
+            {
+                ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
+                for (int i = 0; i < ShootGameEditor._Instance.GetEditorArea().m_ShootingItem.Count; i++)
+                {
+                    if (item.Prefab == ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[i].Prefab)
+                    {
+                        ItemListNum = i;
+                        break;
+                    }
+                }
+            }
+
             return SelectedAxis != RuntimeHandleAxis.None;
         }
-
+        int ItemListNum;
         protected override void OnDrag()
         {
             base.OnDrag();           
@@ -570,6 +585,22 @@ namespace Battlehub.RTHandles
         {
             base.OnDrop();
             m_targetRotation = Target.rotation;
+
+            if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
+            {
+                ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
+                General newGeneral = item.m_General;
+                newGeneral.rotation = Target.localRotation;
+                item.m_General = newGeneral;
+
+                ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[ItemListNum] = item;
+            }
+            if (Target != null && Target.gameObject.layer == LayerMask.NameToLayer("Area"))
+            {
+                General newGeneral = ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General;
+                newGeneral.rotation = Target.localRotation;
+                ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General = newGeneral;
+            }
         }
 
 

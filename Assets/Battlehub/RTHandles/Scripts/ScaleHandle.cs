@@ -140,10 +140,21 @@ namespace Battlehub.RTHandles
             {
                 SelectedAxis = RuntimeHandleAxis.None;
             }
-           
+            if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
+            {
+                ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
+                for (int i = 0; i < ShootGameEditor._Instance.GetEditorArea().m_ShootingItem.Count; i++)
+                {
+                    if (item.Prefab == ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[i].Prefab)
+                    {
+                        ItemListNum = i;
+                        break;
+                    }
+                }
+            }
             return result;
         }
-
+        int ItemListNum;
         protected override void OnDrag()
         {
             base.OnDrag();
@@ -236,6 +247,10 @@ namespace Battlehub.RTHandles
 
                 m_prevPoint = point;
             }
+
+            
+
+
             Debug.Log("拖动");
         }
 
@@ -249,7 +264,21 @@ namespace Battlehub.RTHandles
             {
                 Model.SetScale(m_roundedScale);
             }
+            if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
+            {
+                ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
+                General newGeneral = item.m_General;
+                newGeneral.scale = Target.localScale;
+                item.m_General = newGeneral;
 
+                ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[ItemListNum] = item;
+            }
+            if (Target != null && Target.gameObject.layer == LayerMask.NameToLayer("Area"))
+            {
+                General newGeneral = ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General;
+                newGeneral.scale = Target.localScale;
+                ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General = newGeneral;
+            }
         }
 
         protected override void DrawOverride(Camera camera)

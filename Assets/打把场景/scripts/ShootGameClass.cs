@@ -369,6 +369,9 @@ public class ShootingArea : MonoBehaviour
         Perfab.transform.parent = perfab_father.transform;
         Perfab.transform.name = "Area" + Number;
         Perfab.transform.localPosition = new Vector3(0, 0, 0);
+        m_General.position = Perfab.transform.localPosition;
+        m_General.rotation = Perfab.transform.localRotation;
+        m_General.scale = Perfab.transform.localScale;
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.Find("Text").GetComponent<Text>().text = m_Number.ToString();
         PerfabUI.transform.Find("Image").GetComponent<Image>().sprite = perfabUI_sprite;
@@ -400,6 +403,45 @@ public class ShootingArea : MonoBehaviour
 
 public struct General
 {
-    public Vector3 position;
-    public Quaternion rotation;
+    Vector3 m_position;
+    Quaternion m_rotation;
+    Vector3 m_scale;
+
+    public Vector3 position
+    {
+        get
+        {
+            return m_position;
+        }
+        set
+        {
+            m_position = value;
+            Debug.Log(value);
+        }
+    }
+    public Quaternion rotation
+    {
+        get
+        {
+            return m_rotation;
+        }
+        set
+        {
+            m_rotation = value;
+            Debug.Log(value);
+        }
+    }
+    public Vector3 scale
+    {
+        get
+        {
+            return m_scale;
+           
+        }
+        set
+        {
+            m_scale = value;
+            Debug.Log(value);
+        }
+    }
 }

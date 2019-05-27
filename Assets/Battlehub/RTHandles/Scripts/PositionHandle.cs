@@ -715,10 +715,11 @@ namespace Battlehub.RTHandles
             return  RuntimeHandleAxis.None;
         }
 
-        protected override bool OnBeginDrag()
-        {
-            
 
+        int ItemListNum;
+
+        protected override bool OnBeginDrag()
+        {           
             SelectedAxis = Hit();           
             m_currentPosition = HandlePosition;
             m_cursorPosition = HandlePosition;
@@ -771,7 +772,18 @@ namespace Battlehub.RTHandles
                 }
                 return result;
             }
-
+            if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
+            {
+                ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
+                for (int i = 0; i < ShootGameEditor._Instance.GetEditorArea().m_ShootingItem.Count; i++)
+                {
+                    if (item.Prefab == ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[i].Prefab)
+                    {
+                        ItemListNum = i;
+                        break;
+                    }
+                }
+            }
             return false;
         }
 
@@ -788,6 +800,18 @@ namespace Battlehub.RTHandles
             if (Target != null && Target.gameObject.layer == LayerMask.NameToLayer("Area"))
             {
                 GameObject.Find("ItemCount").transform.Find(Target.name).position = Target.position;
+                General newGeneral = ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General;
+                newGeneral.position = Target.localPosition;
+                ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General = newGeneral;
+            }
+            if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
+            {
+                ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
+                General newGeneral = item.m_General;
+                newGeneral.position = Target.localPosition;
+                item.m_General = newGeneral;
+
+                ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[ItemListNum] = item;
             }
 
             if (GetPointOnDragPlane(Window.Pointer, out point))

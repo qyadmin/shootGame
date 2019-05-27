@@ -669,19 +669,19 @@ public class ShootGameEditor : SimpleEditor
         return m_Area;
     }
     //获取锁定Area的ShootingArea属性结构
-    ShootingArea GetEditorArea()
+    public ShootingArea GetEditorArea()
     {
         return m_Arealist[getShootingArea(GetEditorAreaObj())[0]];
     }
 
-    ShootingArea GetActiveArea(GameObject value)
+    public ShootingArea GetActiveArea(GameObject value)
     {
         return m_Arealist[getShootingArea(value)];
     }
 
 
     //获取选中item
-    ShootingItem getActiveItem(GameObject value)
+    public ShootingItem getActiveItem(GameObject value)
     {
         ShootingItem newItem = new ShootingItem();
         GetEditorArea().m_ShootingItem.ForEach(item =>
