@@ -106,6 +106,8 @@ public class Vector3Data
 
 public class GetDate
 {
+    public ItemData[] itemDatas;
+
     public int m_number;
     public string m_name;
 
@@ -115,9 +117,20 @@ public class GetDate
     public Vector3Data m_Item_pos;
     public Vector3Data m_Item_rot;
     public Vector3Data m_Item_sca;
-
 }
+public class ItemData
+{
+    public int m_number;
+    public string m_name;
 
+    public Vector3Data m_Item_pos;
+    public Vector3Data m_Item_rot;
+    public Vector3Data m_Item_sca;
+
+    public bool CanThought;
+    public bool ProhibitShooting;
+    public bool InvalidItem;
+}
 
 public class ShootingArea : MonoBehaviour
 {
@@ -134,7 +147,22 @@ public class ShootingArea : MonoBehaviour
         savedate.m_Item_pos = new Vector3Data() { x = m_General.position.x, y = m_General.position.y, z = m_General.position.z };
         savedate.m_Item_rot = new Vector3Data() { x = m_General.rotation.x, y = m_General.rotation.y, z = m_General.rotation.z };
         savedate.m_Item_sca = new Vector3Data() { x = m_General.scale.x, y = m_General.scale.y, z = m_General.scale.z };
-
+        int i = 0;
+        ItemData[] newItemDatas = new ItemData[m_ShootingItem.Count];
+        m_ShootingItem.ForEach(item => {
+            ItemData additem = new ItemData();
+            additem.m_number = item.Number;
+            additem.m_name = item.Name;
+            additem.m_Item_pos = new Vector3Data() { x = item.m_General.position.x, y = item.m_General.position.y, z = item.m_General.position.z };
+            additem.m_Item_rot = new Vector3Data() { x = item.m_General.rotation.x, y = item.m_General.rotation.y, z = item.m_General.rotation.z };
+            additem.m_Item_sca = new Vector3Data() { x = item.m_General.scale.x, y = item.m_General.scale.y, z = item.m_General.scale.z };
+            additem.CanThought = item.CanThought;
+            additem.ProhibitShooting = item.ProhibitShooting;
+            additem.InvalidItem = item.InvalidItem;
+            newItemDatas[i] = additem;
+            i++;
+        });
+        savedate.itemDatas = newItemDatas;
         return savedate;
     }
 
