@@ -7,6 +7,8 @@ using Battlehub.RTCommon;
 using System.Linq;
 using Battlehub.RTHandles;
 using System.Text.RegularExpressions;
+using System.IO;
+using System.Xml.Serialization;
 
 [DefaultExecutionOrder(-10)]
 public class ShootGameEditor : SimpleEditor
@@ -31,7 +33,7 @@ public class ShootGameEditor : SimpleEditor
     private GameObject AreaItemCount = null;
     bool m_Lock = false;
 
-    bool Lock
+    public bool Lock
     {
         get { return m_Lock; }
         set
@@ -270,6 +272,9 @@ public class ShootGameEditor : SimpleEditor
                 newItem.MinImage = getAreaItemListSprit(newItem.MinImage.name);
                 newItem.Prefab = prefabInstance;
                 newItem.Prefab.transform.parent = AreaItemCount.transform.Find(GetEditorArea().Perfab.name);
+                newItem.m_General.position = newItem.Prefab.transform.localPosition;
+                newItem.m_General.rotation = newItem.Prefab.transform.localRotation;
+                newItem.m_General.scale = newItem.Prefab.transform.localScale;
                 GetEditorArea().m_ShootingItem.Add(newItem);
                 Debug.Log(item.Name);
             }
@@ -313,12 +318,14 @@ public class ShootGameEditor : SimpleEditor
                 m_selected[0] = selected[0] as GameObject;
             if (m_selected[0].layer == LayerMask.NameToLayer("Area"))
             {
+               
                 m_Arealist.ForEach(item =>
                 {
                     if (item.Perfab == m_selected[0])
                     {
                         item.ItemList.Instantiate_obj(EditorUI._Instance.itemListUI.Prefab, EditorUI._Instance.itemListUI.ItemListUICount.gameObject, itemListType);
                         item.Instantiate_Item(EditorUI._Instance.areaItemListUI.AreaItemListPrefabUI, EditorUI._Instance.areaItemListUI.AreaItemListUICount, Editor);
+                        
                         int areaTime;
                         int areaShootNum;
                         item.getAreaMessage(out areaTime, out areaShootNum);
@@ -572,6 +579,39 @@ public class ShootGameEditor : SimpleEditor
         });
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            Xml_ShootingItem.DeleteXmlByPath();
+            Xml_ShootingItem.CreateXml();
+            int id = 0;
+            foreach (ShootingArea sa in m_Arealist)
+            {
+                ++id;
+                Xml_ShootingItem.AddXmlData(sa, id);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            int id = 0;
+            foreach (ShootingArea sa in m_Arealist)
+            {
+                ++id;
+                ArrayList arrayList = Xml_ShootingItem.GetXmlData(id.ToString());
+
+                string s = arrayList[0].ToString();
+
+                using (StringReader reader = new StringReader(s))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(GetDate));
+                    GetDate ItemList = (GetDate)serializer.Deserialize(reader);
+                }
+            }
+        }
+    }
+
+
     //锁定Area
     void LockAcitiveArea()
     {
@@ -766,5 +806,4 @@ public class ShootGameEditor : SimpleEditor
         }
         m_Arealist.Last<ShootingArea>().m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().nextStage = null;
     }
-
 }

@@ -17,4 +17,12 @@ public class AreaListUI : MonoBehaviour
     {
         AreaPerfabUI = Resources.Load<GameObject>("UI/ShootAreaUIPerfab");
     }
+
+    public void refresh(ShootingArea area,int num)
+    {
+        Add.interactable = false;
+        Subtract.interactable = false;
+
+
+    }
 }

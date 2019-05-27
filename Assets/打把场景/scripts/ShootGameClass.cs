@@ -165,6 +165,17 @@ public class ShootingArea : MonoBehaviour
         savedate.itemDatas = newItemDatas;
         return savedate;
     }
+    public void setData(GetDate getDate)
+    {
+        m_Number = getDate.m_number;
+        Perfab.name = getDate.m_name;
+        m_areaTime = getDate.m_areaTime;
+        m_areaShootNum = getDate.m_areaShootNum;
+
+        Vector3 Pos = new Vector3() { x = getDate.m_Item_pos.x, y = getDate.m_Item_pos.y, z = getDate.m_Item_pos.z };
+        Vector3 Rot = new Vector3() { x = getDate.m_Item_rot.x, y = getDate.m_Item_rot.y, z = getDate.m_Item_rot.z };
+        Vector3 Sca = new Vector3() { x = getDate.m_Item_sca.x, y = getDate.m_Item_sca.y, z = getDate.m_Item_sca.z };
+    }
 
     public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather)
     {

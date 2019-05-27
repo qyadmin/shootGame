@@ -279,11 +279,14 @@ namespace Battlehub.RTHandles
 
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue, layerMask))
             {
-                GameObject hitGO = hitInfo.collider.gameObject;
+                GameObject hitGO = hitInfo.collider.gameObject;                
                 bool canSelect = CanSelect(hitGO);
                 if (canSelect)
                 {
                     hitGO = hitGO.GetComponentInParent<ExposeToEditor>().gameObject;
+
+                    if (ShootGameEditor._Instance.Lock && hitGO.transform.parent.name != ShootGameEditor._Instance.m_editorArea.name)
+                        return;
                     if (multiselect)
                     {
                         List<Object> selection;
