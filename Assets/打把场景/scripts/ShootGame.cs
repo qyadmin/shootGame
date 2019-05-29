@@ -89,6 +89,8 @@ public class ShootGame : MonoBehaviour
 
     void ResetPerson()
     {
+        if (ShootGameEditor._Instance.Arealist == null || ShootGameEditor._Instance.Arealist.Count == 0)
+            return;
         Quaternion rotation = ShootGameEditor._Instance.Arealist[0].m_ShootingItem[0].Prefab.transform.rotation;
         Vector3 positon = ShootGameEditor._Instance.Arealist[0].m_ShootingItem[0].Prefab.transform.position;
 

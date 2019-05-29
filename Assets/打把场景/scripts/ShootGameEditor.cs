@@ -20,12 +20,30 @@ public class ShootGameEditor : SimpleEditor
 
     public FileManger filemanger = new FileManger();
 
+    public delegate void ModulEvent();
 
+    public event ModulEvent m_editorEvent;
+
+    public event ModulEvent m_gameEvent;
     public List<ShootingArea> Arealist
     {
         get
         {
             return m_Arealist;
+        }
+    }
+
+    Modul m_modul;
+    public Modul modul
+    {
+        get { return m_modul; }
+        set
+        {
+            m_modul = value;
+            if (modul == Modul.Editor)
+                m_editorEvent();
+            if (modul == Modul.Game)
+                m_gameEvent();
         }
     }
 
@@ -76,16 +94,9 @@ public class ShootGameEditor : SimpleEditor
     }
     #endregion
 
-    protected override void Awake()
-    {
-        base.Awake();       
-        _Instance = this;
-    }
 
-    protected override void Start()
+    void UIButtonAddEvent()
     {
-        base.Start();
-
         EditorUI._Instance.areaListUI.Add.onClick.AddListener(delegate () { Add_Arealist(); });
         EditorUI._Instance.areaListUI.Subtract.onClick.AddListener(delegate () { Subtract_Arealist(Editor.Selection.gameObjects); });
         EditorUI._Instance.runtimeToolUI.Move_Button.onClick.AddListener(delegate () { SetRuntimeTool(RuntimeTool.Move); });
@@ -141,9 +152,33 @@ public class ShootGameEditor : SimpleEditor
                 }
             }
         });
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();       
+        _Instance = this;
+    }
+
+    void AreaContalMoudle()
+    {
+        Editor.Mask = (1 << LayerMask.NameToLayer("Area"));
+    }
+    void ItemContalMoudle()
+    {
+        Editor.Mask = Editor.Mask = (1 << LayerMask.NameToLayer("ShootPos") | 1 << LayerMask.NameToLayer("Item"));
+    } 
+
+    protected override void Start()
+    {
+        base.Start();
+
+        UIButtonAddEvent();
         //Editor.Selection.SelectionChanged += test;
         Editor.Selection.Selectioned += refreshUI;
-        Editor.Mask = (1 << LayerMask.NameToLayer("Area"));
+        m_editorEvent += EditorScene;
+        m_gameEvent += GameScene;
+        AreaContalMoudle();
         Set_LockItemList(Lock, null);
         Editor.Tools.LockAxes = new LockObject
         {
@@ -158,14 +193,20 @@ public class ShootGameEditor : SimpleEditor
         Xml_ShootingItem.OnStart();
         Debug.Log(Xml_ShootingItem.existXml);
         if (Xml_ShootingItem.existXml)
+        {
+            modul = Modul.Game;
             LoadGameXml();
-
-        choiceScene();
+        }
+        else
+            modul = Modul.Editor;
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        Editor.Selection.Selectioned -= refreshUI;
+        m_editorEvent -= EditorScene;
+        m_gameEvent -= GameScene;
     }
 
 
@@ -703,7 +744,7 @@ public class ShootGameEditor : SimpleEditor
 
         Editor.Tools.Current = RuntimeTool.Move;
 
-        Editor.Mask = Editor.Mask = (1 << LayerMask.NameToLayer("ShootPos") | 1 << LayerMask.NameToLayer("Item"));
+        ItemContalMoudle();
     }
 
     //解锁Area
@@ -718,7 +759,7 @@ public class ShootGameEditor : SimpleEditor
 
         Editor.Undo.Select(selection.ToArray(), EditorArea);
 
-        Editor.Mask = Editor.Mask = (1 << LayerMask.NameToLayer("Area"));
+        AreaContalMoudle(); 
 
         //Set_LockItemList(false);
 
@@ -825,7 +866,7 @@ public class ShootGameEditor : SimpleEditor
 
     private void CoPlay()
     {
-        inside.transform.Find("Top").gameObject.SetActive(true);
+        modul = Modul.Game;
         if (Lock)
             UnLockAcitiveArea();
         Editor.Undo.Select(null, null);
@@ -836,9 +877,9 @@ public class ShootGameEditor : SimpleEditor
 
     private void OnGameStart()
     {
+        modul = Modul.Game;
         isPlaying = !isPlaying;
         ShootGame._Instance.isEditor = !isPlaying;
-        inside.transform.Find("Top").gameObject.SetActive(true);
 
         if (Lock)
             UnLockAcitiveArea();
@@ -850,7 +891,7 @@ public class ShootGameEditor : SimpleEditor
     }
     private void OnStopClick()
     {
-        inside.transform.Find("Top").gameObject.SetActive(false);
+        modul = Modul.Editor;
         Editor.Selection.Enabled = true;
         Editor.Undo.Select(null, null);
         EditorUI._Instance.editorModle();
@@ -901,7 +942,7 @@ public class ShootGameEditor : SimpleEditor
     [SerializeField]
     GameObject inside, outside, editorCamera;
 
-    void choiceScene()
+    void EditorScene()
     {
         if (Static.Instance.sceneType == SceneType.InSide)
         {
@@ -917,4 +958,22 @@ public class ShootGameEditor : SimpleEditor
             editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
         }
     }
+    void GameScene()
+    {
+        if (Static.Instance.sceneType == SceneType.InSide)
+        {
+            inside.SetActive(true);
+            outside.SetActive(false);
+            //editorCamera.transform.position = GameObject.Find("insidecameraPos").transform.position;
+            inside.transform.Find("Top").gameObject.SetActive(true);
+        }
+        if (Static.Instance.sceneType == SceneType.OutSide)
+        {
+            inside.SetActive(false);
+            outside.SetActive(true);
+            //editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
+        }
+    }
+
+
 }

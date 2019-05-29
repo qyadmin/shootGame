@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections;
+using UnityEngine.AI;
 // This class is created for the example scene. There is no support for this script.
 public class InteractiveSwitch : MonoBehaviour
 {
@@ -258,18 +260,24 @@ public class InteractiveSwitch : MonoBehaviour
 
     public void Moving()
     {
-        //StartCoroutine(move_to_point());
-        Debug.Log(player.transform.position+"   "+this.transform.position);
-        if (!IsMove)
-            StartCoroutine(AutoMove(player.transform, this.transform));
+        StartCoroutine(move_to_point());
+        //Debug.Log(player.transform.position+"   "+this.transform.position);
+        //if (!IsMove)
+        //    StartCoroutine(AutoMove(player.transform, this.transform));
     }
 
     IEnumerator move_to_point()
     {
+        NavMeshAgent playerNav = player.gameObject.GetComponent<NavMeshAgent>();
         while (Vector3.Distance(player.transform.position, this.transform.position) > 0.1f)
         {
-            player.transform.position = Vector3.Lerp(player.transform.position, this.transform.position, 1 * Time.deltaTime);
-            player.transform.rotation = Quaternion.Lerp(player.transform.rotation, this.transform.rotation, 1 * Time.deltaTime);
+           
+            playerNav.SetDestination(this.transform.position);                 
+            yield return null;
+        }
+        while(Quaternion.Angle(player.transform.rotation, this.transform.rotation)>1)
+        {
+            player.transform.rotation = Quaternion.Lerp(player.transform.rotation, this.transform.rotation, 10 * Time.deltaTime);
             yield return null;
         }
     }

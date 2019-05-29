@@ -22,6 +22,12 @@ public enum SceneType
     OutSide,
     InSide
 }
+
+public enum Modul
+{ 
+    Editor,
+    Game
+}
 public struct ShootingItem
 {
     public ItemType Type;
