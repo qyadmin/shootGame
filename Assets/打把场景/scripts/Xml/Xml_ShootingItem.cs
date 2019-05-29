@@ -51,7 +51,7 @@ public class Xml_ShootingItem : MonoBehaviour
     /// <summary>
     /// 创建Xml
     /// </summary>
-    public static void CreateXml()
+    public static void CreateXml(string path)
     {
         if (!File.Exists(path))
         {
@@ -69,7 +69,7 @@ public class Xml_ShootingItem : MonoBehaviour
     /// </summary>
     /// <param name="sItem"></param>
     /// <param name="id"></param>
-    public static void AddXmlData(ShootingArea sa, int id)
+    public static void AddXmlData(ShootingArea sa, int id,string path)
     {
         if (File.Exists(path))
         {
@@ -102,7 +102,7 @@ public class Xml_ShootingItem : MonoBehaviour
     }
 
 
-    public static void addSceneid(string sceneName)
+    public static void addSceneid(string sceneName,string path)
     {
         if (File.Exists(path))
         {
@@ -149,7 +149,7 @@ public class Xml_ShootingItem : MonoBehaviour
     /// <summary>
     /// 删除文件
     /// </summary>
-    public static void DeleteXmlByPath()
+    public static void DeleteXmlByPath(string path)
     {
         if (File.Exists(path))
         {

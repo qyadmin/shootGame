@@ -643,17 +643,6 @@ public class ShootGameEditor : SimpleEditor
 
     IEnumerator Save()
     {
-        Xml_ShootingItem.DeleteXmlByPath();
-        Xml_ShootingItem.CreateXml();
-        int id = 0;
-        foreach (ShootingArea sa in m_Arealist)
-        {
-            yield return new WaitForSeconds(0.5f);
-            ++id;
-            Xml_ShootingItem.AddXmlData(sa, id);
-        }
-        Xml_ShootingItem.addSceneid(Static.Instance.sceneType.ToString());
-
         string filePath = OpenDialog.SaveDialog("文件夹|");
         if (filePath != "")
         {
@@ -665,11 +654,18 @@ public class ShootGameEditor : SimpleEditor
             {
                 filemanger.Compiling(filePath);
                 OpenDialog.ShowDialog("发布成功！", "发布成功");
+                Xml_ShootingItem.DeleteXmlByPath(filePath+ "/shooting_Date/+ ShootingItem + \".xml");
+                Xml_ShootingItem.CreateXml(filePath + "/shooting_Date/+ ShootingItem + \".xml");
+                int id = 0;
+                foreach (ShootingArea sa in m_Arealist)
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    ++id;
+                    Xml_ShootingItem.AddXmlData(sa, id, filePath + "/shooting_Date/+ ShootingItem + \".xml");
+                }
+                Xml_ShootingItem.addSceneid(Static.Instance.sceneType.ToString(), filePath + "/shooting_Date/+ ShootingItem + \".xml");
             }
         }
-        else
-            FileManger.Delete();
-
     }
 
 
