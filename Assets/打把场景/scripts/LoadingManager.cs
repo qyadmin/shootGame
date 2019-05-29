@@ -26,7 +26,12 @@ public class LoadingManager : MonoBehaviour
     AsyncOperation asyn;
     IEnumerator BeginLoading()
     {
-        asyn = SceneManager.LoadSceneAsync("TimeTrial");
+        Xml_ShootingItem.OnStart();
+        Debug.Log(Xml_ShootingItem.existXml);
+        if (Xml_ShootingItem.existXml)
+            asyn = SceneManager.LoadSceneAsync("TimeTrial");
+        else
+            asyn = SceneManager.LoadSceneAsync("ChoiceScene");
         yield return asyn;
     }
 }

@@ -18,9 +18,14 @@ public class EditorUI : MonoBehaviour
     public AreaEditorUI areaEditorUI;
 
     public ItemEditorUI itemEditorUI;
+
+    public SettingUIManager settingUIManager;
+
+    public WorningUI worningUI;
     private void Awake()
     {
         _Instance = this;
+        worningUI.gameObject.SetActive(false);
     }
 
     public void editorModle()
@@ -30,6 +35,8 @@ public class EditorUI : MonoBehaviour
         itemListUI.gameObject.SetActive(true);
         areaItemListUI.gameObject.SetActive(true);
         areaEditorUI.gameObject.SetActive(true);
+        runtimeToolUI.Save_Button.interactable = true;
+        settingUIManager.gameObject.SetActive(false);
     }
 
     public void playingModle()
@@ -39,5 +46,18 @@ public class EditorUI : MonoBehaviour
         itemListUI.gameObject.SetActive(false);
         areaItemListUI.gameObject.SetActive(false);
         areaEditorUI.gameObject.SetActive(false);
+        runtimeToolUI.Save_Button.interactable = false;
+        settingUIManager.gameObject.SetActive(false);
+    }
+
+    public void GameModle()
+    {
+        runtimeToolUI.toolsGroup.gameObject.SetActive(false);
+        areaListUI.gameObject.SetActive(false);
+        itemListUI.gameObject.SetActive(false);
+        areaItemListUI.gameObject.SetActive(false);
+        areaEditorUI.gameObject.SetActive(false);
+        runtimeToolUI.gameObject.SetActive(false);
+        settingUIManager.gameObject.SetActive(true);
     }
 }

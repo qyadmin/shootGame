@@ -110,7 +110,7 @@ public class TimeTrialManager : MonoBehaviour
 			currentTimeLabel.text = bestTimeLabel.text = bestTime.ToString("n2");
 			PlayerPrefs.SetFloat("bestTime", bestTime);
 		}
-        SettingUIManager._Instance.CanRestart();
+        EditorUI._Instance.settingUIManager.CanRestart();
 	}
 
 

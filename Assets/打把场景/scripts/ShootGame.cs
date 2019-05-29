@@ -47,6 +47,7 @@ public class ShootGame : MonoBehaviour
         else
         {
             Player.SetActive(true);
+            ResetPerson();
             ThirdCam.SetActive(true);
             EditorCam.SetActive(false);
             ScreenHUD.SetActive(true);
@@ -68,6 +69,7 @@ public class ShootGame : MonoBehaviour
     private void StartGame()
     {
         timeTrial = true;
+       
         Player.GetComponent<CapsuleCollider>().enabled = true;    
     }
 
@@ -80,13 +82,19 @@ public class ShootGame : MonoBehaviour
     }
     void OnStart()
     {
+        StopCoroutine(delate());
         StartCoroutine(delate());
     }
 
 
     void ResetPerson()
     {
-        Player.transform.position = new Vector3(0, 0, 25);
+        Quaternion rotation = ShootGameEditor._Instance.Arealist[0].m_ShootingItem[0].Prefab.transform.rotation;
+        Vector3 positon = ShootGameEditor._Instance.Arealist[0].m_ShootingItem[0].Prefab.transform.position;
+
+        Player.transform.rotation = rotation;
+        Player.transform.position = positon;
+        Player.transform.Translate(Vector3.forward * -10);
     }
 
     void ResetWeapon()
@@ -104,6 +112,7 @@ public class ShootGame : MonoBehaviour
         ShootGameEditor._Instance.Arealist.ForEach(item =>
         {
             item.m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().Isnow = false;
+            item.m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().IsMove = false;
         });
     }
 }

@@ -408,19 +408,6 @@ namespace Battlehub.RTHandles
             }
 
 
-            if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
-            {
-                ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
-                for (int i = 0; i < ShootGameEditor._Instance.GetEditorArea().m_ShootingItem.Count; i++)
-                {
-                    if (item.Prefab == ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[i].Prefab)
-                    {
-                        ItemListNum = i;
-                        break;
-                    }
-                }
-            }
-
             return SelectedAxis != RuntimeHandleAxis.None;
         }
         int ItemListNum;
@@ -589,8 +576,18 @@ namespace Battlehub.RTHandles
             if (Target != null && (Target.gameObject.layer == LayerMask.NameToLayer("ShootPos") || Target.gameObject.layer == LayerMask.NameToLayer("Item")))
             {
                 ShootingItem item = ShootGameEditor._Instance.getActiveItem(Target.gameObject);
+
+                for (int i = 0; i < ShootGameEditor._Instance.GetEditorArea().m_ShootingItem.Count; i++)
+                {
+                    if (item.Prefab == ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[i].Prefab)
+                    {
+                        ItemListNum = i;
+                        break;
+                    }
+                }
+
                 General newGeneral = item.m_General;
-                newGeneral.rotation = Target.localRotation;
+                newGeneral.rotation = Target.eulerAngles;
                 item.m_General = newGeneral;
 
                 ShootGameEditor._Instance.GetEditorArea().m_ShootingItem[ItemListNum] = item;
@@ -598,7 +595,7 @@ namespace Battlehub.RTHandles
             if (Target != null && Target.gameObject.layer == LayerMask.NameToLayer("Area"))
             {
                 General newGeneral = ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General;
-                newGeneral.rotation = Target.localRotation;
+                newGeneral.rotation = Target.eulerAngles;
                 ShootGameEditor._Instance.GetActiveArea(Target.gameObject).m_General = newGeneral;
             }
         }

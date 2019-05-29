@@ -188,7 +188,9 @@ namespace Battlehub.RTHandles
                 {
                     //m_prefabInstance.transform.position = point;
                     m_prefabInstance.transform.rotation = rotation;
-                    RaycastHit hit = Physics.RaycastAll(m_scene.Pointer).Where(h => !m_prefabInstanceTransforms.Contains(h.transform)).FirstOrDefault();
+                    LayerMask layerMask = LayerMask.NameToLayer("Area");
+                    
+                    RaycastHit hit = Physics.RaycastAll(m_scene.Pointer, float.MaxValue,1 << 10).Where(h => !m_prefabInstanceTransforms.Contains(h.transform)).FirstOrDefault();
 
                     if (hit.transform != null && hit.transform.gameObject == ShootGameEditor._Instance.m_editorArea)
                     {

@@ -65,6 +65,14 @@ public class InteractiveSwitch : MonoBehaviour
     private void Awake()
     {
         ShootGame._Instance.m_SwitchAwake += OnAwake;
+        ShootGame._Instance.m_SwitchStop += OnStop;
+    }
+
+    private void OnDestroy()
+    {
+        ShootGame._Instance.m_SwitchAwake -= OnAwake;
+        ShootGame._Instance.m_SwitchStop -= OnStop;
+        timer.LevelTimerEvent -= mandatory_nextStage;
     }
 
     private void OnStart()
@@ -78,6 +86,11 @@ public class InteractiveSwitch : MonoBehaviour
         }
             
     }
+    void OnStop()
+    {
+        ToggleState(false, true);
+    }
+
 
     void OnAwake()
     {
@@ -262,7 +275,7 @@ public class InteractiveSwitch : MonoBehaviour
     }
     public float moveSpeed = 10f;//角色前进速度
     private CharacterController cc;//角色控制器
-    private bool IsMove = false;//是否正在寻路过程
+    public bool IsMove = false;//是否正在寻路过程
 
     IEnumerator AutoMove(Transform starPoint, Transform targetPoint)
     {
@@ -302,14 +315,18 @@ public class InteractiveSwitch : MonoBehaviour
             //cc.SimpleMove(transform.forward * moveSpeed * Time.deltaTime);
             //player.transform.position = Vector3.Lerp(player.transform.position, this.transform.position, 1 * Time.deltaTime);
             //player.transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
-            player.transform.position = Vector3.Lerp(player.transform.position, target, 20 * Time.deltaTime);
+            
             if (i > ways.Length * 0.8f)
             {
-                player.transform.rotation = Quaternion.Lerp(player.transform.rotation, targetPoint.rotation, 5 * Time.deltaTime);
-
-            }                
+                player.transform.rotation = Quaternion.Lerp(player.transform.rotation, targetPoint.rotation, 10 * Time.deltaTime);
+                player.transform.position = Vector3.Lerp(player.transform.position, targetPoint.position, 10 * Time.deltaTime);
+            }
             else
+            {
                 player.transform.rotation = Quaternion.Lerp(player.transform.rotation, getlookatRoation(target), 5 * Time.deltaTime);
+                player.transform.position = Vector3.Lerp(player.transform.position, target, 20 * Time.deltaTime);
+            }
+                
             if (Vector3.Distance(player.transform.position, target) < 0.1f)
             {
                
@@ -319,7 +336,7 @@ public class InteractiveSwitch : MonoBehaviour
                     break;
                 target = new Vector3(ways[i].x, player.transform.position.y, ways[i].z);               
                 //player.transform.LookAt(target);
-                // player.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target), 0.3f);
+                //player.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target), 0.3f);
             }
             
         }

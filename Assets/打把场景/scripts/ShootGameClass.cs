@@ -104,6 +104,7 @@ public class Vector3Data
     public float z;
 }
 
+
 public class GetDate
 {
     public ItemData[] itemDatas;
@@ -141,8 +142,8 @@ public class ShootingArea : MonoBehaviour
         GetDate savedate = new GetDate();
         savedate.m_number = m_Number;
         savedate.m_name = Perfab.name;
-        savedate.m_areaTime = m_areaTime;
-        savedate.m_areaShootNum = m_areaShootNum;
+        savedate.m_areaTime = AreaTime;
+        savedate.m_areaShootNum = AreaShootNum;
 
         savedate.m_Item_pos = new Vector3Data() { x = m_General.position.x, y = m_General.position.y, z = m_General.position.z };
         savedate.m_Item_rot = new Vector3Data() { x = m_General.rotation.x, y = m_General.rotation.y, z = m_General.rotation.z };
@@ -154,27 +155,63 @@ public class ShootingArea : MonoBehaviour
             additem.m_number = item.Number;
             additem.m_name = item.Name;
             additem.m_Item_pos = new Vector3Data() { x = item.m_General.position.x, y = item.m_General.position.y, z = item.m_General.position.z };
-            additem.m_Item_rot = new Vector3Data() { x = item.m_General.rotation.x, y = item.m_General.rotation.y, z = item.m_General.rotation.z };
+            additem.m_Item_rot = new Vector3Data() { x = item.m_General.rotation.x, y = item.m_General.rotation.y, z = item.m_General.rotation.z};
             additem.m_Item_sca = new Vector3Data() { x = item.m_General.scale.x, y = item.m_General.scale.y, z = item.m_General.scale.z };
             additem.CanThought = item.CanThought;
             additem.ProhibitShooting = item.ProhibitShooting;
             additem.InvalidItem = item.InvalidItem;
             newItemDatas[i] = additem;
+            
             i++;
         });
         savedate.itemDatas = newItemDatas;
         return savedate;
     }
     public void setData(GetDate getDate)
-    {
-        m_Number = getDate.m_number;
-        Perfab.name = getDate.m_name;
-        m_areaTime = getDate.m_areaTime;
-        m_areaShootNum = getDate.m_areaShootNum;
+    {               
+        GameObject ItemParent = new GameObject();
+        ItemParent.transform.position = Instantiate_obj(Resources.Load<GameObject>("ShootingArea")
+                                , GameObject.Find("AreaCount")
+                                , getDate
+                                ).transform.position;
+        ItemParent.transform.parent = GameObject.Find("ItemCount").transform;
+        ItemParent.transform.name = getDate.m_name;
+        Instantiate_Itemobj(ItemParent.transform, getDate.itemDatas);
 
-        Vector3 Pos = new Vector3() { x = getDate.m_Item_pos.x, y = getDate.m_Item_pos.y, z = getDate.m_Item_pos.z };
-        Vector3 Rot = new Vector3() { x = getDate.m_Item_rot.x, y = getDate.m_Item_rot.y, z = getDate.m_Item_rot.z };
-        Vector3 Sca = new Vector3() { x = getDate.m_Item_sca.x, y = getDate.m_Item_sca.y, z = getDate.m_Item_sca.z };
+
+
+        AreaShootNum = getDate.m_areaShootNum;
+        AreaTime = getDate.m_areaTime;
+
+       
+    }
+
+    public void Instantiate_Itemobj(Transform perfab_father,ItemData[] itemDatas)
+    {
+        int a = 0;
+        foreach (ItemData i in itemDatas)
+        {
+            Vector3 Pos = new Vector3() { x = i.m_Item_pos.x, y = i.m_Item_pos.y, z = i.m_Item_pos.z };
+            Vector3 Rot = new Vector3() { x = i.m_Item_rot.x, y = i.m_Item_rot.y, z = i.m_Item_rot.z};
+            Vector3 Sca = new Vector3() { x = i.m_Item_sca.x, y = i.m_Item_sca.y, z = i.m_Item_sca.z };
+
+            ShootingItem Item = new ShootingItem();
+            Item.Prefab = Instantiate(Resources.Load<GameObject>(i.m_name));
+            Item.Prefab.transform.parent = perfab_father;
+            Item.Prefab.transform.localPosition = Pos;
+            Item.Prefab.transform.eulerAngles = Rot;
+            Item.Prefab.transform.localScale = Sca;            
+            Item.Number = i.m_number;
+            Item.Name = i.m_name;
+            Item.Prefab.transform.name = Item.Name;
+            Item.CanThought = i.CanThought;
+            Item.ProhibitShooting = i.ProhibitShooting;
+            Item.InvalidItem = i.InvalidItem;
+            m_ShootingItem.Add(Item);
+            if (a == 0)
+                m_ShootPos = Item;
+            a++;
+        }       
     }
 
     public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather)
@@ -199,7 +236,10 @@ public class ShootingArea : MonoBehaviour
         ShootingItem newItem = new ShootingItem();
         newItem.Prefab = Instantiate(prefab);
         newItem.Prefab.name = prefab.name;
-        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0, 0.05f, 0);
+        newItem.Prefab.transform.position = Perfab.transform.position + new Vector3(0, 0.05f, 3);
+        newItem.m_General.position = newItem.Prefab.transform.localPosition;
+        newItem.m_General.rotation = newItem.Prefab.transform.eulerAngles;
+        newItem.m_General.scale = newItem.Prefab.transform.localScale;
 
         GameObject AreaIteamFather = new GameObject();
         AreaIteamFather.transform.parent = ItemFather;
@@ -445,7 +485,7 @@ public class ShootingArea : MonoBehaviour
         Perfab.transform.name = "Area" + Number;
         Perfab.transform.localPosition = new Vector3(0, 0, 0);
         m_General.position = Perfab.transform.localPosition;
-        m_General.rotation = Perfab.transform.localRotation;
+        m_General.rotation = Perfab.transform.eulerAngles;
         m_General.scale = Perfab.transform.localScale;
         PerfabUI = Instantiate(perfabUI);
         PerfabUI.transform.Find("Text").GetComponent<Text>().text = m_Number.ToString();
@@ -454,12 +494,24 @@ public class ShootingArea : MonoBehaviour
         PerfabUI.AddComponent<Button>().onClick.AddListener(delegate () { clickevent(); });
     }
 
-    public void Instantiate_obj(GameObject perfab, GameObject perfabUI, GameObject perfab_father, GameObject perfabUI_father)
+    public GameObject Instantiate_obj(GameObject perfab, GameObject perfab_father, GetDate getDate)
     {
+        m_Number = getDate.m_number;
+
+        m_areaTime = getDate.m_areaTime;
+        m_areaShootNum = getDate.m_areaShootNum;
+
+        Vector3 Pos = new Vector3() { x = getDate.m_Item_pos.x, y = getDate.m_Item_pos.y, z = getDate.m_Item_pos.z };
+        Vector3 Rot = new Vector3() { x = getDate.m_Item_rot.x, y = getDate.m_Item_rot.y, z = getDate.m_Item_rot.z };
+        Vector3 Sca = new Vector3() { x = getDate.m_Item_sca.x, y = getDate.m_Item_sca.y, z = getDate.m_Item_sca.z };
+
         Perfab = Instantiate(perfab);
         Perfab.transform.parent = perfab_father.transform;
-        PerfabUI = Instantiate(perfabUI);
-        PerfabUI.transform.parent = perfabUI_father.transform;
+        Perfab.transform.localPosition = Pos;
+        Perfab.transform.eulerAngles = Rot;
+        Perfab.transform.localScale = Sca;
+        perfab.name = getDate.m_name;
+        return Perfab;
     }
     public void Destroy_obj(GameObject Itemfather)
     {
@@ -479,7 +531,7 @@ public class ShootingArea : MonoBehaviour
 public struct General
 {
     Vector3 m_position;
-    Quaternion m_rotation;
+    Vector3 m_rotation;
     Vector3 m_scale;
 
     public Vector3 position
@@ -493,7 +545,7 @@ public struct General
             m_position = value;
         }
     }
-    public Quaternion rotation
+    public Vector3 rotation
     {
         get
         {

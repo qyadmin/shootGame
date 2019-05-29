@@ -6,21 +6,28 @@ using UnityEngine.UI;
 
 public class SettingUIManager : MonoBehaviour
 {
-    public static SettingUIManager _Instance;
-
     [SerializeField]
     Button Restart, Exit;
 
     // Start is called before the first frame update
     void Awake()
     {
-        _Instance = this;
         Restart.onClick.AddListener(delegate() {
             Restart_Application();
         });
 
+
         Exit.onClick.AddListener(delegate () {
-            Exit_Application();
+            EditorUI._Instance.worningUI.Type = worningType.handle;
+            EditorUI._Instance.worningUI.tital.text = "返回上一页";
+            EditorUI._Instance.worningUI.msg.text = "确认返回到选择场景界面么，取消则返回";
+            EditorUI._Instance.worningUI.cancel.onClick.AddListener(delegate () {
+                EditorUI._Instance.worningUI.gameObject.SetActive(false);
+            });
+            EditorUI._Instance.worningUI.determine.onClick.AddListener(delegate () {
+                EditorUI._Instance.worningUI.gameObject.SetActive(false);
+            });
+            EditorUI._Instance.worningUI.gameObject.SetActive(true);
         });
     }
 

@@ -22,11 +22,30 @@ public class Xml_ShootingItem : MonoBehaviour
     /// <summary>
     /// 文件名
     /// </summary>
-    private static string ShootingItem = "ShootingItem";
+    private static string ShootingItem = "/ShootingItem";
     /// <summary>
     /// 文件路径
     /// </summary>
-    private static string path = Application.dataPath + "/Xml/" + ShootingItem + ".xml";
+
+    public static string path =
+#if UNITY_ANDROID   //安卓  
+    "jar:file://" + Application.dataPath + "!/assets/";  
+#elif UNITY_IPHONE  //iPhone  
+    Application.dataPath + "/Raw/";  
+#elif UNITY_STANDALONE_WIN || UNITY_EDITOR  //windows平台和web平台  
+    Application.dataPath + ShootingItem + ".xml";
+#else
+        string.Empty;  
+#endif
+    public static bool existXml = false;
+
+    public static void OnStart()
+    {
+        if (File.Exists(path))
+            existXml = true;
+        else
+            existXml = false;
+    }
 
 
     /// <summary>
@@ -82,6 +101,25 @@ public class Xml_ShootingItem : MonoBehaviour
         }
     }
 
+
+    public static void addSceneid(string sceneName)
+    {
+        if (File.Exists(path))
+        {
+
+            XmlDocument xml = new XmlDocument();
+            xml.Load(path);
+            XmlNode root = xml.SelectSingleNode("ShootingItem");
+
+            XmlElement xelSenceName = xml.CreateElement("scene");
+            xelSenceName.InnerText = sceneName;
+
+            root.AppendChild(xelSenceName);
+            xml.AppendChild(root);
+            //最后保存文件
+            xml.Save(path);
+        }
+    }
 
     /// <summary>
     /// 删除单个条目数据
@@ -139,5 +177,15 @@ public class Xml_ShootingItem : MonoBehaviour
             Debug.Log("xmlNodeList.Item(i).InnerText" + xmlNodeList.Item(i).InnerText);
         }
         return al;
+    }
+
+    public static string GetSceneName()
+    {
+        XmlDocument doc = new XmlDocument();
+        doc.Load(path);
+        XmlElement xe = doc.DocumentElement;
+        XmlElement selectXe = (XmlElement)xe.SelectSingleNode("/ShootingItem/scene");
+        XmlNodeList xmlNodeList = selectXe.ChildNodes;
+        return xmlNodeList.Item(0).InnerText;
     }
 }
