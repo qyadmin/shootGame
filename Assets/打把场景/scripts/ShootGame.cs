@@ -89,7 +89,7 @@ public class ShootGame : MonoBehaviour
     }
     void OnStart()
     {
-        //Timer.Instance.CancelTimer(timerid);
+        Timer.Instance.CancelTimer(timerid);
         timerid = Timer.Instance.AddDeltaTimer(5, 1, 5, StartGame);
     }
 
