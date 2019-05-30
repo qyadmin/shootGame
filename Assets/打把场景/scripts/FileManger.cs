@@ -123,10 +123,10 @@ public class FileManger  {
         string Launchxmlpath = Application.dataPath + "/Simple" + "/shooting_Data/";
         string Launchpath = Application.dataPath  + "/Simple/";
 
-        CopyDirectory(new DirectoryInfo(xmlpath), new DirectoryInfo(Launchxmlpath), false);
+        //CopyDirectory(new DirectoryInfo(xmlpath), new DirectoryInfo(Launchxmlpath), false);
         CopyDirectory(new DirectoryInfo(Launchpath),new DirectoryInfo(pFileName),true);
-        File.Delete(xmlpath);
-        File.Delete(Launchxmlpath + "/ShootingItem.xml");
+        //File.Delete(xmlpath);
+        //File.Delete(Launchxmlpath + "/ShootingItem.xml");
 
         //DirectoryInfo di = new DirectoryInfo(xmlpath);
         //DirectoryInfo dis = new DirectoryInfo(Launchxmlpath+"/ShootingItem.xml");
