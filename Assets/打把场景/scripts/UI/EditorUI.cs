@@ -34,7 +34,7 @@ public class EditorUI : MonoBehaviour
         areaListUI.gameObject.SetActive(true);
         itemListUI.gameObject.SetActive(true);
         areaItemListUI.gameObject.SetActive(true);
-        areaEditorUI.gameObject.SetActive(true);
+        areaEditorUI.gameObject.SetActive(false);
         runtimeToolUI.Save_Button.interactable = true;
         settingUIManager.gameObject.SetActive(false);
     }

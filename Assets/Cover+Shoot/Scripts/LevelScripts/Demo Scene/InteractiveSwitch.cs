@@ -74,6 +74,7 @@ public class InteractiveSwitch : MonoBehaviour
     {
         ShootGame._Instance.m_SwitchAwake -= OnAwake;
         ShootGame._Instance.m_SwitchStop -= OnStop;
+        if(timer && timer.LevelTimerEvent != null)
         timer.LevelTimerEvent -= mandatory_nextStage;
     }
 
@@ -91,6 +92,12 @@ public class InteractiveSwitch : MonoBehaviour
     void OnStop()
     {
         ToggleState(false, true);
+        timer.EndLevelTimer();
+        StopAllCoroutines();
+        foreach (TargetHealth target in targets)
+        {
+                target.End();
+        }
     }
 
 
@@ -268,15 +275,17 @@ public class InteractiveSwitch : MonoBehaviour
 
     IEnumerator move_to_point()
     {
+        
         NavMeshAgent playerNav = player.gameObject.GetComponent<NavMeshAgent>();
         while (Vector3.Distance(player.transform.position, this.transform.position) > 0.1f)
         {
-           
+            
             playerNav.SetDestination(this.transform.position);                 
             yield return null;
         }
-        while(Quaternion.Angle(player.transform.rotation, this.transform.rotation)>1)
-        {
+       
+        while (Quaternion.Angle(player.transform.rotation, this.transform.rotation)>1)
+        {         
             player.transform.rotation = Quaternion.Lerp(player.transform.rotation, this.transform.rotation, 10 * Time.deltaTime);
             yield return null;
         }

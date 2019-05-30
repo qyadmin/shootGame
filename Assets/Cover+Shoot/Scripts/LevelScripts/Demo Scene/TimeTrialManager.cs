@@ -19,7 +19,7 @@ public class TimeTrialManager : MonoBehaviour
 
     public delegate void timeEvent();
 
-    public event timeEvent LevelTimerEvent;
+    public timeEvent LevelTimerEvent;
 
     public bool IsRunning { get { return isTimerRunning; } }
 

@@ -249,6 +249,9 @@ public class ShootGameEditor : SimpleEditor
 
         newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网"), getShootingAreaItemListSprit("铁丝网"), ItemType.ambientTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("铁丝网(门)"), ItemType.ambientTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏"), getShootingAreaItemListSprit("木围栏"), ItemType.ambientTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(门)"), getShootingAreaItemListSprit("木围栏(门)"), ItemType.ambientTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(窗)"), getShootingAreaItemListSprit("木围栏(窗)"), ItemType.ambientTarget);
 
         newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(白)"), getShootingAreaItemListSprit("IDPA纸靶(白)"), ItemType.shootingPaperTargets);
         newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黑)"), getShootingAreaItemListSprit("IDPA纸靶(黑)"), ItemType.shootingPaperTargets);
@@ -277,6 +280,10 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黄)"), getShootingAreaItemListSprit("上下移动靶(黄)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黑)"), getShootingAreaItemListSprit("上下移动靶(黑)"), ItemType.shootingMoveTarget);
 
+        newArea.ItemList.AddItem(getShootingAreaItemList("西瓜"), getShootingAreaItemListSprit("西瓜"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("气球"), getShootingAreaItemListSprit("气球"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("油桶"), getShootingAreaItemListSprit("油桶"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("轮胎"), getShootingAreaItemListSprit("轮胎"), ItemType.EnvironmentTarget);
         m_Arealist.Add(newArea);
 
         List<Object> selection;
@@ -937,7 +944,7 @@ public class ShootGameEditor : SimpleEditor
 
 
     [SerializeField]
-    GameObject inside, outside, editorCamera;
+    GameObject inside, outside, editorCamera,Ground;
 
     void EditorScene()
     {
@@ -954,6 +961,7 @@ public class ShootGameEditor : SimpleEditor
             outside.SetActive(true);
             editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
         }
+        Ground.gameObject.SetActive(false);
     }
     void GameScene()
     {
@@ -970,6 +978,7 @@ public class ShootGameEditor : SimpleEditor
             outside.SetActive(true);
             //editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
         }
+        Ground.gameObject.SetActive(true);
     }
 
 

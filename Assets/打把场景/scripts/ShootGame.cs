@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using Utils;
 public class ShootGame : MonoBehaviour
 {
 
@@ -56,6 +56,12 @@ public class ShootGame : MonoBehaviour
     }
 
 
+    private void Update()
+    {
+        Timer.Instance.DoUpdate();
+    }
+
+
     public void ViewStop()
     {
         timeTrial = false;
@@ -69,11 +75,12 @@ public class ShootGame : MonoBehaviour
     private void StartGame()
     {
         timeTrial = true;
-       
-        Player.GetComponent<CapsuleCollider>().enabled = true;    
+
+        Player.GetComponent<CapsuleCollider>().enabled = true;
+
     }
 
-
+    int timerid = -1;
 
     IEnumerator delate()
     {
@@ -82,8 +89,8 @@ public class ShootGame : MonoBehaviour
     }
     void OnStart()
     {
-        StopCoroutine(delate());
-        StartCoroutine(delate());
+        //Timer.Instance.CancelTimer(timerid);
+        timerid = Timer.Instance.AddDeltaTimer(5, 1, 5, StartGame);
     }
 
 
