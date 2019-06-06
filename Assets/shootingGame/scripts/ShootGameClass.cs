@@ -24,7 +24,7 @@ public enum SceneType
 }
 
 public enum Modul
-{ 
+{
     Editor,
     Game
 }
@@ -42,6 +42,49 @@ public struct ShootingItem
     public bool ProhibitShooting;
     public bool InvalidItem;
 
+    private bool m_isLink;
+
+    public bool CanLink;
+
+    private int m_linageItemNum;
+
+    public int LinageItemNum
+    {
+        get
+        {
+            return m_linageItemNum;
+        }
+        set
+        {
+            m_linageItemNum = value;
+        }
+    }
+
+    private Transform m_linkageItem;
+    public Transform LinkageItem
+    {
+        get
+        {
+            return m_linkageItem;
+        }
+        set
+        {
+            m_linkageItem = value;
+            if (Prefab.GetComponent<HealthManager>())
+                Prefab.GetComponent<HealthManager>().LinkObj = value.GetComponent<HealthManager>();
+        }
+    }
+    public bool IsLink
+    {
+        get
+        {
+            return m_isLink;
+        }
+        set
+        {
+            m_isLink = value;
+        }
+    }
     public GameObject Prefab
     {
         get
@@ -129,10 +172,13 @@ public class ItemData
 {
     public int m_number;
     public string m_name;
+    public string m_type;
 
     public Vector3Data m_Item_pos;
     public Vector3Data m_Item_rot;
     public Vector3Data m_Item_sca;
+
+    public int LinkItemNum;
 
     public bool CanThought;
     public bool ProhibitShooting;
@@ -142,7 +188,9 @@ public class ItemData
 public class ShootingArea : MonoBehaviour
 {
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
+    public delegate void Areadelegate();
 
+    public event Areadelegate deleteItem;
     public GetDate getDates()
     {
         GetDate savedate = new GetDate();
@@ -156,25 +204,28 @@ public class ShootingArea : MonoBehaviour
         savedate.m_Item_sca = new Vector3Data() { x = m_General.scale.x, y = m_General.scale.y, z = m_General.scale.z };
         int i = 0;
         ItemData[] newItemDatas = new ItemData[m_ShootingItem.Count];
-        m_ShootingItem.ForEach(item => {
+        m_ShootingItem.ForEach(item =>
+        {
             ItemData additem = new ItemData();
             additem.m_number = item.Number;
             additem.m_name = item.Name;
+            additem.m_type = item.Type.ToString();
             additem.m_Item_pos = new Vector3Data() { x = item.m_General.position.x, y = item.m_General.position.y, z = item.m_General.position.z };
-            additem.m_Item_rot = new Vector3Data() { x = item.m_General.rotation.x, y = item.m_General.rotation.y, z = item.m_General.rotation.z};
+            additem.m_Item_rot = new Vector3Data() { x = item.m_General.rotation.x, y = item.m_General.rotation.y, z = item.m_General.rotation.z };
             additem.m_Item_sca = new Vector3Data() { x = item.m_General.scale.x, y = item.m_General.scale.y, z = item.m_General.scale.z };
             additem.CanThought = item.CanThought;
             additem.ProhibitShooting = item.ProhibitShooting;
             additem.InvalidItem = item.InvalidItem;
+            additem.LinkItemNum = item.LinageItemNum;
             newItemDatas[i] = additem;
-            
+
             i++;
         });
         savedate.itemDatas = newItemDatas;
         return savedate;
     }
     public void setData(GetDate getDate)
-    {               
+    {
         GameObject ItemParent = new GameObject();
         ItemParent.transform.position = Instantiate_obj(Resources.Load<GameObject>("ShootingArea")
                                 , GameObject.Find("AreaCount")
@@ -184,21 +235,38 @@ public class ShootingArea : MonoBehaviour
         ItemParent.transform.name = getDate.m_name;
         Instantiate_Itemobj(ItemParent.transform, getDate.itemDatas);
 
+        List<ShootingItem> linklist = new List<ShootingItem>();
+        m_ShootingItem.ForEach(item =>
+        {
+            if (item.Type == ItemType.shootingMoveTarget)
+            {
+                ShootingItem newitem = item;
+                linklist.Add(newitem);
+            }
 
+        });
+
+        for (int i = 0; i < m_ShootingItem.Count; i++)
+        {
+            if (m_ShootingItem[i].LinageItemNum != 0)
+            {
+                ShootingItem newitem = m_ShootingItem[i];
+                newitem.LinkageItem = linklist[newitem.LinageItemNum - 1].Prefab.transform;
+                m_ShootingItem[i] = newitem;
+            }
+        }
 
         AreaShootNum = getDate.m_areaShootNum;
         AreaTime = getDate.m_areaTime;
-
-       
     }
 
-    public void Instantiate_Itemobj(Transform perfab_father,ItemData[] itemDatas)
+    public void Instantiate_Itemobj(Transform perfab_father, ItemData[] itemDatas)
     {
         int a = 0;
         foreach (ItemData i in itemDatas)
         {
             Vector3 Pos = new Vector3() { x = i.m_Item_pos.x, y = i.m_Item_pos.y, z = i.m_Item_pos.z };
-            Vector3 Rot = new Vector3() { x = i.m_Item_rot.x, y = i.m_Item_rot.y, z = i.m_Item_rot.z};
+            Vector3 Rot = new Vector3() { x = i.m_Item_rot.x, y = i.m_Item_rot.y, z = i.m_Item_rot.z };
             Vector3 Sca = new Vector3() { x = i.m_Item_sca.x, y = i.m_Item_sca.y, z = i.m_Item_sca.z };
 
             ShootingItem Item = new ShootingItem();
@@ -206,18 +274,20 @@ public class ShootingArea : MonoBehaviour
             Item.Prefab.transform.parent = perfab_father;
             Item.Prefab.transform.localPosition = Pos;
             Item.Prefab.transform.eulerAngles = Rot;
-            Item.Prefab.transform.localScale = Sca;            
+            Item.Prefab.transform.localScale = Sca;
             Item.Number = i.m_number;
             Item.Name = i.m_name;
+            Item.Type = (ItemType)Enum.Parse(typeof(ItemType), i.m_type, true);
             Item.Prefab.transform.name = Item.Name;
             Item.CanThought = i.CanThought;
             Item.ProhibitShooting = i.ProhibitShooting;
             Item.InvalidItem = i.InvalidItem;
+            Item.LinageItemNum = i.LinkItemNum;
             m_ShootingItem.Add(Item);
             if (a == 0)
                 m_ShootPos = Item;
             a++;
-        }       
+        }
     }
 
     public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather)
@@ -258,6 +328,10 @@ public class ShootingArea : MonoBehaviour
         newItem.Number = num;
         newItem.Name = newItem.Prefab.name;
         newItem.Type = ItemType.shootingPos;
+        newItem.CanLink = false;
+        newItem.IsLink = false;
+        newItem.LinageItemNum = 0;
+
         m_ShootingItem.Add(newItem);
     }
 
@@ -346,6 +420,8 @@ public class ShootingArea : MonoBehaviour
         Destroy(item.PrefabUI.gameObject);
         Destroy(item.Prefab.gameObject);
         m_ShootingItem.Remove(item);
+        if (deleteItem != null)
+            deleteItem();
     }
 
 
@@ -423,6 +499,39 @@ public class ShootingArea : MonoBehaviour
             });
         }
 
+        public void AddItem(GameObject prefab, Sprite sprite, ItemType type, bool canlink)
+        {
+            int num = 1;
+            bool iscreat = false;
+
+            while (!iscreat)
+            {
+                iscreat = true;
+                if (m_ShootingItem.Count != 0)
+                    for (int i = 0; i < m_ShootingItem.Count; i++)
+                    {
+                        if (m_ShootingItem[i].Number == num)
+                        {
+                            iscreat = false;
+                            ++num;
+                            break;
+                        }
+                    }
+            }
+            ShootingItem newItem = new ShootingItem();
+            newItem.Prefab = prefab;
+            newItem.MinImage = sprite;
+            newItem.Number = num;
+            newItem.Name = newItem.Prefab.name;
+            newItem.CanThought = false;
+            newItem.ProhibitShooting = false;
+            newItem.InvalidItem = false;
+            newItem.Type = type;
+            newItem.CanLink = canlink;
+            newItem.IsLink = false;
+            m_ShootingItem.Add(newItem);
+        }
+
         public void AddItem(GameObject prefab, Sprite sprite, ItemType type)
         {
             int num = 1;
@@ -451,6 +560,8 @@ public class ShootingArea : MonoBehaviour
             newItem.ProhibitShooting = false;
             newItem.InvalidItem = false;
             newItem.Type = type;
+            newItem.CanLink = false;
+            newItem.LinageItemNum = 0;
             m_ShootingItem.Add(newItem);
         }
         public void AddItem(GameObject prefab, Sprite sprite, bool CanThought)

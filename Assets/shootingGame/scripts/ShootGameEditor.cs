@@ -156,7 +156,7 @@ public class ShootGameEditor : SimpleEditor
 
     protected override void Awake()
     {
-        base.Awake();       
+        base.Awake();
         _Instance = this;
     }
 
@@ -167,7 +167,7 @@ public class ShootGameEditor : SimpleEditor
     void ItemContalMoudle()
     {
         Editor.Mask = Editor.Mask = (1 << LayerMask.NameToLayer("ShootPos") | 1 << LayerMask.NameToLayer("Item"));
-    } 
+    }
 
     protected override void Start()
     {
@@ -242,15 +242,16 @@ public class ShootGameEditor : SimpleEditor
                                 , delegate () { UIClickEvent(newArea); }
                                 , num);
         newArea.ItemList = new ShootingArea.ShootingItemList();
+        //newArea.deleteItem += DeleteItemEvent;
         newArea.AddItem(Resources.Load<GameObject>("区域射击点"), getAreaItemListSprit("区域射击点"), AreaItemCount.transform);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(红)大"), getShootingAreaItemListSprit("钢靶(红)大"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(白)大"), getShootingAreaItemListSprit("钢靶(白)大"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(蓝)大"), getShootingAreaItemListSprit("钢靶(蓝)大"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(红)大"), getShootingAreaItemListSprit("钢靶(红)大"), ItemType.shootingSteelTarget, true);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(白)大"), getShootingAreaItemListSprit("钢靶(白)大"), ItemType.shootingSteelTarget, true);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(蓝)大"), getShootingAreaItemListSprit("钢靶(蓝)大"), ItemType.shootingSteelTarget, true);
 
         newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网"), getShootingAreaItemListSprit("铁丝网"), ItemType.ambientTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("铁丝网(门)"), ItemType.ambientTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("铁丝网(门)"), ItemType.ambientTarget, true);
         newArea.ItemList.AddItem(getShootingAreaItemList("木围栏"), getShootingAreaItemListSprit("木围栏"), ItemType.ambientTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(门)"), getShootingAreaItemListSprit("木围栏(门)"), ItemType.ambientTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(门)"), getShootingAreaItemListSprit("木围栏(门)"), ItemType.ambientTarget, true);
         newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(窗)"), getShootingAreaItemListSprit("木围栏(窗)"), ItemType.ambientTarget);
 
         newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(白)"), getShootingAreaItemListSprit("IDPA纸靶(白)"), ItemType.shootingPaperTargets);
@@ -353,6 +354,12 @@ public class ShootGameEditor : SimpleEditor
                 Debug.Log(unselectedObj.name);
             }
     }
+
+
+    void DeleteItemEvent()
+    {
+        refreshUI(Editor.Selection.objects);
+    }
     //监听选中物体的的UI变化
     void refreshUI(Object[] selected)
     {
@@ -424,51 +431,65 @@ public class ShootGameEditor : SimpleEditor
                         EditorUI._Instance.itemEditorUI.gameObject.SetActive(true);
                         ShootingItem item = getActiveItem(selectedObj);
                         EditorUI._Instance.itemEditorUI.ItemName.text = item.Name;
-                        ItemType type = item.Type;
-                        switch (type)
-                        {
-                            case ItemType.EnvironmentTarget:
-                                EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.CanThought.isOn = item.CanThought;
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(false);
-                                EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(false);
-                                break;
-                            case ItemType.ambientTarget:
-                                EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.CanThought.isOn = item.CanThought;
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(false);
-                                EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(false);
-                                break;
-                            case ItemType.shootingMoveTarget:
-                                EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.CanThought.isOn = item.CanThought;
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.isOn = item.ProhibitShooting;
-                                EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.InvalidItem.isOn = item.InvalidItem;
-                                break;
-                            case ItemType.shootingPaperTargets:
-                                EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.CanThought.isOn = item.CanThought;
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.isOn = item.ProhibitShooting;
-                                EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.InvalidItem.isOn = item.InvalidItem;
-                                break;
-                            case ItemType.shootingSteelTarget:
-                                EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.CanThought.isOn = item.CanThought;
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.isOn = item.ProhibitShooting;
-                                EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(true);
-                                EditorUI._Instance.itemEditorUI.InvalidItem.isOn = item.InvalidItem;
-                                break;
-                            case ItemType.shootingPos:
-                                EditorUI._Instance.itemEditorUI.CanThought.gameObject.SetActive(false);
-                                EditorUI._Instance.itemEditorUI.ProhibitShooting.gameObject.SetActive(false);
-                                EditorUI._Instance.itemEditorUI.InvalidItem.gameObject.SetActive(false);
-                                break;
 
+                        if (item.CanLink)
+                        {
+                            EditorUI._Instance.itemEditorUI.LinkList.onValueChanged.RemoveAllListeners();
+                            EditorUI._Instance.itemEditorUI.LinkList.gameObject.SetActive(true);
+                            EditorUI._Instance.itemEditorUI.LinkList.options.Clear();
+                            EditorUI._Instance.itemEditorUI.LinkItem.gameObject.SetActive(true);
+                            Dropdown.OptionData nullData = new Dropdown.OptionData();
+                            nullData.text = "无";
+
+                            EditorUI._Instance.itemEditorUI.LinkList.options.Add(nullData);
+
+                            int num = 0;
+                            GetLinkList(item).ForEach(obj =>
+                            {
+                                Dropdown.OptionData temoData;
+                                temoData = new Dropdown.OptionData();
+                                temoData.text = obj.Name;
+
+                                EditorUI._Instance.itemEditorUI.LinkList.options.Add(temoData);
+                                if (item.LinkageItem == obj.Prefab.transform)
+                                {
+                                    EditorUI._Instance.itemEditorUI.LinkList.value = num + 1;
+                                    EditorUI._Instance.itemEditorUI.LinkItem.sprite = obj.MinImage;
+
+
+                                    EditorUI._Instance.itemEditorUI.LinkItem.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
+
+
+                                    EditorUI._Instance.itemEditorUI.LinkItem.gameObject.GetComponent<Button>().onClick.AddListener(delegate ()
+                                    {
+                                        GameObject.Find("SceneComponent").GetComponent<RuntimeSceneComponent>().Focus(obj.Prefab.transform);
+                                    });
+                                }
+
+                                num++;
+                            });
+
+                            if (!item.LinkageItem)
+                            {
+                                EditorUI._Instance.itemEditorUI.LinkList.value = 0;
+                                EditorUI._Instance.itemEditorUI.LinkItem.sprite = null;
+
+                                EditorUI._Instance.itemEditorUI.LinkItem.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
+                            }
+
+
+
+                            EditorUI._Instance.itemEditorUI.LinkList.onValueChanged.AddListener(delegate (int id)
+                            {
+                                LinkListEvent(item, id);
+                            });
+                        }
+                        else
+                        {
+                            EditorUI._Instance.itemEditorUI.LinkList.gameObject.SetActive(false);
+                            EditorUI._Instance.itemEditorUI.LinkItem.gameObject.SetActive(false);
                         }
                     }
                 }
@@ -547,7 +568,7 @@ public class ShootGameEditor : SimpleEditor
             EditorUI._Instance.areaItemListUI.AreaItemListUICount.gameObject.transform.GetChild(i).transform.Find("Sprite").GetComponent<Image>().sprite =
                 EditorUI._Instance.areaItemListUI.ordinary;
         }
-        if(m_Arealist.Count<6)
+        if (m_Arealist.Count < 6)
             EditorUI._Instance.areaListUI.Add.interactable = true;
         else
             EditorUI._Instance.areaListUI.Add.interactable = false;
@@ -650,6 +671,8 @@ public class ShootGameEditor : SimpleEditor
 
     IEnumerator Save()
     {
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+
         string filePath = OpenDialog.SaveDialog("文件夹|");
         if (filePath != "")
         {
@@ -662,7 +685,7 @@ public class ShootGameEditor : SimpleEditor
                 filemanger.Compiling(filePath);
                 Debug.Log(filePath);
                 OpenDialog.ShowDialog("发布成功！", "发布成功");
-                Xml_ShootingItem.DeleteXmlByPath(filePath+ "/shooting_Data"+ "/ShootingItem" + ".xml");
+                Xml_ShootingItem.DeleteXmlByPath(filePath + "/shooting_Data" + "/ShootingItem" + ".xml");
                 Xml_ShootingItem.CreateXml(filePath + "/shooting_Data" + "/ShootingItem" + ".xml");
                 int id = 0;
                 foreach (ShootingArea sa in m_Arealist)
@@ -671,15 +694,19 @@ public class ShootGameEditor : SimpleEditor
                     ++id;
                     Xml_ShootingItem.AddXmlData(sa, id, filePath + "/shooting_Data" + "/ShootingItem" + ".xml");
                 }
-                Xml_ShootingItem.addSceneid(Static.Instance.sceneType.ToString(),filePath + "/shooting_Data" + "/ShootingItem" + ".xml");
+                Xml_ShootingItem.addSceneid(Static.Instance.sceneType.ToString(), filePath + "/shooting_Data" + "/ShootingItem" + ".xml");
             }
         }
+#else
+        yield return null;
+#endif
     }
 
 
 
     void SaveFile()
     {
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
         if (m_Arealist.Count == 0)
         {
             EditorUI._Instance.worningUI.Type = worningType.msg;
@@ -689,13 +716,14 @@ public class ShootGameEditor : SimpleEditor
             return;
         }
 
-        StartCoroutine(Save());   
+        StartCoroutine(Save());
+#endif
     }
 
     void LoadGameXml()
     {
         int id = 0;
-       
+
         foreach (XElement sa in Xml_ShootingItem.getAllXmlData())
         {
             ++id;
@@ -763,7 +791,7 @@ public class ShootGameEditor : SimpleEditor
 
         Editor.Undo.Select(selection.ToArray(), EditorArea);
 
-        AreaContalMoudle(); 
+        AreaContalMoudle();
 
         //Set_LockItemList(false);
 
@@ -782,6 +810,7 @@ public class ShootGameEditor : SimpleEditor
         foreach (int i in m_Area)
         {
             m_Arealist[i].Destroy_obj(AreaItemCount);
+            m_Arealist[i].deleteItem -= DeleteItemEvent;
             m_Arealist.RemoveAt(i);
         }
     }
@@ -829,6 +858,86 @@ public class ShootGameEditor : SimpleEditor
     }
 
 
+    //获取联动列表
+    private List<ShootingItem> GetLinkList(ShootingItem shootingitem)
+    {
+        List<ShootingItem> linklist = new List<ShootingItem>();
+
+        if (shootingitem.CanLink)
+        {
+            GetEditorArea().m_ShootingItem.ForEach(item =>
+            {
+
+                //if (item.Type == ItemType.shootingMoveTarget && (shootingitem.LinkageItem && shootingitem.LinkageItem.gameObject == item.Prefab))
+                //{
+                //    ShootingItem newitem = item;
+                //    linklist.Add(newitem);
+                //}
+                if (item.Type == ItemType.shootingMoveTarget)
+                {
+                    ShootingItem newitem = item;
+                    linklist.Add(newitem);
+                }
+
+            });
+        }
+
+        return linklist;
+    }
+
+
+    //联动Event
+    private void LinkListEvent(ShootingItem item, int id)
+    {
+        for (int i = 0; i < GetEditorArea().m_ShootingItem.Count; i++)
+        {
+            if (item.LinkageItem)
+                if (GetEditorArea().m_ShootingItem[i].Prefab == item.LinkageItem.gameObject)
+                {
+                    ShootingItem linkers = GetEditorArea().m_ShootingItem[i];
+                    linkers.IsLink = false;
+                    GetEditorArea().m_ShootingItem[i] = linkers;
+                }
+            if (id != 0)
+                if (GetEditorArea().m_ShootingItem[i].Prefab == GetLinkList(item)[id - 1].Prefab)
+                {
+                    ShootingItem linkers = GetEditorArea().m_ShootingItem[i];
+                    linkers.IsLink = true;
+                    GetEditorArea().m_ShootingItem[i] = linkers;
+                    EditorUI._Instance.itemEditorUI.LinkItem.sprite = GetEditorArea().m_ShootingItem[i].MinImage;
+                    EditorUI._Instance.itemEditorUI.LinkItem.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
+
+
+                    EditorUI._Instance.itemEditorUI.LinkItem.gameObject.GetComponent<Button>().onClick.AddListener(delegate ()
+                    {
+                        GameObject.Find("SceneComponent").GetComponent<RuntimeSceneComponent>().Focus(GetLinkList(item)[id - 1].Prefab.transform);
+                    });
+                }
+        }
+        ShootingItem shootingitem = item;
+        if (id == 0)
+        {
+            shootingitem.LinkageItem = null;
+            shootingitem.LinageItemNum = 0;
+            EditorUI._Instance.itemEditorUI.LinkItem.sprite = null;
+            EditorUI._Instance.itemEditorUI.LinkItem.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+        }
+        else
+        {
+            shootingitem.LinkageItem = GetLinkList(item)[id - 1].Prefab.transform;
+            shootingitem.LinageItemNum = id;
+            GameObject.Find("SceneComponent").GetComponent<RuntimeSceneComponent>().Focus(GetLinkList(item)[id - 1].Prefab.transform);
+        }
+
+        for (int i = 0; i < GetEditorArea().m_ShootingItem.Count; i++)
+        {
+            if (GetEditorArea().m_ShootingItem[i].Prefab == item.Prefab)
+                GetEditorArea().m_ShootingItem[i] = shootingitem;
+        }
+
+    }
+
     //获取选中item
     public ShootingItem getActiveItem(GameObject value)
     {
@@ -838,7 +947,6 @@ public class ShootGameEditor : SimpleEditor
             if (item.Prefab == value)
                 newItem = item;
         });
-        Debug.Log(newItem.PrefabUI.name);
         return newItem;
     }
 
@@ -850,7 +958,7 @@ public class ShootGameEditor : SimpleEditor
         {
             EditorUI._Instance.worningUI.Type = worningType.msg;
             EditorUI._Instance.worningUI.tital.text = "请编辑场景";
-            EditorUI._Instance.worningUI.msg.text = "请添加并编辑至少一个射击区域";           
+            EditorUI._Instance.worningUI.msg.text = "请添加并编辑至少一个射击区域";
             EditorUI._Instance.worningUI.gameObject.SetActive(true);
             return;
         }
@@ -908,6 +1016,7 @@ public class ShootGameEditor : SimpleEditor
         {
             //InteractiveSwitch Point = new InteractiveSwitch();
             List<TargetHealth> targets = new List<TargetHealth>();
+            List<OtherHealth> others = new List<OtherHealth>();
             item.m_ShootingItem.ForEach(obj =>
             {
                 if (obj.Prefab.GetComponent<InteractiveSwitch>())
@@ -916,9 +1025,17 @@ public class ShootGameEditor : SimpleEditor
                     item.m_ShootPos = obj;
                 }
                 if (obj.Prefab.GetComponent<TargetHealth>())
+                {
                     targets.Add(obj.Prefab.GetComponent<TargetHealth>());
+                }
+                if (obj.Prefab.GetComponent<OtherHealth>())
+                {
+                    others.Add(obj.Prefab.GetComponent<OtherHealth>());
+                }
+
             });
             item.m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().targets = targets;
+            item.m_ShootPos.Prefab.GetComponent<InteractiveSwitch>().others = others;
         });
         if (m_Arealist.Count == 1)
         {
@@ -944,7 +1061,7 @@ public class ShootGameEditor : SimpleEditor
 
 
     [SerializeField]
-    GameObject inside, outside, editorCamera,Ground;
+    GameObject inside, outside, editorCamera, Ground;
 
     void EditorScene()
     {

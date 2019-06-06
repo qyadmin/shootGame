@@ -12,17 +12,20 @@
  *************************/
 using UnityEngine;
 using System.Collections;
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
 using System.Windows.Forms;
+#endif
 using System.Runtime.InteropServices;
 using System;
 
 public class OpenDialog {
 
-	/// <summary>
-	/// 弹出对话框 从用户获得图片的文件路径
-	/// </summary>
-	/// <returns>The picture file name.</returns>
-	public static string GetPictureFileName()
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+    /// <summary>
+    /// 弹出对话框 从用户获得图片的文件路径
+    /// </summary>
+    /// <returns>The picture file name.</returns>
+    public static string GetPictureFileName()
 	{
 		string res = "";
 		OpenFileDialog OpenFile = new OpenFileDialog ();
@@ -119,5 +122,5 @@ public class OpenDialog {
         }
         return res;
     }
-   
+#endif
 }

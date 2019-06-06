@@ -524,5 +524,10 @@ namespace Battlehub.RTHandles
         {
 
         }
+
+        public virtual void Focus(Transform obj)
+        {
+
+        }
     }
 }

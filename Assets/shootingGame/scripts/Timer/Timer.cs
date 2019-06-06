@@ -278,7 +278,6 @@ namespace Utils
 
         public void DoUpdate()
         {
-            Debug.Log("DO");
             if (deltaTickDic.Count <= 0) return;
 
             dellist.Clear();

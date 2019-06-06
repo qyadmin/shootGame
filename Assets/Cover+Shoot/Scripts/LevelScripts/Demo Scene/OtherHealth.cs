@@ -1,115 +1,54 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-// This class is created for the example scene. There is no support for this script.
-public class TargetHealth : HealthManager
+public class OtherHealth : HealthManager
 {
-	public bool boss;
-	public AudioClip toggleSound;
-
-	private Vector3 targetRotation;
-	private float health, totalHealth = 20;
-	private RectTransform healthBar;
-	private float originalBarScale;
-	private bool dead;
+    public AudioClip toggleSound;
 
     [SerializeField]
     TargetType targetType;
 
-    [SerializeField]
-    bool isStatic = false;
 
-	void Awake ()
-	{
-		targetRotation = this.transform.localEulerAngles;
-        if (!isStatic)
-            targetRotation.x = -90;
-		if (boss)
-		{
-			healthBar = this.transform.Find("Health/Bar").GetComponent<RectTransform>();
-			healthBar.parent.gameObject.SetActive(false);
-			originalBarScale = healthBar.sizeDelta.x;
-		}
-		dead = true;
-		health = totalHealth;
+    private void Awake()
+    {
+
     }
 
-	void Update ()
-	{
-		//this.transform.localRotation = Quaternion.Slerp(this.transform.localRotation, Quaternion.Euler(targetRotation), 20 * Time.deltaTime);
-	}
-
-	public bool IsDead { get { return dead; } }
-
-	public override void TakeDamage(Vector3 location, Vector3 direction, float damage)
-	{
-        Debug.Log("中弹了");
-		if (boss)
-		{
-			health -= damage;
-			UpdateHealthBar();
-			if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
-			{
-				Kill();
-               
-            }
-            AudioSource.PlayClipAtPoint(toggleSound, transform.position);
-        }
-		else if ((int)this.transform.localEulerAngles.x >= -15 && !dead)
-		{
-            health -= damage;
-            if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
-            {
-                Kill();
-                
-            }
-            AudioSource.PlayClipAtPoint(toggleSound, transform.position);
-        }
-	}
-
-	public void Kill()
-	{
-		if(boss)
-			healthBar.parent.gameObject.SetActive(false);
-		dead = true;
-
-        if(LinkObj)
-        LinkObj.TargetAwake();
-		//targetRotation.x = -90;
-		
-	}
-
-	public void Revive()
-	{
-
-        health = totalHealth;
-        if (boss)
-		{
-			
-			healthBar.parent.gameObject.SetActive(true);
-			UpdateHealthBar();
-		}
-		dead = false;
-        if (!isStatic)
-            targetRotation.x = 0;
-		//AudioSource.PlayClipAtPoint(toggleSound, transform.position);
-	}
+    public void Revive()
+    {
+        TargetAwake();
+    }
 
     public void End()
     {
         StopAllCoroutines();
     }
 
-	private void UpdateHealthBar()
-	{
-		float scaleFactor = health / totalHealth;
-
-		healthBar.sizeDelta = new Vector2(scaleFactor * originalBarScale, healthBar.sizeDelta.y);
-	}
     public override void TargetResets()
     {
         base.TargetResets();
+        StopAllCoroutines();
+        Transform[] allchild;
+        allchild = transform.gameObject.GetComponentsInChildren<Transform>();
+        switch (targetType)
+        {         
+            case TargetType.DoorOrWindow:
+                foreach (Transform i in allchild)
+                {
+                    if (i.name == "movePos")
+                    {
+                        i.localEulerAngles = new Vector3(0,0,0);
+                    }
+                }
+                break;
+
+
+        }
+
     }
+
+
     public override void TargetAwake()
     {
         base.TargetAwake();
@@ -117,8 +56,8 @@ public class TargetHealth : HealthManager
         Transform[] allchild;
         allchild = transform.gameObject.GetComponentsInChildren<Transform>();
         switch (targetType)
-        {          
-            case TargetType.Rotate_single:               
+        {
+            case TargetType.Rotate_single:
                 foreach (Transform i in allchild)
                 {
                     if (i.name == "movePos")
@@ -178,6 +117,16 @@ public class TargetHealth : HealthManager
                     }
                 }
                 break;
+            case TargetType.DoorOrWindow:
+                foreach (Transform i in allchild)
+                {
+                    if (i.name == "movePos")
+                    {
+                        IEnumerator doormove = door_open(i);
+                        StartCoroutine(doormove);
+                    }
+                }
+                break;
 
 
         }
@@ -185,7 +134,7 @@ public class TargetHealth : HealthManager
 
     public void TargetEnd()
     {
-        StopAllCoroutines();      
+        StopAllCoroutines();
     }
     float Rotate_speed = 30;
     float Move_speed = 1;
@@ -193,7 +142,7 @@ public class TargetHealth : HealthManager
     {
         while (true)
         {
-            movePos.Rotate(new Vector3(0,Rotate_speed*Time.deltaTime,0));
+            movePos.Rotate(new Vector3(0, Rotate_speed * Time.deltaTime, 0));
             yield return null;
         }
     }
@@ -202,7 +151,7 @@ public class TargetHealth : HealthManager
     {
         while (movePos.localPosition.y > -0.5f)
         {
-            movePos.transform.Translate(Vector3.up* -Move_speed *Time.deltaTime );
+            movePos.transform.Translate(Vector3.up * -Move_speed * Time.deltaTime);
             yield return null;
         }
         while (movePos.localPosition.y < 0.5f)
@@ -216,14 +165,14 @@ public class TargetHealth : HealthManager
 
     IEnumerator LRMove(Transform movePos)
     {
-        while (Mathf.Abs(movePos.eulerAngles.z - 300)>2)
-        {       
-            movePos.Rotate(new Vector3(0,0, -Rotate_speed*2 * Time.deltaTime));           
+        while (Mathf.Abs(movePos.eulerAngles.z - 300) > 2)
+        {
+            movePos.Rotate(new Vector3(0, 0, -Rotate_speed * 2 * Time.deltaTime));
             yield return null;
         }
         while (Mathf.Abs(movePos.eulerAngles.z - 60) > 2)
         {
-            movePos.Rotate(new Vector3(0,0 ,Rotate_speed*2 * Time.deltaTime));
+            movePos.Rotate(new Vector3(0, 0, Rotate_speed * 2 * Time.deltaTime));
             yield return null;
         }
         IEnumerator lrmove = LRMove(movePos);
@@ -235,5 +184,17 @@ public class TargetHealth : HealthManager
         while (movePos.localPosition.x < 2.5f)
             movePos.transform.Translate(Vector3.left * Move_speed * Time.deltaTime);
         yield return null;
+    }
+
+    IEnumerator door_open(Transform movePos)
+    {       
+        while (Mathf.Abs(movePos.localEulerAngles.y -225) > 2)
+        {
+            Debug.Log(movePos.localEulerAngles.y);
+            movePos.Rotate(new Vector3(0, -Rotate_speed * 10 * Time.deltaTime, 0));
+            yield return null;
+        }
+        if(LinkObj)
+        LinkObj.TargetAwake();
     }
 }

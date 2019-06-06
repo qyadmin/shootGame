@@ -258,6 +258,60 @@ namespace Battlehub.RTHandles
                 }));
         }
 
+        public override void Focus(Transform Obj)
+        {
+            if (Obj == null)
+            {
+                return;
+            }
+
+            m_autoFocusTransform = Obj;
+            if (Obj.gameObject.hideFlags != HideFlags.None)
+            {
+                return;
+            }
+
+            Bounds bounds = CalculateBounds(Obj);
+            float fov = Window.Camera.fieldOfView * Mathf.Deg2Rad;
+            float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z) * 2.0f;
+            float distance = Mathf.Abs(objSize / Mathf.Sin(fov / 2.0f));
+
+            m_mouseOrbit.Target.position = bounds.center;
+            m_mouseOrbit.SecondaryTarget.position = Obj.position;
+            const float duration = 0.1f;
+
+            m_focusAnimation = new Vector3AnimationInfo(Window.Camera.transform.position, m_mouseOrbit.Target.position - distance * Window.Camera.transform.forward, duration, Vector3AnimationInfo.EaseOutCubic,
+                (target, value, t, completed) =>
+                {
+                    if (Window.Camera)
+                    {
+                        Window.Camera.transform.position = value;
+                    }
+                });
+            Run.Instance.Animation(m_focusAnimation);
+            Run.Instance.Animation(new FloatAnimationInfo(m_mouseOrbit.Distance, distance, duration, Vector3AnimationInfo.EaseOutCubic,
+                (target, value, t, completed) =>
+                {
+                    if (m_mouseOrbit)
+                    {
+                        m_mouseOrbit.Distance = value;
+                    }
+                }));
+
+            Run.Instance.Animation(new FloatAnimationInfo(Window.Camera.orthographicSize, objSize, duration, Vector3AnimationInfo.EaseOutCubic,
+                (target, value, t, completed) =>
+                {
+                    if (Window.Camera)
+                    {
+                        Window.Camera.orthographicSize = value;
+                    }
+                }));
+        }
+
+
+
+
+
         public void BeginPan(Vector3 mousePosition)
         {
             if (m_lockInput)

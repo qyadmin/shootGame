@@ -21,6 +21,7 @@ public class InteractiveSwitch : MonoBehaviour
     }
 
     public List<TargetHealth> targets;
+    public List<OtherHealth> others;
     public bool startVisible;
     public InteractiveSwitch nextStage;
     public bool levelEnd;
@@ -82,6 +83,12 @@ public class InteractiveSwitch : MonoBehaviour
     {
         timer.LevelTimerEvent += mandatory_nextStage;
 
+        others.ForEach(item => {
+            item.TargetResets();
+        });
+        targets.ForEach(item => {
+            item.TargetResets();
+        });
         if (startVisible)
         {
             StopAllCoroutines();
@@ -99,8 +106,6 @@ public class InteractiveSwitch : MonoBehaviour
                 target.End();
         }
     }
-
-
     void OnAwake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -261,7 +266,11 @@ public class InteractiveSwitch : MonoBehaviour
                     boss = target;
                     boss.Kill();
                 }
-            }           
+            }
+            foreach (OtherHealth otherobj in others)
+            {
+                otherobj.Revive();
+            }
         }
     }
 
