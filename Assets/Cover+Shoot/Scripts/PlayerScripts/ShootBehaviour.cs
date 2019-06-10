@@ -222,6 +222,7 @@ public class ShootBehaviour : GenericBehaviour
 
         if (Physics.Raycast(ray, out hit, 500f, shotMask))
         {
+           
             if (hit.collider.transform != this.transform)
             {
                 // Handle shot effects on target.
@@ -231,6 +232,9 @@ public class ShootBehaviour : GenericBehaviour
                 if (getTarget(hit.collider.gameObject))
                 {
                     getTarget(hit.collider.gameObject).TakeDamage(hit.point, ray.direction, weapons[weapon].bulletDamage);
+
+                    getTarget(hit.collider.gameObject).Hiteffect(ray,hit);
+
                     if (getTarget(hit.collider.gameObject).Can_Through)
                     {
                         Ray ray_ = new Ray(hit.point + ray.direction*0.01f, ray.direction);

@@ -23,10 +23,16 @@ public class HealthManager : MonoBehaviour
     // You may remove the 'virtual' keyword before coding the content.
 
     public bool Can_Through;
+    public GameObject[] RotatePos;
     public HealthManager LinkObj;
     public virtual void TakeDamage(Vector3 location, Vector3 direction, float damage)
 	{
 	}
+
+    public virtual void TargetStart()
+    {
+
+    }
 
     public virtual void TargetAwake()
     {
@@ -34,6 +40,11 @@ public class HealthManager : MonoBehaviour
     }
 
     public virtual void TargetResets()
+    {
+
+    }
+
+    public virtual void Hiteffect(Ray ray,RaycastHit hit)
     {
 
     }

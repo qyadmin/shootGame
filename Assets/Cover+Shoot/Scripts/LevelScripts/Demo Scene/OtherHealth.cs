@@ -17,7 +17,7 @@ public class OtherHealth : HealthManager
 
     public void Revive()
     {
-        TargetAwake();
+        TargetStart();
     }
 
     public void End()
@@ -49,9 +49,9 @@ public class OtherHealth : HealthManager
     }
 
 
-    public override void TargetAwake()
+    public override void TargetStart()
     {
-        base.TargetAwake();
+        base.TargetStart();
         StopAllCoroutines();
         Transform[] allchild;
         allchild = transform.gameObject.GetComponentsInChildren<Transform>();
@@ -195,6 +195,6 @@ public class OtherHealth : HealthManager
             yield return null;
         }
         if(LinkObj)
-        LinkObj.TargetAwake();
+        LinkObj.TargetStart();
     }
 }

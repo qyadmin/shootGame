@@ -13,6 +13,8 @@ public class TargetHealth : HealthManager
 	private float originalBarScale;
 	private bool dead;
 
+    
+
     [SerializeField]
     TargetType targetType;
 
@@ -32,6 +34,7 @@ public class TargetHealth : HealthManager
 		}
 		dead = true;
 		health = totalHealth;
+        TargetAwake();
     }
 
 	void Update ()
@@ -74,7 +77,7 @@ public class TargetHealth : HealthManager
 		dead = true;
 
         if(LinkObj)
-        LinkObj.TargetAwake();
+        LinkObj.TargetStart();
 		//targetRotation.x = -90;
 		
 	}
@@ -97,7 +100,7 @@ public class TargetHealth : HealthManager
 
     public void End()
     {
-        StopAllCoroutines();
+        TargetEnd();
     }
 
 	private void UpdateHealthBar()
@@ -110,32 +113,110 @@ public class TargetHealth : HealthManager
     {
         base.TargetResets();
     }
+
     public override void TargetAwake()
     {
         base.TargetAwake();
-        StopAllCoroutines();
         Transform[] allchild;
         allchild = transform.gameObject.GetComponentsInChildren<Transform>();
         switch (targetType)
-        {          
-            case TargetType.Rotate_single:               
+        {
+            case TargetType.Rotate_single:
                 foreach (Transform i in allchild)
                 {
-                    if (i.name == "movePos")
+                    if (i.name == "TargetGourp")
                     {
-                        IEnumerator rotate = RotateMove(i);
-                        StartCoroutine(rotate);
+                        GameObject[] childCount = new GameObject[i.childCount];
+                        for (int j = 0; j < i.childCount; j++)
+                        {
+                            childCount[j] = i.GetChild(j).gameObject;
+                        }
+                        RotatePos = childCount;
                     }
                 }
                 break;
             case TargetType.Rotate_double:
                 foreach (Transform i in allchild)
                 {
-                    if (i.name == "movePos")
+                    if (i.name == "TargetGourp")
                     {
-                        IEnumerator rotate = RotateMove(i);
-                        StartCoroutine(rotate);
+                        GameObject[] childCount = new GameObject[i.childCount];
+                        for (int j = 0; j < i.childCount; j++)
+                        {
+                            childCount[j] = i.GetChild(j).gameObject;
+                        }
+                        RotatePos = childCount;
                     }
+                }
+                break;
+        }
+    }
+
+    public override void Hiteffect(Ray ray,RaycastHit raycastHit)
+    {
+        base.Hiteffect(ray,raycastHit);
+
+        GameObject effect;
+        switch (targetType)
+        {
+            case TargetType.Rotate_single:
+                effect = Instantiate(raycastHit.collider.gameObject, raycastHit.collider.gameObject.transform.position, raycastHit.collider.gameObject.transform.rotation);
+                effect.GetComponent<Rigidbody>().AddForceAtPosition(ray.direction * raycastHit.distance,raycastHit.point,ForceMode.Impulse);
+                raycastHit.collider.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(ray.direction * raycastHit.distance, raycastHit.point, ForceMode.Impulse);
+
+
+
+                for (int i = 0; i < raycastHit.collider.gameObject.transform.childCount; i++)
+                {
+                    Destroy(raycastHit.collider.gameObject.transform.GetChild(i).gameObject);
+                }
+
+                raycastHit.collider.gameObject.GetComponent<MeshRenderer>().enabled = false;
+                raycastHit.collider.gameObject.GetComponent<MeshCollider>().enabled = false;
+                raycastHit.collider.gameObject.GetComponent<Rigidbody>().mass = 0;
+                break;
+            case TargetType.Rotate_double:
+                effect = Instantiate(raycastHit.collider.gameObject, raycastHit.collider.gameObject.transform.position, raycastHit.collider.gameObject.transform.rotation);
+                effect.GetComponent<Rigidbody>().AddForceAtPosition(ray.direction * raycastHit.distance, raycastHit.point, ForceMode.Impulse);
+                raycastHit.collider.gameObject.GetComponent<Rigidbody>().AddForceAtPosition(ray.direction * raycastHit.distance, raycastHit.point, ForceMode.Impulse);
+
+
+                for (int i = 0; i < raycastHit.collider.gameObject.transform.childCount; i++)
+                {
+                    Destroy(raycastHit.collider.gameObject.transform.GetChild(i).gameObject);
+                }
+
+                raycastHit.collider.gameObject.GetComponent<MeshRenderer>().enabled = false;
+                raycastHit.collider.gameObject.GetComponent<MeshCollider>().enabled = false;
+                raycastHit.collider.gameObject.GetComponent<Rigidbody>().mass = 0;
+                break;
+        }
+    }
+
+
+
+    public override void TargetStart()
+    {
+        base.TargetStart();
+        StopAllCoroutines();
+        Transform[] allchild;
+        allchild = transform.gameObject.GetComponentsInChildren<Transform>();
+        switch (targetType)
+        {          
+            case TargetType.Rotate_single:
+                foreach (GameObject i in RotatePos)
+                {
+                    i.GetComponent<MeshRenderer>().enabled = true;
+                    i.GetComponent<MeshCollider>().enabled = true;
+                    i.GetComponent<Rigidbody>().mass = 1;
+                }
+                break;
+            case TargetType.Rotate_double:
+                foreach (GameObject i in RotatePos)
+                {
+                    i.GetComponent<MeshRenderer>().enabled = true;
+                    i.GetComponent<MeshCollider>().enabled = true;
+                    i.GetComponent<Rigidbody>().mass = 1;
                 }
                 break;
             case TargetType.UDMove:
@@ -159,24 +240,10 @@ public class TargetHealth : HealthManager
                 }
                 break;
             case TargetType.Slide_single:
-                foreach (Transform i in allchild)
-                {
-                    if (i.name == "movePos")
-                    {
-                        IEnumerator slidemove = Slide_single(i);
-                        StartCoroutine(slidemove);
-                    }
-                }
+               
                 break;
             case TargetType.Slide_double:
-                foreach (Transform i in allchild)
-                {
-                    if (i.name == "movePos")
-                    {
-                        IEnumerator slidemove = Slide_single(i);
-                        StartCoroutine(slidemove);
-                    }
-                }
+               
                 break;
 
 
@@ -185,8 +252,31 @@ public class TargetHealth : HealthManager
 
     public void TargetEnd()
     {
-        StopAllCoroutines();      
+        StopAllCoroutines();
+        Transform[] allchild;
+        allchild = transform.gameObject.GetComponentsInChildren<Transform>();
+        switch (targetType)
+        {
+            case TargetType.Rotate_single:
+                foreach (GameObject i in RotatePos)
+                {
+                    i.GetComponent<MeshRenderer>().enabled = true;
+                    i.GetComponent<MeshCollider>().enabled = true;
+                    i.GetComponent<Rigidbody>().mass = 1;
+                }
+                break;
+            case TargetType.Rotate_double:
+                foreach (GameObject i in RotatePos)
+                {
+                    i.GetComponent<MeshRenderer>().enabled = true;
+                    i.GetComponent<MeshCollider>().enabled = true;
+                    i.GetComponent<Rigidbody>().mass = 1;
+                }
+                break;       
+        }
     }
+
+
     float Rotate_speed = 30;
     float Move_speed = 1;
     IEnumerator RotateMove(Transform movePos)

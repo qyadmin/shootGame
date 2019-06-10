@@ -272,8 +272,8 @@ public class ShootGameEditor : SimpleEditor
 
         newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶(单)"), getShootingAreaItemListSprit("滑道移动靶(单)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶(双)"), getShootingAreaItemListSprit("滑道移动靶(双)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(单)"), getShootingAreaItemListSprit("旋转靶(单)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(双)"), getShootingAreaItemListSprit("旋转靶(双)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(单)"), getShootingAreaItemListSprit("旋转靶(单)"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(双)"), getShootingAreaItemListSprit("旋转靶(双)"), ItemType.shootingSteelTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(白)"), getShootingAreaItemListSprit("左右移动靶(白)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黄)"), getShootingAreaItemListSprit("左右移动靶(黄)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黑)"), getShootingAreaItemListSprit("左右移动靶(黑)"), ItemType.shootingMoveTarget);
