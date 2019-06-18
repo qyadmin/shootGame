@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 public enum TargetType
@@ -23,13 +24,20 @@ public class HealthManager : MonoBehaviour
     // You may remove the 'virtual' keyword before coding the content.
 
     public bool Can_Through;
+    public bool ProhibitShooting;//禁射
+    public bool InvalidItem;//无效
+
     public GameObject[] RotatePos;
+    public List<GameObject> EffectGroup = new List<GameObject>();
     public HealthManager LinkObj;
-    public virtual void TakeDamage(Vector3 location, Vector3 direction, float damage)
+    public virtual void TakeDamage(Ray ray, RaycastHit hit, float damage)
 	{
 	}
+    public virtual void TakeDamage(Ray ray, RaycastHit hit, float damage,bool isthough)
+    {
+    }
 
-    public virtual void TargetStart()
+    public virtual void TargetLink()
     {
 
     }

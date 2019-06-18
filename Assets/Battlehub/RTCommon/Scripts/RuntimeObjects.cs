@@ -156,7 +156,7 @@ namespace Battlehub.RTCommon
                 {
                     foreach (ExposeToEditor obj in m_editModeCache)
                     {
-                        TryToAddColliders(obj);
+                        //TryToAddColliders(obj);
                         obj.SendMessage("OnRuntimeEditorOpened", SendMessageOptions.DontRequireReceiver);
                     }
                 }
@@ -169,7 +169,7 @@ namespace Battlehub.RTCommon
                     {
                         if (obj != null)
                         {
-                            TryToDestroyColliders(obj);
+                            //TryToDestroyColliders(obj);
                             obj.SendMessage("OnRuntimeEditorClosed", SendMessageOptions.DontRequireReceiver);
                         }
                     }
@@ -465,11 +465,11 @@ namespace Battlehub.RTCommon
                     m_editModeCache.Add(obj);
                     if (m_editor.IsOpened)
                     {
-                        TryToAddColliders(obj);
+                        //TryToAddColliders(obj);
                     }
                     else
                     {
-                        TryToDestroyColliders(obj);
+                        //TryToDestroyColliders(obj);
                     }
                 }                
             }
@@ -500,7 +500,7 @@ namespace Battlehub.RTCommon
                 if(m_editModeCache.Contains(obj))
                 {
                     m_editModeCache.Remove(obj);
-                    TryToDestroyColliders(obj);
+                    //TryToDestroyColliders(obj);
                 }
             }
 

@@ -43,7 +43,7 @@ public class ShootBehaviour : GenericBehaviour
 	private Vector3 initialSpineRotation;                          // Initial spine rotation related to the hips bone.
 	private Vector3 initialChestRotation;                          // Initial chest rotation related to the spine bone.
 	private float shotDecay, originalShotDecay = 0.5f;             // Default shot lifetime. Use shotRateFactor to modify speed.
-	private List<GameObject> bulletHoles;                          // Bullet holes scene buffer.
+	private List<GameObject> bulletHoles = new List<GameObject>();                          // Bullet holes scene buffer.
 	private int bulletHoleSlot = 0;                                // Number of active bullet holes on scene.
 	private int burstShotCount = 0;                                // Number of burst shots fired.
 	private AimBehaviour aimBehaviour;                             // Reference to the aim behaviour.
@@ -75,7 +75,7 @@ public class ShootBehaviour : GenericBehaviour
 		reloadBool = Animator.StringToHash("Reload");
 		weapons = new List<InteractiveWeapon>(new InteractiveWeapon[3]);
 		aimBehaviour = this.GetComponent<AimBehaviour>();
-		bulletHoles = new List<GameObject>();
+		//bulletHoles = new List<GameObject>();
         timer = GameObject.Find("Timer").GetComponent<TimeTrialManager>();
         // Hide shot effects on scene.
         muzzleFlash.SetActive(false);
@@ -217,7 +217,7 @@ public class ShootBehaviour : GenericBehaviour
 
 
 
-    private void ShootThough(Ray ray, RaycastHit hit,int weapon)
+    private void ShootThough(Ray ray, RaycastHit hit,int weapon,bool though = false)
     {
 
         if (Physics.Raycast(ray, out hit, 500f, shotMask))
@@ -226,20 +226,20 @@ public class ShootBehaviour : GenericBehaviour
             if (hit.collider.transform != this.transform)
             {
                 // Handle shot effects on target.
-                DrawShoot(weapons[weapon].gameObject, hit.point, hit.normal, hit.collider.transform);
+                DrawShoot(weapons[weapon].gameObject, hit.point, hit.normal, hit.collider.transform,false,true,false,false);
 
                 // Call the damage behaviour of target if exists.
                 if (getTarget(hit.collider.gameObject))
                 {
-                    getTarget(hit.collider.gameObject).TakeDamage(hit.point, ray.direction, weapons[weapon].bulletDamage);
+                    getTarget(hit.collider.gameObject).TakeDamage(ray, hit, weapons[weapon].bulletDamage,though);
 
                     getTarget(hit.collider.gameObject).Hiteffect(ray,hit);
 
                     if (getTarget(hit.collider.gameObject).Can_Through)
                     {
-                        Ray ray_ = new Ray(hit.point + ray.direction*0.01f, ray.direction);
+                        Ray ray_ = new Ray(hit.point + ray.direction*0.1f, ray.direction);
                         RaycastHit hit_ = default(RaycastHit);
-                        ShootThough(ray_, hit_, weapon);
+                        ShootThough(ray_, hit_, weapon,true);
                     }
                 }
             }
@@ -249,15 +249,15 @@ public class ShootBehaviour : GenericBehaviour
         {
             Vector3 destination = (ray.direction * 500f) - ray.origin;
             // Handle shot effects without a specific target.
-            DrawShoot(weapons[weapon].gameObject, destination, Vector3.up, null, false, false);
+            DrawShoot(weapons[weapon].gameObject, destination, Vector3.up, null, false, false,false,false);
         }
     }
 
 
-    HealthManager getTarget(GameObject value)
+    TargetHealth getTarget(GameObject value)
     {
-        if (value.GetComponent<HealthManager>())
-            return value.GetComponent<HealthManager>();
+        if (value.GetComponent<TargetHealth>())
+            return value.GetComponent<TargetHealth>();
         else
             if (!value.transform.parent)
                 return null;
@@ -267,22 +267,30 @@ public class ShootBehaviour : GenericBehaviour
 
     // Manage the shot visual effects.
     private void DrawShoot(GameObject weapon, Vector3 destination, Vector3 targetNormal, Transform parent,
-		bool placeSparks = true, bool placeBulletHole = true)
+        bool placeSparks = true, bool placeBulletHole = true, bool placeMuzzle = true, bool placeShot = true)
 	{
 		Vector3 origin = gunMuzzle.position - gunMuzzle.up * 0.5f;
 
-		// Draw the flash at the gun muzzle position.
-		muzzleFlash.SetActive(true);
-		muzzleFlash.transform.SetParent(gunMuzzle);
-		muzzleFlash.transform.localPosition = Vector3.zero;
-		muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
+        // Draw the flash at the gun muzzle position.
+        if (placeMuzzle)
+        {
+            muzzleFlash.SetActive(true);
+            muzzleFlash.transform.SetParent(gunMuzzle);
+            muzzleFlash.transform.localPosition = Vector3.zero;
+            muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
+        }
 
-		// Create the shot tracer and smoke trail particle.
-		GameObject instantShot = Object.Instantiate<GameObject>(shot);
-		instantShot.SetActive(true);
-		instantShot.transform.position = origin;
-		instantShot.transform.rotation = Quaternion.LookRotation(destination - origin);
-		instantShot.transform.parent = shot.transform.parent;
+
+        // Create the shot tracer and smoke trail particle.
+        if (placeShot)
+        {
+            GameObject instantShot = Object.Instantiate<GameObject>(shot);
+            instantShot.SetActive(true);
+            instantShot.transform.position = origin;
+            instantShot.transform.rotation = Quaternion.LookRotation(destination - origin);
+            instantShot.transform.parent = shot.transform.parent;
+        }
+		
 
 		// Create the shot sparks at target.
 		if (placeSparks)
@@ -298,31 +306,42 @@ public class ShootBehaviour : GenericBehaviour
 		{
 			Quaternion hitRotation = Quaternion.FromToRotation(Vector3.back, targetNormal);
 			GameObject bullet = null;
-			if (bulletHoles.Count < maxBulletHoles)
-			{
+			//if (bulletHoles.Count < maxBulletHoles)
+			//{
 				// Instantiate new bullet if an empty slot is available.
 				bullet = GameObject.CreatePrimitive(PrimitiveType.Quad);
 				bullet.GetComponent<MeshRenderer>().material = bulletHole;
 				bullet.GetComponent<Collider>().enabled = false;
-				bullet.transform.localScale = Vector3.one * 0.07f;
+				bullet.transform.localScale = Vector3.one * 0.03f;
 				bullet.name = "BulletHole";
 				bulletHoles.Add(bullet);
-			}
-			else
-			{
-				// Cycle through bullet slots to reposition the oldest one.
-				bullet = bulletHoles[bulletHoleSlot];
-				bulletHoleSlot++;
-				bulletHoleSlot %= maxBulletHoles;
-			}
+			//}
+			//else
+			//{
+			//	// Cycle through bullet slots to reposition the oldest one.
+			//	bullet = bulletHoles[bulletHoleSlot];
+			//	bulletHoleSlot++;
+			//	bulletHoleSlot %= maxBulletHoles;
+			//}
+            
 			bullet.transform.position = destination + 0.01f * targetNormal;
 			bullet.transform.rotation = hitRotation;
 			bullet.transform.SetParent(parent);
 		}
 	}
+    public void ResetBulletHole()
+    {
+        for (int i = 0; i < bulletHoles.Count; i++)
+        {
+            Destroy(bulletHoles[i].gameObject);
+            
+        }
+        bulletHoles.Clear();
+    }
 
-	// Change the active weapon.
-	private void ChangeWeapon(int oldWeapon, int newWeapon)
+
+    // Change the active weapon.
+    private void ChangeWeapon(int oldWeapon, int newWeapon)
 	{
 		// Previously armed? Disable weapon.
 		if (oldWeapon > 0)

@@ -1,0 +1,17 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PublishTypeUI : MonoBehaviour
+{
+    [SerializeField]
+    public Button PC_Button, Android_Button, exitbutton;
+
+    private void Start()
+    {
+        exitbutton.onClick.AddListener(delegate () {
+            this.gameObject.SetActive(false);
+        });
+    }
+}

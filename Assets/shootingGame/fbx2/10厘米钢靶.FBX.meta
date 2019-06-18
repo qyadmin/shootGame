@@ -10,12 +10,16 @@ ModelImporter:
     400002: "10\u5398\u7C73\u94A2\u9776\u5706\u5934"
     400004: "10\u5398\u7C73\u94A2\u9776\u5E95\u4E0B"
     2100000: 'Material #222'
+    2100002: Standard_2
     2300000: "10\u5398\u7C73\u94A2\u9776\u5706\u5934"
     2300002: "10\u5398\u7C73\u94A2\u9776\u5E95\u4E0B"
+    2300004: //RootNode
     3300000: "10\u5398\u7C73\u94A2\u9776\u5706\u5934"
     3300002: "10\u5398\u7C73\u94A2\u9776\u5E95\u4E0B"
+    3300004: //RootNode
     4300000: "10\u5398\u7C73\u94A2\u9776\u5706\u5934"
     4300002: "10\u5398\u7C73\u94A2\u9776\u5E95\u4E0B"
+    4300004: Object11
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -50,6 +54,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -74,6 +79,9 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
@@ -88,7 +96,6 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1

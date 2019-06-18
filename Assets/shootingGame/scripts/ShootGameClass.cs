@@ -7,6 +7,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+
+public enum publishType
+{
+    PC,
+    Android
+}
+
 public enum ItemType
 {
     shootingPos,
@@ -70,8 +77,14 @@ public struct ShootingItem
         set
         {
             m_linkageItem = value;
-            if (Prefab.GetComponent<HealthManager>())
-                Prefab.GetComponent<HealthManager>().LinkObj = value.GetComponent<HealthManager>();
+            if (m_linkageItem)
+            {
+                if (Prefab.GetComponent<HealthManager>())
+                    Prefab.GetComponent<HealthManager>().LinkObj = value.GetComponent<HealthManager>();
+            }
+            else
+                if (Prefab.GetComponent<HealthManager>())
+                Prefab.GetComponent<HealthManager>().LinkObj = null;
         }
     }
     public bool IsLink
@@ -188,7 +201,7 @@ public class ItemData
 public class ShootingArea : MonoBehaviour
 {
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
-    public delegate void Areadelegate();
+    public delegate void Areadelegate(ShootingItem item);
 
     public event Areadelegate deleteItem;
     public GetDate getDates()
@@ -407,8 +420,18 @@ public class ShootingArea : MonoBehaviour
             newItem.PrefabUI = prefabUI;
             if (newItem.Prefab.layer == LayerMask.NameToLayer("Item"))
             {
-                newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().interactable = true;
-                newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().onClick.AddListener(delegate () { DeleteItem(newItem); });
+                if (newItem.IsLink)
+                {
+                    newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().interactable = false;
+                    newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().image.enabled = false;
+                    newItem.PrefabUI.transform.Find("Link").gameObject.GetComponent<Image>().enabled = true;
+                }
+                else
+                {
+                    newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().interactable = true;
+                    newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().onClick.AddListener(delegate () { DeleteItem(newItem); });
+                }
+                
             }
             m_ShootingItem[i] = newItem;
         }
@@ -417,11 +440,23 @@ public class ShootingArea : MonoBehaviour
 
     void DeleteItem(ShootingItem item)
     {
+        if (item.LinkageItem)
+            for (int i = 0; i < m_ShootingItem.Count; i++)
+            {
+
+                if (m_ShootingItem[i].Prefab == item.LinkageItem.gameObject)
+                {
+                    ShootingItem linkers = m_ShootingItem[i];
+                    linkers.IsLink = false;
+                    m_ShootingItem[i] = linkers;
+                }
+            }
         Destroy(item.PrefabUI.gameObject);
         Destroy(item.Prefab.gameObject);
-        m_ShootingItem.Remove(item);
-        if (deleteItem != null)
-            deleteItem();
+        
+            m_ShootingItem.Remove(item);
+         if (deleteItem != null)
+            deleteItem(item);
     }
 
 

@@ -116,11 +116,18 @@ public class FileManger  {
     /// 编译发布
     /// </summary>
     /// <param name="pFileName"></param>
-    public void Compiling(string pFileName) 
+    public void Compiling(string pFileName,publishType type) 
     {
-        string xmlpath = Application.dataPath  + "/ShootingItem" + ".xml";
-        string Launchxmlpath = Application.dataPath + "/Simple" + "/shooting_Data/";
-        string Launchpath = Application.dataPath  + "/Simple/";
+        string Launchxmlpath = null;
+        string Launchpath = null;
+        if (type == publishType.PC)
+        {
+            Launchpath = Application.dataPath + "/Simple/";
+        }
+        if (type == publishType.Android)
+        {
+            Launchpath = Application.dataPath + "/Android/";
+        }
 
         //CopyDirectory(new DirectoryInfo(xmlpath), new DirectoryInfo(Launchxmlpath), false);
         CopyDirectory(new DirectoryInfo(Launchpath),new DirectoryInfo(pFileName),true);

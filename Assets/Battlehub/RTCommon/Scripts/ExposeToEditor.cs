@@ -83,7 +83,8 @@ namespace Battlehub.RTCommon
         public bool CanSelect = true;
         [HideInInspector]
         public bool CanSnap = true;
-        public bool AddColliders = true;
+        [HideInInspector]
+        public bool AddColliders = false;
 
         private bool m_markAsDestroyed;
         public bool MarkAsDestroyed

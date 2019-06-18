@@ -22,6 +22,12 @@ public class EditorUI : MonoBehaviour
     public SettingUIManager settingUIManager;
 
     public WorningUI worningUI;
+
+    public PublishTypeUI publishTypeUI;
+
+    public GameFinishUI gameFinishUI;
+
+    public TimerUI timerUI;
     private void Awake()
     {
         _Instance = this;

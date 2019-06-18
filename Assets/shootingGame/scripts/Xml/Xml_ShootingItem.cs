@@ -16,30 +16,45 @@ using System.Xml.Linq;
 using System.Linq;
 using System.Xml.Serialization;
 using System.Collections;
+using System;
 
-public class Xml_ShootingItem : MonoBehaviour
+public class Xml_ShootingItem 
 {
+    private static Xml_ShootingItem instance;
+
+    public static Xml_ShootingItem _Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new Xml_ShootingItem();
+            }
+            return instance;
+        }
+    }
     /// <summary>
+    /// 
     /// 文件名
     /// </summary>
-    private static string ShootingItem = "/ShootingItem";
+
     /// <summary>
     /// 文件路径
     /// </summary>
 
-    public static string path =
+    public string path =
 #if UNITY_ANDROID   //安卓  
-    "jar:file://" + Application.dataPath + "!/assets/";  
-#elif UNITY_IPHONE  //iPhone  
+    Application.streamingAssetsPath + "/ShootingItem" + ".xml";
+#elif UNITY_IPHONE && !UNITY_EDITOR  //iPhone  
     Application.dataPath + "/Raw/";  
 #elif UNITY_STANDALONE_WIN || UNITY_EDITOR  //windows平台和web平台  
-    Application.dataPath + ShootingItem + ".xml";
+    Application.dataPath + "/ShootingItem" + ".xml";
 #else
         string.Empty;  
 #endif
-    public static bool existXml = false;
+    public bool existXml = false;
 
-    public static void OnStart()
+    public void OnStart()
     {
         if (File.Exists(path))
             existXml = true;
@@ -47,11 +62,30 @@ public class Xml_ShootingItem : MonoBehaviour
             existXml = false;
     }
 
+    public IEnumerator DowLoad()
+    {
+        WWW www = new WWW(path);
+        yield return www;
+
+        if(path != Application.persistentDataPath + "/ShootingItem" + ".xml")
+            if (www.isDone)
+            {
+                string copyToPath = Application.persistentDataPath + "/ShootingItem" + ".xml";
+                File.WriteAllText(copyToPath,www.text);
+
+                path = copyToPath;
+            }
+        if (File.Exists(path))
+            existXml = true;
+        else
+            existXml = false;
+
+    }
 
     /// <summary>
     /// 创建Xml
     /// </summary>
-    public static void CreateXml(string path)
+    public void CreateXml(string path)
     {
         if (!File.Exists(path))
         {
@@ -69,7 +103,7 @@ public class Xml_ShootingItem : MonoBehaviour
     /// </summary>
     /// <param name="sItem"></param>
     /// <param name="id"></param>
-    public static void AddXmlData(ShootingArea sa, int id,string path)
+    public void AddXmlData(ShootingArea sa, int id,string path)
     {
         if (File.Exists(path))
         {
@@ -102,7 +136,7 @@ public class Xml_ShootingItem : MonoBehaviour
     }
 
 
-    public static void addSceneid(string sceneName,string path)
+    public void addSceneid(string sceneName,string path)
     {
         if (File.Exists(path))
         {
@@ -124,7 +158,7 @@ public class Xml_ShootingItem : MonoBehaviour
     /// <summary>
     /// 删除单个条目数据
     /// </summary>
-    public static void DeleteSingleXmlData(string index)
+    public void DeleteSingleXmlData(string index)
     {
         XmlDocument doc = new XmlDocument();
         doc.Load(path);
@@ -139,17 +173,18 @@ public class Xml_ShootingItem : MonoBehaviour
     /// 获取所有的Xml数据
     /// </summary>
     /// <returns></returns>
-    public static IEnumerable<XElement> getAllXmlData()
+    public IEnumerable<XElement> getAllXmlData()
     {
         XElement xe = XElement.Load(path);
         IEnumerable<XElement> elements = from ele in xe.Elements("data") select ele;
+
         return elements;
     }
 
     /// <summary>
     /// 删除文件
     /// </summary>
-    public static void DeleteXmlByPath(string path)
+    public void DeleteXmlByPath(string path)
     {
         if (File.Exists(path))
         {
@@ -162,7 +197,7 @@ public class Xml_ShootingItem : MonoBehaviour
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public static ArrayList GetXmlData(string id)
+    public ArrayList GetXmlData(string id)
     {
         XmlDocument doc = new XmlDocument();
         doc.Load(path);
@@ -179,7 +214,7 @@ public class Xml_ShootingItem : MonoBehaviour
         return al;
     }
 
-    public static string GetSceneName()
+    public string GetSceneName()
     {
         XmlDocument doc = new XmlDocument();
         doc.Load(path);

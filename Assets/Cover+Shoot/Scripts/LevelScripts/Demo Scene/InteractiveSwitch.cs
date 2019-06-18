@@ -27,6 +27,8 @@ public class InteractiveSwitch : MonoBehaviour
     public bool levelEnd;
     public AudioClip StartSound,EndSound;
 
+    public int LevelShootNum;
+
     private GameObject player;
     private TargetHealth boss;
     private int minionsDead = 0;
@@ -53,9 +55,7 @@ public class InteractiveSwitch : MonoBehaviour
 
     public int effectiveShooting;
 
-    public int shootingTime;
-
-    private Text bullet_num;
+    public int shootingTime;  
 
 
     private enum State
@@ -114,7 +114,7 @@ public class InteractiveSwitch : MonoBehaviour
         this.ToggleState(false, startVisible);
         timer = GameObject.Find("Timer").GetComponent<TimeTrialManager>();
         orbitcam = GameObject.Find("Main Camera").GetComponent<ThirdPersonOrbitCam>();
-        bullet_num = GameObject.Find("bullet_num").GetComponent<Text>();
+        //bullet_num = GameObject.Find("bullet_num").GetComponent<Text>();
 
         if (levelEnd)
         {
@@ -146,6 +146,7 @@ public class InteractiveSwitch : MonoBehaviour
                 Debug.Log(minionsDead+"  "+ targets.Count);
                 if (minionsDead == targets.Count)
                 {
+                    LevelShootNum = player.GetComponent<ShootBehaviour>().Level_shoot_num;
                     timer.EndLevelTimer();
                     this.ToggleState(false, false);
                     isnow = false;
@@ -170,8 +171,8 @@ public class InteractiveSwitch : MonoBehaviour
                             AudioSource.PlayClipAtPoint(EndSound, transform.position + Vector3.up);
                         }
                     }
-
-                    bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting - player.GetComponent<ShootBehaviour>().Level_shoot_num);
+                    
+                    EditorUI._Instance.timerUI.shootNum.text = string.Format("剩余{0}次射击机会", effectiveShooting - LevelShootNum);
                 }               
                 break;
         }
@@ -182,7 +183,8 @@ public class InteractiveSwitch : MonoBehaviour
 
         if (!isnow)
             return;
-        bullet_num.text = string.Format("剩余{0}次射击机会", effectiveShooting - player.GetComponent<ShootBehaviour>().Level_shoot_num);
+        LevelShootNum = player.GetComponent<ShootBehaviour>().Level_shoot_num;
+        EditorUI._Instance.timerUI.shootNum.text = string.Format("剩余{0}次射击机会", effectiveShooting - LevelShootNum);
 
         if (player.GetComponent<ShootBehaviour>().Level_shoot_num >= effectiveShooting)
         {

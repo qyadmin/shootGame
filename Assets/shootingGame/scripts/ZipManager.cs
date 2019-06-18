@@ -15,20 +15,20 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ZipManager : MonoBehaviour
+public class ZipManager
 {
-    public Button CompressBtn;
-    public Button ChangeExtensionBtn;
-    private void Start()
+    private static ZipManager instance;
+
+    public static ZipManager _Instance
     {
-        CompressBtn.onClick.AddListener(() =>
+        get
         {
-            CreateZip(Application.dataPath + "/XML", Application.dataPath + "/aa.zip");
-        });
-        ChangeExtensionBtn.onClick.AddListener(() =>
-        {
-            ChangeExtension(Application.dataPath + "/aa.zip", Path.ChangeExtension(Application.dataPath + "/aa.zip", ".apk"));
-        });
+            if (instance == null)
+            {
+                instance = new ZipManager();
+            }
+            return instance;
+        }
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class ZipManager : MonoBehaviour
     /// </summary>
     /// <param name="sourceFilePath"></param>
     /// <param name="destinationZipFilePath"></param>
-    public static void CreateZip(string sourceFilePath, string destinationZipFilePath)
+    public void CreateZip(string sourceFilePath, string destinationZipFilePath)
     {
         if (sourceFilePath[sourceFilePath.Length - 1] != Path.DirectorySeparatorChar)
             sourceFilePath += Path.DirectorySeparatorChar;
@@ -53,7 +53,7 @@ public class ZipManager : MonoBehaviour
     /// <param name="sourceFilePath"></param>
     /// <param name="zipStream"></param>
     /// <param name="subIndex"></param>
-    private static void CreateZipFiles(string sourceFilePath, ZipOutputStream zipStream, int subIndex)
+    private void CreateZipFiles(string sourceFilePath, ZipOutputStream zipStream, int subIndex)
     {
         Crc32 crc = new Crc32();
         string[] filesArray = Directory.GetFileSystemEntries(sourceFilePath);
@@ -89,7 +89,7 @@ public class ZipManager : MonoBehaviour
     /// </summary>
     /// <param name="fileName"></param>
     /// <param name="dfileName"></param>
-    public static void ChangeExtension(string fileName, string dfileName)
+    public void ChangeExtension(string fileName, string dfileName)
     {
         File.Move(fileName, dfileName);
     }

@@ -7,7 +7,7 @@ public class ItemEditorUI : MonoBehaviour
 {
     public Toggle CanThought, ProhibitShooting, InvalidItem;
     public Text ItemName;
-    public Dropdown LinkList;
+    public DRDropDown LinkList;
     public Image LinkItem;
 
     private void Start()
