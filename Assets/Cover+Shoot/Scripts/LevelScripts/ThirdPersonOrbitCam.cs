@@ -64,9 +64,15 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		ResetTargetOffsets ();
 		ResetFOV ();
 		ResetMaxVerticalAngle();
-	}
 
-	void Update()
+
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        Destroy(this.GetComponent<AmplifyOcclusionEffect>());
+#endif
+    }
+
+    void Update()
 	{
 		// Get mouse movement to orbit the camera.
 		// Mouse:

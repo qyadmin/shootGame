@@ -188,7 +188,7 @@ public class OtherHealth : HealthManager
 
     IEnumerator door_open(Transform movePos)
     {       
-        while (Mathf.Abs(movePos.localEulerAngles.y -225) > 2)
+        while (Mathf.Abs(movePos.localEulerAngles.y -225) > 10)
         {
             Debug.Log(movePos.localEulerAngles.y);
             movePos.Rotate(new Vector3(0, -Rotate_speed * 10 * Time.deltaTime, 0));

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 using System.Collections;
 using System;
 
-public class Xml_ShootingItem 
+public class Xml_ShootingItem
 {
     private static Xml_ShootingItem instance;
 
@@ -44,7 +44,7 @@ public class Xml_ShootingItem
 
     public string path =
 #if UNITY_ANDROID   //安卓  
-    Application.streamingAssetsPath + "/ShootingItem" + ".xml";
+    "jar:file://" + "/storage/emulated/0" + "/ShootingItem" + ".xml";
 #elif UNITY_IPHONE && !UNITY_EDITOR  //iPhone  
     Application.dataPath + "/Raw/";  
 #elif UNITY_STANDALONE_WIN || UNITY_EDITOR  //windows平台和web平台  
@@ -64,17 +64,10 @@ public class Xml_ShootingItem
 
     public IEnumerator DowLoad()
     {
-        WWW www = new WWW(path);
-        yield return www;
+        string copyToPath = Application.persistentDataPath + "/ShootingItem" + ".xml";
+        path = copyToPath;
 
-        if(path != Application.persistentDataPath + "/ShootingItem" + ".xml")
-            if (www.isDone)
-            {
-                string copyToPath = Application.persistentDataPath + "/ShootingItem" + ".xml";
-                File.WriteAllText(copyToPath,www.text);
-
-                path = copyToPath;
-            }
+        yield return null;
         if (File.Exists(path))
             existXml = true;
         else
@@ -103,7 +96,7 @@ public class Xml_ShootingItem
     /// </summary>
     /// <param name="sItem"></param>
     /// <param name="id"></param>
-    public void AddXmlData(ShootingArea sa, int id,string path)
+    public void AddXmlData(ShootingArea sa, int id, string path)
     {
         if (File.Exists(path))
         {
@@ -136,7 +129,7 @@ public class Xml_ShootingItem
     }
 
 
-    public void addSceneid(string sceneName,string path)
+    public void addSceneid(string sceneName, string path)
     {
         if (File.Exists(path))
         {

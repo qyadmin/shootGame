@@ -560,6 +560,8 @@ namespace Battlehub.RTCommon
             scene.transform.SetParent(ui.transform, false);
 
             RuntimeWindow sceneView = scene.AddComponent<RuntimeWindow>();
+
+            //sceneView.Background.raycastTarget = false;
             sceneView.IsPointerOver = true;
             sceneView.WindowType = RuntimeWindowType.Scene;
             if(Camera.main == null)

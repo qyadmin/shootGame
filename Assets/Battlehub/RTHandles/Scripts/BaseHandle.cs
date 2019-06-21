@@ -643,6 +643,11 @@ namespace Battlehub.RTHandles
                     }
 
                     OnDrag();
+                    OnDrag();
+                    OnDrag();
+                    OnDrag();
+                    OnDrag();
+  
                 }
             }
             else

@@ -94,13 +94,8 @@ public class ShootGameEditor : SimpleEditor
         Destroyed(null);
     }
     #endregion
-    [SerializeField]
-    Text worning;
 
-    private void Update()
-    {
-        worning.text = Xml_ShootingItem._Instance.path + "             " + Xml_ShootingItem._Instance.existXml;
-    }
+
 
     void UIButtonAddEvent()
     {
@@ -167,6 +162,10 @@ public class ShootGameEditor : SimpleEditor
     {
         base.Awake();
         _Instance = this;
+       
+#if UNITY_ANDROID && !UNITY_EDITOR
+        Destroy(editorCamera.GetComponent<AmplifyOcclusionEffect>());
+#endif
     }
 
     void AreaContalMoudle()
@@ -208,7 +207,7 @@ public class ShootGameEditor : SimpleEditor
         }
         else
             modul = Modul.Editor;
-
+        
 
         //StartCoroutine(load(Xml_ShootingItem._Instance.path));
         Debug.Log(Application.persistentDataPath+"  "+getLastpath(Application.persistentDataPath));
@@ -217,6 +216,7 @@ public class ShootGameEditor : SimpleEditor
     protected override void OnDestroy()
     {
         base.OnDestroy();
+
         Editor.Selection.Selectioned -= refreshUI;
         m_editorEvent -= EditorScene;
         m_gameEvent -= GameScene;
@@ -306,8 +306,8 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黄)"), getShootingAreaItemListSprit("上下移动靶(黄)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黑)"), getShootingAreaItemListSprit("上下移动靶(黑)"), ItemType.shootingMoveTarget);
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("西瓜"), getShootingAreaItemListSprit("西瓜"), ItemType.EnvironmentTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("气球"), getShootingAreaItemListSprit("气球"), ItemType.EnvironmentTarget);
+        //newArea.ItemList.AddItem(getShootingAreaItemList("西瓜"), getShootingAreaItemListSprit("西瓜"), ItemType.EnvironmentTarget);
+        //newArea.ItemList.AddItem(getShootingAreaItemList("气球"), getShootingAreaItemListSprit("气球"), ItemType.EnvironmentTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("油桶"), getShootingAreaItemListSprit("油桶"), ItemType.EnvironmentTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("轮胎"), getShootingAreaItemListSprit("轮胎"), ItemType.EnvironmentTarget);
         newArea.deleteItem += DeleteItemEvent;
@@ -383,9 +383,9 @@ public class ShootGameEditor : SimpleEditor
     }
 
 
-    void DeleteItemEvent(ShootingItem item)
+    void DeleteItemEvent(int itemnum)
     {
-        if (item.Prefab == Editor.Selection.activeGameObject)
+        if (GetEditorArea().m_ShootingItem.Count > itemnum && GetEditorArea().m_ShootingItem[itemnum].Prefab == Editor.Selection.activeGameObject)
         {
             Editor.Undo.Select(null, null);
 
@@ -638,7 +638,8 @@ public class ShootGameEditor : SimpleEditor
                 EditorUI._Instance.areaListUI.Subtract.interactable = true;
             }
             if ((selected[0] as GameObject).layer == LayerMask.NameToLayer("Item") || (selected[0] as GameObject).layer == LayerMask.NameToLayer("ShootPos"))
-            {
+            {       
+                if(getActiveItem(selected[0] as GameObject).PrefabUI)
                 getActiveItem(selected[0] as GameObject).PrefabUI.transform.Find("Sprite").GetComponent<Image>().sprite = EditorUI._Instance.areaItemListUI.active;
             }
         }
@@ -739,7 +740,7 @@ public class ShootGameEditor : SimpleEditor
                 if (m_publishType == publishType.PC)
                     pathurl = filePath + "/shooting_Data" + "/ShootingItem" + ".xml";
                 if (m_publishType == publishType.Android)
-                    pathurl = filePath + "/assets" + "/ShootingItem" + ".xml";
+                    pathurl = filePath + "/Android/data/com.qy.shootgame/files" + "/ShootingItem" + ".xml";
                 Xml_ShootingItem._Instance.DeleteXmlByPath(pathurl);
                 Xml_ShootingItem._Instance.CreateXml(pathurl);
                 int id = 0;
@@ -752,11 +753,11 @@ public class ShootGameEditor : SimpleEditor
                 Xml_ShootingItem._Instance.addSceneid(Static.Instance.sceneType.ToString(), pathurl);
 
 
-                if (m_publishType == publishType.Android)
-                {
-                    ZipManager._Instance.CreateZip(Application.dataPath +"/Android", Application.dataPath + "/shootgame.zip");
-                    ZipManager._Instance.ChangeExtension(Application.dataPath + "/shootgame.zip", Path.ChangeExtension(Application.dataPath + "/shootgame.zip", ".apk"));
-                }
+                //if (m_publishType == publishType.Android)
+                //{
+                //    ZipManager._Instance.CreateZip(Application.dataPath +"/Android", Application.dataPath + "/shootgame.zip");
+                //    ZipManager._Instance.ChangeExtension(Application.dataPath + "/shootgame.zip", Path.ChangeExtension(Application.dataPath + "/shootgame.zip", ".apk"));
+                //}
                 OpenDialog.ShowDialog("发布成功！", "发布成功");
             }
         }
@@ -810,29 +811,6 @@ public class ShootGameEditor : SimpleEditor
 
 #endif
     }
-
-    public IEnumerator load(string path)
-    {
-        worning.text = Xml_ShootingItem._Instance.path + "             " + Xml_ShootingItem._Instance.existXml;
-        string line1 = string.Empty;
-        if (Application.platform == RuntimePlatform.Android)
-        {          
-            WWW wWA = new WWW(path);///WWW读取在各个平台上都可使用
-            yield return wWA;
-            line1 = wWA.text;
-            worning.text += line1;
-        }
-        else
-        {
-            WWW wWA = new WWW("file://" + path);
-            yield return wWA;
-            line1 = wWA.text;
-            Debug.Log(line1);
-            worning.text += line1;
-        }
-        yield return null;
-    }
-
 
     void LoadGameXml()
     {
@@ -1058,11 +1036,13 @@ public class ShootGameEditor : SimpleEditor
     public ShootingItem getActiveItem(GameObject value)
     {
         ShootingItem newItem = new ShootingItem();
-        GetEditorArea().m_ShootingItem.ForEach(item =>
-        {
-            if (item.Prefab == value)
-                newItem = item;
-        });
+        if(value)
+            GetEditorArea().m_ShootingItem.ForEach(item =>
+            {
+                if (item.Prefab == value)
+                    newItem = item;
+            });
+
         return newItem;
     }
 
@@ -1196,6 +1176,7 @@ public class ShootGameEditor : SimpleEditor
             editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
         }
         Ground.gameObject.SetActive(false);
+        GameObject.Find("SceneWindow").GetComponent<Image>().raycastTarget = true;
     }
     void GameScene()
     {
@@ -1213,6 +1194,7 @@ public class ShootGameEditor : SimpleEditor
             //editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
         }
         Ground.gameObject.SetActive(true);
+        GameObject.Find("SceneWindow").GetComponent<Image>().raycastTarget = false;
     }
 
 

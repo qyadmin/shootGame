@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 // ShootBehaviour inherits from GenericBehaviour. This class corresponds to shoot/reload/change/add/drop weapons behaviour.
 // Due to its characteristics, this behaviour will always be called regardless the current state (including active and overriding ones).
 // There is no need to use behaviour manager to watch it. Use direct call to all the MonoBehaviour basic functions.
@@ -113,6 +113,7 @@ public class ShootBehaviour : GenericBehaviour
 		shotMask = ~((1 << LayerMask.NameToLayer("Ignore Shot")) | 1 << LayerMask.NameToLayer("Ignore Raycast"));
 
         Weapon.Addweapon();
+        weapons[activeWeapon].weaponHud.fillBullet.onClick.AddListener(delegate() { reloadevent(); });
     }
 
 
@@ -129,6 +130,7 @@ public class ShootBehaviour : GenericBehaviour
 		{
 			isShooting = false;
 		}
+        
 		// Handle relad weapon action.
 		else if (Input.GetButtonUp(reloadButton) && activeWeapon > 0)
 		{
@@ -174,8 +176,19 @@ public class ShootBehaviour : GenericBehaviour
 	// Shoot the weapon.
 	private void ShootWeapon(int weapon)
 	{
+        Debug.Log(EventSystem.current.IsPointerOverGameObject());
 
-        if (!timer.IsRunning)
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+        if (EventSystem.current.IsPointerOverGameObject() == true)
+#elif UNITY_ANDROID
+                if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+#endif
+        {
+            
+            return;
+        }
+
+            if (!timer.IsRunning)
             return;
 		// Check conditions to shoot.
 		if (/*!isAiming ||*/ isAimBlocked || behaviourManager.GetAnim.GetBool(reloadBool) || !weapons[weapon].Shoot())
@@ -198,6 +211,7 @@ public class ShootBehaviour : GenericBehaviour
 #elif UNITY_IPHONE || UNITY_ANDROID
         Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);//从摄像机发出到点击坐标的射线
 #endif
+
 
             RaycastHit hit = default(RaycastHit);
             // Target was hit.
@@ -535,4 +549,17 @@ public class ShootBehaviour : GenericBehaviour
 			leftArm.localEulerAngles = leftArm.localEulerAngles + LeftArmShortAim;
 		}
 	}
+
+    void reloadevent()
+    {
+        if (activeWeapon > 0)
+        {
+            if (weapons[activeWeapon].StartReload())
+            {
+                AudioSource.PlayClipAtPoint(weapons[activeWeapon].reloadSound, gunMuzzle.position, 0.5f);
+                //behaviourManager.GetAnim.SetBool(reloadBool, true);//禁用换弹动画
+                EndReloadWeapon();
+            }
+        }
+    }
 }

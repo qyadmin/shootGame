@@ -12,16 +12,18 @@ public class WeaponUIManager : MonoBehaviour
 	private GameObject bulletMag;                       // The bullets draw inside HUD.
 	private Text totalBulletsHud;                       // The bullets amount label inside HUD.
 
-	void Awake ()
+    public Button fillBullet;
+
+    void Awake ()
 	{
 		// Set up references and default values.
 		weaponHud = this.transform.Find("WeaponHUD/Weapon").GetComponent<Image>();
 		bulletMag = this.transform.Find("WeaponHUD/Data/Mag").gameObject;
 		nobulletColor = new Color(0, 0, 0, 0);
 		totalBulletsHud = this.transform.Find("WeaponHUD/Data/Label").GetComponent<Text>();
-
-		// Player begins unarmed, hide weapon HUD.
-		Toggle(false);
+        fillBullet = this.transform.Find("BulletHUD").GetComponent<Button>();
+        // Player begins unarmed, hide weapon HUD.
+        Toggle(false);
 	}
 
 	// Manage on-screen HUD visibility.

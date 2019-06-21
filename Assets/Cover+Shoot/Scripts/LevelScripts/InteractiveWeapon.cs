@@ -35,7 +35,7 @@ public class InteractiveWeapon : MonoBehaviour
 	private SphereCollider interactiveRadius;                 // In-game radius of interaction with player.
 	private BoxCollider col;                                  // Weapon collider.
 	private Rigidbody rbody;                                  // Weapon rigidbody.
-	private WeaponUIManager weaponHud;                        // Reference to on-screen weapon HUD.
+	public WeaponUIManager weaponHud;                        // Reference to on-screen weapon HUD.
 	private bool pickable;                                    // Boolean to store whether or not the weapon is pickable (player within radius).
 	private Transform pickupHUD;                              // Reference to the weapon pickup in-game label.
 
@@ -57,15 +57,15 @@ public class InteractiveWeapon : MonoBehaviour
 			Debug.LogError("No ScreenHUD canvas found. Create ScreenHUD inside the GameController");
 		}
 		weaponHud = GameObject.Find("ScreenHUD").GetComponent<WeaponUIManager>();
-		pickupHUD = gameController.transform.Find("PickupHUD");
+        pickupHUD = gameController.transform.Find("PickupHUD");
 
 		// Create physics components and radius of interaction.
 		col = this.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
 		CreateInteractiveRadius(col.center);
 		this.rbody = this.gameObject.AddComponent<Rigidbody>();
-
-		// Assert that an weapon slot is set up.
-		if (this.type == WeaponType.NONE)
+        rbody.isKinematic = true;
+        // Assert that an weapon slot is set up.
+        if (this.type == WeaponType.NONE)
 		{
 			Debug.LogWarning("Set correct weapon slot ( 1 - small/ 2- big)");
 			type = WeaponType.SHORT;
@@ -234,6 +234,7 @@ public class InteractiveWeapon : MonoBehaviour
 	{
 		mag = fullMag;
 		totalBullets = maxBullets;
+
         UpdateHud();
 
     }
@@ -241,6 +242,11 @@ public class InteractiveWeapon : MonoBehaviour
 	// Update weapon screen HUD.
 	private void UpdateHud()
 	{
-		weaponHud.UpdateWeaponHUD(sprite, mag, fullMag, totalBullets);
+#if UNITY_ANDROID && !UNITY_EDITOR
+        weaponHud.fillBullet.gameObject.SetActive(true);
+#else
+        weaponHud.fillBullet.gameObject.SetActive(false);
+#endif
+        weaponHud.UpdateWeaponHUD(sprite, mag, fullMag, totalBullets);
 	}
 }

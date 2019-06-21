@@ -201,7 +201,7 @@ public class ItemData
 public class ShootingArea : MonoBehaviour
 {
     public List<ShootingItem> m_ShootingItem = new List<ShootingItem>();
-    public delegate void Areadelegate(ShootingItem item);
+    public delegate void Areadelegate(int itemnum);
 
     public event Areadelegate deleteItem;
     public GetDate getDates()
@@ -406,6 +406,7 @@ public class ShootingArea : MonoBehaviour
 
 
             prefabUI.transform.parent = perfab_father.transform;
+            prefabUI.transform.localScale = new Vector3(1,1,1);
             prefabUI.AddComponent<Button>().onClick.AddListener(delegate ()
             {
                 List<UnityEngine.Object> selection;
@@ -429,34 +430,41 @@ public class ShootingArea : MonoBehaviour
                 else
                 {
                     newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().interactable = true;
-                    newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().onClick.AddListener(delegate () { DeleteItem(newItem); });
+                    int itemnum = i;
+                    newItem.PrefabUI.transform.Find("Delete").gameObject.GetComponent<Button>().onClick.AddListener(delegate () { DeleteItem(itemnum); });
                 }
                 
             }
+            Debug.Log(i);
             m_ShootingItem[i] = newItem;
-        }
-
+        }       
     }
 
-    void DeleteItem(ShootingItem item)
+    void DeleteItem(int item_num)
     {
-        if (item.LinkageItem)
+        Debug.Log(item_num);
+        if (m_ShootingItem[item_num].LinkageItem)
+        {
             for (int i = 0; i < m_ShootingItem.Count; i++)
             {
-
-                if (m_ShootingItem[i].Prefab == item.LinkageItem.gameObject)
+                if (m_ShootingItem[i].Prefab == m_ShootingItem[item_num].LinkageItem.gameObject)
                 {
                     ShootingItem linkers = m_ShootingItem[i];
                     linkers.IsLink = false;
                     m_ShootingItem[i] = linkers;
                 }
             }
-        Destroy(item.PrefabUI.gameObject);
-        Destroy(item.Prefab.gameObject);
-        
-            m_ShootingItem.Remove(item);
+           
+        }
+                   
+      
+        Destroy(m_ShootingItem[item_num].PrefabUI.gameObject);
+        Destroy(m_ShootingItem[item_num].Prefab.gameObject);
+        m_ShootingItem.RemoveAt(item_num);
+
+            
          if (deleteItem != null)
-            deleteItem(item);
+            deleteItem(item_num);
     }
 
 
@@ -526,6 +534,7 @@ public class ShootingArea : MonoBehaviour
                     GameObject PrefabUI = Instantiate(prefab);
                     PrefabUI.name = item.Name;
                     PrefabUI.transform.parent = perfab_father.transform;
+                    PrefabUI.transform.localScale = new Vector3(1,1,1);
                     PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefab = item.Prefab;
                     PrefabUI.GetComponent<PrefabSpawnPoint>().m_prefabNum = item.Number;
                     PrefabUI.GetComponent<PrefabSpawnPoint>().m_preview.sprite = item.MinImage;
@@ -643,6 +652,7 @@ public class ShootingArea : MonoBehaviour
         PerfabUI.transform.Find("Text").GetComponent<Text>().text = m_Number.ToString();
         PerfabUI.transform.Find("Image").GetComponent<Image>().sprite = perfabUI_sprite;
         PerfabUI.transform.parent = perfabUI_father.transform;
+        PerfabUI.transform.localScale = new Vector3(1,1,1);
         PerfabUI.AddComponent<Button>().onClick.AddListener(delegate () { clickevent(); });
     }
 
