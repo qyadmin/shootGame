@@ -523,6 +523,25 @@ public class TargetHealth : HealthManager
                     }
                 }
                 break;
+            case TargetType.UDMove:
+                foreach (Transform i in allchild)
+                {
+                    if (i.name == "movePos")
+                    {
+                        i.localPosition = new Vector3(-0.0317173f, -0.7f, -0.08000182f);
+                    }
+                }
+                break;
+            case TargetType.LRMove:
+                foreach (Transform i in allchild)
+                {
+                    if (i.name == "movePos")
+                    {
+                        i.localPosition = new Vector3(-0.0317173f, -0.7f, -0.08000182f);
+                        i.localEulerAngles = new Vector3(0,0,0);
+                    }
+                }
+                break;
         }
     }
 
@@ -540,14 +559,14 @@ public class TargetHealth : HealthManager
 
     IEnumerator UDMove(Transform movePos)
     {
-        while (movePos.localPosition.y > -0.5f)
+        while (movePos.localPosition.y > -0.7f)
         {
-            movePos.transform.Translate(Vector3.up* -Move_speed *Time.deltaTime );
+            movePos.transform.Translate(Vector3.up* -Move_speed*(1- Mathf.Abs(-0.1f - movePos.localPosition.y)*1.5f)*3 *Time.deltaTime );
             yield return null;
         }
         while (movePos.localPosition.y < 0.5f)
         {
-            movePos.transform.Translate(Vector3.up * Move_speed * Time.deltaTime);
+            movePos.transform.Translate(Vector3.up * Move_speed * (1 - Mathf.Abs(-0.1f - movePos.localPosition.y)*1.5f)*3 * Time.deltaTime);
             yield return null;
         }
         IEnumerator udmove = UDMove(movePos);
@@ -556,14 +575,23 @@ public class TargetHealth : HealthManager
 
     IEnumerator LRMove(Transform movePos)
     {
+        while (movePos.localPosition.y < 0.1f)
+        {
+            movePos.transform.Translate(Vector3.up * Move_speed *3 * Time.deltaTime);
+            yield return null;
+        }
+
         while (Mathf.Abs(movePos.eulerAngles.z - 300)>2)
-        {       
-            movePos.Rotate(new Vector3(0,0, -Rotate_speed*2 * Time.deltaTime));           
+        {
+            //Debug.Log((1 - ((360 - movePos.eulerAngles.z) > 100 ? Mathf.Abs((360 - movePos.eulerAngles.z) - 360) : (360 - movePos.eulerAngles.z)) / 65));
+            movePos.Rotate(new Vector3(0,0, -Rotate_speed*5*(1-((360- movePos.eulerAngles.z)>100? Mathf.Abs((360 - movePos.eulerAngles.z)-360): (360 - movePos.eulerAngles.z)) /65)* Time.deltaTime));           
             yield return null;
         }
         while (Mathf.Abs(movePos.eulerAngles.z - 60) > 2)
         {
-            movePos.Rotate(new Vector3(0,0 ,Rotate_speed*2 * Time.deltaTime));
+            //Debug.Log((1 - ((360 - movePos.eulerAngles.z) > 100 ? Mathf.Abs((360 - movePos.eulerAngles.z) - 360) : (360 - movePos.eulerAngles.z)) / 65));
+
+            movePos.Rotate(new Vector3(0,0 ,Rotate_speed*5* (1 - ((360 - movePos.eulerAngles.z) > 100 ? Mathf.Abs((360 - movePos.eulerAngles.z) - 360) : (360 - movePos.eulerAngles.z)) / 65) * Time.deltaTime));
             yield return null;
         }
         IEnumerator lrmove = LRMove(movePos);
@@ -572,18 +600,20 @@ public class TargetHealth : HealthManager
 
     IEnumerator Slide(Transform movePos)
     {
+        float speed = 0;
         while (movePos.localPosition.x < 2.6f)
-        {
-            movePos.transform.Translate(Vector3.right * Move_speed*3 * Time.deltaTime);
+        {          
+            movePos.transform.Translate(Vector3.right *speed* Time.deltaTime);
+            speed += 0.03f;
             yield return null;
         }
-        while (movePos.localPosition.x > -2.56)
-        {
-            movePos.transform.Translate(Vector3.left * Move_speed*3 * Time.deltaTime);
-            yield return null;
-        }
-        IEnumerator slider = Slide(movePos);
-        StartCoroutine(slider);
+        //while (movePos.localPosition.x > -2.56)
+        //{
+        //    movePos.transform.Translate(Vector3.left * Move_speed*3 * Time.deltaTime);
+        //    yield return null;
+        //}
+        //IEnumerator slider = Slide(movePos);
+        //StartCoroutine(slider);
     }
 
     IEnumerator SliceSteel(Transform movePos)

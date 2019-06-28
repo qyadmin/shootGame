@@ -1175,6 +1175,10 @@ public class ShootGameEditor : SimpleEditor
             outside.SetActive(true);
             editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
         }
+        m_Arealist.ForEach(item => {
+            item.m_ShootPos.Prefab.GetComponent<MeshRenderer>().enabled = true;
+        });
+
         Ground.gameObject.SetActive(false);
         GameObject.Find("SceneWindow").GetComponent<Image>().raycastTarget = true;
     }
@@ -1193,6 +1197,10 @@ public class ShootGameEditor : SimpleEditor
             outside.SetActive(true);
             //editorCamera.transform.position = GameObject.Find("outsidecameraPos").transform.position;
         }
+
+        m_Arealist.ForEach(item => {
+            item.m_ShootPos.Prefab.GetComponent<MeshRenderer>().enabled = false;
+        });
         Ground.gameObject.SetActive(true);
         GameObject.Find("SceneWindow").GetComponent<Image>().raycastTarget = false;
     }

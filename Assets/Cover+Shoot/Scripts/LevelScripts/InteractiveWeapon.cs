@@ -29,7 +29,9 @@ public class InteractiveWeapon : MonoBehaviour
 	public int burstSize = 0;                                 // How many shot are fired on burst mode.
 	[SerializeField]
 	private int mag, totalBullets;                            // Current mag capacity and total amount of bullets being carried.
-	private int fullMag, maxBullets;                          // Default mag capacity and total bullets for reset purposes.
+    [SerializeField]
+    bool isWireless = false;
+    private int fullMag, maxBullets;                          // Default mag capacity and total bullets for reset purposes.
 	private GameObject player, gameController;                // References to the player and the game controller.
 	private ShootBehaviour playerInventory;                   // Player's inventory to store weapons.
 	private SphereCollider interactiveRadius;                 // In-game radius of interaction with player.
@@ -104,7 +106,7 @@ public class InteractiveWeapon : MonoBehaviour
 			// Setup weapon and add in player inventory.
 			playerInventory.AddWeapon(this);
 			Destroy(interactiveRadius);
-			this.Toggle(true);
+			//this.Toggle(true);
 			this.pickable = false;
 
 			// Change active weapon HUD.
@@ -121,7 +123,7 @@ public class InteractiveWeapon : MonoBehaviour
             // Setup weapon and add in player inventory.
             playerInventory.AddWeapon(this);
             Destroy(interactiveRadius);
-            this.Toggle(true);
+            //this.Toggle(true);
             this.pickable = false;
 
             // Change active weapon HUD.
@@ -222,7 +224,8 @@ public class InteractiveWeapon : MonoBehaviour
 	{
 		if (mag > 0)
 		{
-			mag--;
+            if(!isWireless)
+			    mag--;
 			UpdateHud();
 			return true;
 		}
@@ -243,7 +246,7 @@ public class InteractiveWeapon : MonoBehaviour
 	private void UpdateHud()
 	{
 #if UNITY_ANDROID && !UNITY_EDITOR
-        weaponHud.fillBullet.gameObject.SetActive(true);
+        weaponHud.fillBullet.gameObject.SetActive(false);
 #else
         weaponHud.fillBullet.gameObject.SetActive(false);
 #endif

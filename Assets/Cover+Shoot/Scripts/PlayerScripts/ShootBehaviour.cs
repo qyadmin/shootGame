@@ -13,7 +13,7 @@ public class ShootBehaviour : GenericBehaviour
 		dropButton = "Drop";                                       // Default drop weapon button.
 	public Texture2D aimCrosshair, shootCrosshair;                 // Crosshair textures for aiming and shooting.
 	public GameObject muzzleFlash, shot, sparks;                   // Game objects for shot effects.
-	public Material bulletHole;                                    // Material for the bullet hole placed on target shot.
+	public Material[] bulletHole;                                    // Material for the bullet hole placed on target shot.
 	public int maxBulletHoles = 50;                                // Max bullet holes to draw on scene.
 	public float shotErrorRate = 0.02f;                            // Shooting error margin. 0 is most acurate.
 	public float shotRateFactor = 1f;                              // Rate of fire parameter. Higher is faster rate.
@@ -279,11 +279,25 @@ public class ShootBehaviour : GenericBehaviour
                 return getTarget(value.transform.parent.gameObject);
     }
 
+
+    HealthManager getTarget_health(GameObject value)
+    {
+        if (value.GetComponent<HealthManager>())
+            return value.GetComponent<HealthManager>();
+        else
+            if (!value.transform.parent)
+            return null;
+        else
+            return getTarget(value.transform.parent.gameObject);
+    }
     // Manage the shot visual effects.
     private void DrawShoot(GameObject weapon, Vector3 destination, Vector3 targetNormal, Transform parent,
         bool placeSparks = true, bool placeBulletHole = true, bool placeMuzzle = true, bool placeShot = true)
 	{
 		Vector3 origin = gunMuzzle.position - gunMuzzle.up * 0.5f;
+
+        if (parent && getTarget_health(parent.gameObject) == null)
+            placeSparks = true;
 
         // Draw the flash at the gun muzzle position.
         if (placeMuzzle)
@@ -324,9 +338,10 @@ public class ShootBehaviour : GenericBehaviour
 			//{
 				// Instantiate new bullet if an empty slot is available.
 				bullet = GameObject.CreatePrimitive(PrimitiveType.Quad);
-				bullet.GetComponent<MeshRenderer>().material = bulletHole;
+            int i = Random.Range(0,bulletHole.Length-1);
+				bullet.GetComponent<MeshRenderer>().material = bulletHole[i];
 				bullet.GetComponent<Collider>().enabled = false;
-				bullet.transform.localScale = Vector3.one * 0.03f;
+				bullet.transform.localScale = Vector3.one * 0.05f;
 				bullet.name = "BulletHole";
 				bulletHoles.Add(bullet);
 			//}
@@ -375,7 +390,7 @@ public class ShootBehaviour : GenericBehaviour
 			weapons[newWeapon].gameObject.SetActive(true);
             //gunMuzzle = weapons[newWeapon].transform.Find("muzzle");
             gunMuzzle = Camera.main.transform;
-            weapons[newWeapon].Toggle(true);
+            //weapons[newWeapon].Toggle(true);
 		}
 
 		activeWeapon = newWeapon;

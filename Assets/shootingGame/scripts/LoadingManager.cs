@@ -19,7 +19,7 @@ public class LoadingManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Screen.SetResolution(1280, 720, true);
+        Screen.SetResolution(1366, 768, true);
         StartCoroutine(BeginLoading());
     }
 

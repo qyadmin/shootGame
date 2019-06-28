@@ -463,6 +463,12 @@ public class ShootGame : MonoBehaviour
         EditorUI._Instance.gameFinishUI.paper_C.text = paper_C.ToString();
         EditorUI._Instance.gameFinishUI.paper_D.text = paper_D.ToString();
 
+        StartCoroutine(Finish());
+    }
+
+    IEnumerator Finish()
+    {
+        yield return new WaitForSeconds(1);
         EditorUI._Instance.gameFinishUI.gameObject.SetActive(true);
     }
 }
