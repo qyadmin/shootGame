@@ -51,12 +51,12 @@ public class TimeTrialManager : MonoBehaviour
 	{
 		if(isTimerRunning)
 		{
-            EditorUI._Instance.timerUI.passedTime.text = string.Format("当局所用时间:{0}", (Time.time - startTime).ToString("n2"));
+            EditorUI._Instance.timerUI.passedTime.text = string.Format("{0}", (Time.time - startTime).ToString("n2"));
 		}
         if (level_time_start)
         {
             level_runtime -= Time.deltaTime;
-            EditorUI._Instance.timerUI.remainingTime.text = string.Format("打靶剩余时间:{0}", level_runtime.ToString("n2")); 
+            //EditorUI._Instance.timerUI.remainingTime.text = string.Format("打靶剩余时间:{0}", level_runtime.ToString("n2")); 
 
 
 
@@ -94,6 +94,7 @@ public class TimeTrialManager : MonoBehaviour
     public void suspended()
     {
         isTimerRunning = false;
+        EditorUI._Instance.timerUI.passedTime.text = "0.00";
     }
 
 

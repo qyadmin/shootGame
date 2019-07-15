@@ -148,6 +148,25 @@ public class Xml_ShootingItem
         }
     }
 
+    public void addSceneName(string sceneName, string path)
+    {
+        if (File.Exists(path))
+        {
+
+            XmlDocument xml = new XmlDocument();
+            xml.Load(path);
+            XmlNode root = xml.SelectSingleNode("ShootingItem");
+
+            XmlElement xelSenceName = xml.CreateElement("sceneName");
+            xelSenceName.InnerText = sceneName;
+
+            root.AppendChild(xelSenceName);
+            xml.AppendChild(root);
+            //最后保存文件
+            xml.Save(path);
+        }
+    }
+
     /// <summary>
     /// 删除单个条目数据
     /// </summary>
@@ -207,12 +226,21 @@ public class Xml_ShootingItem
         return al;
     }
 
-    public string GetSceneName()
+    public string GetSceneId()
     {
         XmlDocument doc = new XmlDocument();
         doc.Load(path);
         XmlElement xe = doc.DocumentElement;
         XmlElement selectXe = (XmlElement)xe.SelectSingleNode("/ShootingItem/scene");
+        XmlNodeList xmlNodeList = selectXe.ChildNodes;
+        return xmlNodeList.Item(0).InnerText;
+    }
+    public string GetSceneName()
+    {
+        XmlDocument doc = new XmlDocument();
+        doc.Load(path);
+        XmlElement xe = doc.DocumentElement;
+        XmlElement selectXe = (XmlElement)xe.SelectSingleNode("/ShootingItem/sceneName");
         XmlNodeList xmlNodeList = selectXe.ChildNodes;
         return xmlNodeList.Item(0).InnerText;
     }

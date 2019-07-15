@@ -207,8 +207,8 @@ public class ShootGameEditor : SimpleEditor
         }
         else
             modul = Modul.Editor;
-        
 
+        //EditorUI._Instance.sceneNameUI.OnStart();
         //StartCoroutine(load(Xml_ShootingItem._Instance.path));
         Debug.Log(Application.persistentDataPath+"  "+getLastpath(Application.persistentDataPath));
     }
@@ -751,7 +751,7 @@ public class ShootGameEditor : SimpleEditor
                     Xml_ShootingItem._Instance.AddXmlData(sa, id, pathurl);
                 }
                 Xml_ShootingItem._Instance.addSceneid(Static.Instance.sceneType.ToString(), pathurl);
-
+                Xml_ShootingItem._Instance.addSceneName(EditorUI._Instance.publishTypeUI.EditorSenceName.text,pathurl);
 
                 //if (m_publishType == publishType.Android)
                 //{
@@ -759,6 +759,7 @@ public class ShootGameEditor : SimpleEditor
                 //    ZipManager._Instance.ChangeExtension(Application.dataPath + "/shootgame.zip", Path.ChangeExtension(Application.dataPath + "/shootgame.zip", ".apk"));
                 //}
                 OpenDialog.ShowDialog("发布成功！", "发布成功");
+                EditorUI._Instance.publishTypeUI.Clear();
             }
         }
 #else
@@ -784,6 +785,14 @@ public class ShootGameEditor : SimpleEditor
 
     void setPCsave()
     {
+        if (EditorUI._Instance.publishTypeUI.EditorSenceName.text == string.Empty)
+        {
+            EditorUI._Instance.worningUI.Type = worningType.msg;
+            EditorUI._Instance.worningUI.tital.text = "添加场景名称";
+            EditorUI._Instance.worningUI.msg.text = "请填写要保存的场景名称";
+            EditorUI._Instance.worningUI.gameObject.SetActive(true);
+            return;
+        }
         m_publishType = publishType.PC;
         StartCoroutine(Save());
         EditorUI._Instance.publishTypeUI.gameObject.SetActive(false);
@@ -791,6 +800,14 @@ public class ShootGameEditor : SimpleEditor
 
     void setAndroidsave()
     {
+        if (EditorUI._Instance.publishTypeUI.EditorSenceName.text == string.Empty)
+        {
+            EditorUI._Instance.worningUI.Type = worningType.msg;
+            EditorUI._Instance.worningUI.tital.text = "添加场景名称";
+            EditorUI._Instance.worningUI.msg.text = "请填写要保存的场景名称";
+            EditorUI._Instance.worningUI.gameObject.SetActive(true);
+            return;
+        }
         m_publishType = publishType.Android;
         StartCoroutine(Save());
         EditorUI._Instance.publishTypeUI.gameObject.SetActive(false);
@@ -834,10 +851,13 @@ public class ShootGameEditor : SimpleEditor
                 m_Arealist.Add(area);
             }
         }
-        if (Xml_ShootingItem._Instance.GetSceneName() == SceneType.InSide.ToString())
+        if (Xml_ShootingItem._Instance.GetSceneId() == SceneType.InSide.ToString())
             Static.Instance.sceneType = SceneType.InSide;
-        if (Xml_ShootingItem._Instance.GetSceneName() == SceneType.OutSide.ToString())
+        if (Xml_ShootingItem._Instance.GetSceneId() == SceneType.OutSide.ToString())
             Static.Instance.sceneType = SceneType.OutSide;
+
+        EditorUI._Instance.sceneNameUI.SceneName.text = Xml_ShootingItem._Instance.GetSceneName();
+
         OnGameStart();
     }
 
@@ -1068,7 +1088,7 @@ public class ShootGameEditor : SimpleEditor
         }
         else
             OnStopClick();
-
+        ShootGame._Instance.delateTime = 1;
         ShootGame._Instance.Start();
     }
 
@@ -1095,7 +1115,9 @@ public class ShootGameEditor : SimpleEditor
         Editor.Undo.Select(null, null);
         Editor.Selection.Enabled = false;
         EditorUI._Instance.GameModle();
+        EditorUI._Instance.sceneNameUI.OnStart();
         Associated();
+        ShootGame._Instance.delateTime = 7;
         ShootGame._Instance.Start();
     }
     private void OnStopClick()

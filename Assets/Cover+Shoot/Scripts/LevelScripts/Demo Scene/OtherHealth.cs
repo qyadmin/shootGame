@@ -131,7 +131,12 @@ public class OtherHealth : HealthManager
 
         }
     }
-
+    public override void Hiteffect(Ray ray, RaycastHit raycastHit)
+    {
+        base.Hiteffect(ray, raycastHit);     
+        if (toggleSound)
+            AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+    }
     public void TargetEnd()
     {
         StopAllCoroutines();

@@ -5,19 +5,18 @@ using UnityEngine.UI;
 
 public class TimerUI : MonoBehaviour
 {
-    public Text passedTime, remainingTime, shootNum;
-
-
+    public Text passedTime, remainingTime/*, shootNum*/;
+    public Transform TimePanle;
     public void Open()
     {
-        passedTime.gameObject.SetActive(true);
+        TimePanle.gameObject.SetActive(true);
         remainingTime.gameObject.SetActive(true);
-        shootNum.gameObject.SetActive(true);
+       // shootNum.gameObject.SetActive(true);
     }
     public void Close()
     {
-        passedTime.gameObject.SetActive(false);
+        TimePanle.gameObject.SetActive(false);
         remainingTime.gameObject.SetActive(false);
-        shootNum.gameObject.SetActive(false);
+        //shootNum.gameObject.SetActive(false);
     }
 }

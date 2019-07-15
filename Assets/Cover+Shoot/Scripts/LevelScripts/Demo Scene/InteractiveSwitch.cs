@@ -89,6 +89,9 @@ public class InteractiveSwitch : MonoBehaviour
         targets.ForEach(item => {
             item.TargetResets();
         });
+        targets.ForEach(item => {
+            item.ResetDate();
+        });
         if (startVisible)
         {
             StopAllCoroutines();
@@ -168,11 +171,12 @@ public class InteractiveSwitch : MonoBehaviour
                             {
                                 nextStage.ToggleState(false, true);
                             }
-                            AudioSource.PlayClipAtPoint(EndSound, transform.position + Vector3.up);
+                            if (EndSound)
+                                AudioSource.PlayClipAtPoint(EndSound, transform.position + Vector3.up);
                         }
                     }
                     
-                    EditorUI._Instance.timerUI.shootNum.text = string.Format("剩余{0}次射击机会", effectiveShooting - LevelShootNum);
+                    //EditorUI._Instance.timerUI.shootNum.text = string.Format("剩余{0}次射击机会", effectiveShooting - LevelShootNum);
                 }               
                 break;
         }
@@ -184,7 +188,7 @@ public class InteractiveSwitch : MonoBehaviour
         if (!isnow)
             return;
         LevelShootNum = player.GetComponent<ShootBehaviour>().Level_shoot_num;
-        EditorUI._Instance.timerUI.shootNum.text = string.Format("剩余{0}次射击机会", effectiveShooting - LevelShootNum);
+        //EditorUI._Instance.timerUI.shootNum.text = string.Format("剩余{0}次射击机会", effectiveShooting - LevelShootNum);
 
         if (player.GetComponent<ShootBehaviour>().Level_shoot_num >= effectiveShooting)
         {
@@ -220,6 +224,7 @@ public class InteractiveSwitch : MonoBehaviour
                 {
                     nextStage.ToggleState(false, true);
                 }
+                if(EndSound)
                 AudioSource.PlayClipAtPoint(EndSound, transform.position + Vector3.up);
             }
         }

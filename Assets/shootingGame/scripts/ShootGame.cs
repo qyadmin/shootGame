@@ -80,7 +80,7 @@ public class ShootGame : MonoBehaviour
         ResetTime();
         ResetWeapon();
     }
-
+    public int delateTime = 7;
     private void StartGame()
     {
         timeTrial = true;
@@ -98,7 +98,7 @@ public class ShootGame : MonoBehaviour
     }
     void OnStart()
     {       
-        timerid = Timer.Instance.AddDeltaTimer(5, 1, 5, StartGame);
+        timerid = Timer.Instance.AddDeltaTimer(delateTime, 1, delateTime, StartGame);
         EditorUI._Instance.timerUI.Open();
     }
 
@@ -401,19 +401,20 @@ public class ShootGame : MonoBehaviour
                             });
                             break;
                         case TargetType.Slide_double:
+                            papernum_total += 2;
                             if (!targetHealth.ProhibitShooting && !targetHealth.InvalidItem)
                             {
-                                if (targetHealth.IsDead)
-                                {
-                                    papernum_shoot++;
+                                                                
                                     targetHealth.get_target_resoult.ForEach(target =>
                                     {
+                                        if (target.A + target.C + target.D >= 2)
+                                            papernum_shoot++;
                                         paper_A += target.A;
                                         paper_C += target.C;
                                         paper_D += target.D;
                                     });
-                                }
-                                papernum_total++;
+                               
+                               
                             }
 
                             if (targetHealth.ProhibitShooting)

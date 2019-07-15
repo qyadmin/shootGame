@@ -243,13 +243,13 @@ public class ShootBehaviour : GenericBehaviour
                 DrawShoot(weapons[weapon].gameObject, hit.point, hit.normal, hit.collider.transform,false,true,false,false);
 
                 // Call the damage behaviour of target if exists.
-                if (getTarget(hit.collider.gameObject))
+                if (getTarget_health(hit.collider.gameObject))
                 {
-                    getTarget(hit.collider.gameObject).TakeDamage(ray, hit, weapons[weapon].bulletDamage,though);
+                    getTarget_health(hit.collider.gameObject).TakeDamage(ray, hit, weapons[weapon].bulletDamage,though);
 
-                    getTarget(hit.collider.gameObject).Hiteffect(ray,hit);
+                    getTarget_health(hit.collider.gameObject).Hiteffect(ray,hit);
 
-                    if (getTarget(hit.collider.gameObject).Can_Through)
+                    if (getTarget_health(hit.collider.gameObject).Can_Through)
                     {
                         Ray ray_ = new Ray(hit.point + ray.direction*0.1f, ray.direction);
                         RaycastHit hit_ = default(RaycastHit);
@@ -288,7 +288,7 @@ public class ShootBehaviour : GenericBehaviour
             if (!value.transform.parent)
             return null;
         else
-            return getTarget(value.transform.parent.gameObject);
+            return getTarget_health(value.transform.parent.gameObject);
     }
     // Manage the shot visual effects.
     private void DrawShoot(GameObject weapon, Vector3 destination, Vector3 targetNormal, Transform parent,
@@ -341,7 +341,7 @@ public class ShootBehaviour : GenericBehaviour
             int i = Random.Range(0,bulletHole.Length-1);
 				bullet.GetComponent<MeshRenderer>().material = bulletHole[i];
 				bullet.GetComponent<Collider>().enabled = false;
-				bullet.transform.localScale = Vector3.one * 0.05f;
+				bullet.transform.localScale = Vector3.one * 0.03f;
 				bullet.name = "BulletHole";
 				bulletHoles.Add(bullet);
 			//}

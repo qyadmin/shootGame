@@ -27,6 +27,8 @@ public class EditorUI : MonoBehaviour
 
     public GameFinishUI gameFinishUI;
 
+    public SceneNameUI sceneNameUI;
+
     public TimerUI timerUI;
     private void Awake()
     {

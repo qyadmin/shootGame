@@ -62,7 +62,7 @@ public class TargetHealth : HealthManager
         public int Though = 0;
     }
 
-    List<paper_target> m_target = new List<paper_target>();
+    private List<paper_target> m_target = new List<paper_target>();
 
     public List<paper_target> get_target_resoult
     {
@@ -169,29 +169,30 @@ public class TargetHealth : HealthManager
                 break;
 
         }
+        
 
-  //      Debug.Log("中弹了");
-		//if (boss)
-		//{
-		//	health -= damage;
-		//	UpdateHealthBar();
-		//	if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
-		//	{
-		//		Kill();              
-  //          }
-  //          AudioSource.PlayClipAtPoint(toggleSound, transform.position);
-  //      }
-		//else if ((int)this.transform.localEulerAngles.x >= -15 && !dead)
-		//{
-  //          health -= damage;
-  //          if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
-  //          {
-  //              Kill();
-                
-  //          }
-  //          AudioSource.PlayClipAtPoint(toggleSound, transform.position);
-  //      }
-	}
+        //      Debug.Log("中弹了");
+        //if (boss)
+        //{
+        //	health -= damage;
+        //	UpdateHealthBar();
+        //	if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
+        //	{
+        //		Kill();              
+        //          }
+        //          AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+        //      }
+        //else if ((int)this.transform.localEulerAngles.x >= -15 && !dead)
+        //{
+        //          health -= damage;
+        //          if (health <= 0 && (int)this.transform.localEulerAngles.x == 0)
+        //          {
+        //              Kill();
+
+        //          }
+        //          AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+        //      }
+    }
 
 	public void Kill()
 	{
@@ -223,21 +224,7 @@ public class TargetHealth : HealthManager
     }
 
     public void ResetTarget()
-    {
-        if (targetType == TargetType.Slide_double)
-        {
-            paper_target target1 = new paper_target();
-            paper_target target2 = new paper_target();
-            m_target.Clear();
-            m_target.Add(target1);
-            m_target.Add(target2);
-        }
-        else
-        {
-            paper_target target1 = new paper_target();
-            m_target.Clear();
-            m_target.Add(target1);
-        }
+    {      
 
         if (ProhibitShooting || InvalidItem)
             Kill();
@@ -299,6 +286,24 @@ public class TargetHealth : HealthManager
                 break;
         }
        
+    }
+
+    public void ResetDate()
+    {
+        if (targetType == TargetType.Slide_double)
+        {
+            paper_target target1 = new paper_target();
+            paper_target target2 = new paper_target();
+            m_target.Clear();
+            m_target.Add(target1);
+            m_target.Add(target2);
+        }
+        else
+        {
+            paper_target target1 = new paper_target();
+            m_target.Clear();
+            m_target.Add(target1);
+        }
     }
 
     public override void Hiteffect(Ray ray,RaycastHit raycastHit)
@@ -367,6 +372,8 @@ public class TargetHealth : HealthManager
                 }
                 break;
         }
+        if(toggleSound)
+        AudioSource.PlayClipAtPoint(toggleSound, transform.position);
     }
 
 
@@ -575,23 +582,23 @@ public class TargetHealth : HealthManager
 
     IEnumerator LRMove(Transform movePos)
     {
-        while (movePos.localPosition.y < 0.1f)
-        {
-            movePos.transform.Translate(Vector3.up * Move_speed *3 * Time.deltaTime);
-            yield return null;
-        }
+        //while (movePos.localPosition.y < 0.1f)
+        //{
+        //    movePos.transform.Translate(Vector3.up * Move_speed *3 * Time.deltaTime);
+        //    yield return null;
+        //}
 
         while (Mathf.Abs(movePos.eulerAngles.z - 300)>2)
         {
             //Debug.Log((1 - ((360 - movePos.eulerAngles.z) > 100 ? Mathf.Abs((360 - movePos.eulerAngles.z) - 360) : (360 - movePos.eulerAngles.z)) / 65));
-            movePos.Rotate(new Vector3(0,0, -Rotate_speed*5*(1-((360- movePos.eulerAngles.z)>100? Mathf.Abs((360 - movePos.eulerAngles.z)-360): (360 - movePos.eulerAngles.z)) /65)* Time.deltaTime));           
+            movePos.Rotate(new Vector3(0,0, -Rotate_speed*10*(1-((360- movePos.eulerAngles.z)>100? Mathf.Abs((360 - movePos.eulerAngles.z)-360): (360 - movePos.eulerAngles.z)) /65)* Time.deltaTime));           
             yield return null;
         }
         while (Mathf.Abs(movePos.eulerAngles.z - 60) > 2)
         {
             //Debug.Log((1 - ((360 - movePos.eulerAngles.z) > 100 ? Mathf.Abs((360 - movePos.eulerAngles.z) - 360) : (360 - movePos.eulerAngles.z)) / 65));
 
-            movePos.Rotate(new Vector3(0,0 ,Rotate_speed*5* (1 - ((360 - movePos.eulerAngles.z) > 100 ? Mathf.Abs((360 - movePos.eulerAngles.z) - 360) : (360 - movePos.eulerAngles.z)) / 65) * Time.deltaTime));
+            movePos.Rotate(new Vector3(0,0 ,Rotate_speed*10* (1 - ((360 - movePos.eulerAngles.z) > 100 ? Mathf.Abs((360 - movePos.eulerAngles.z) - 360) : (360 - movePos.eulerAngles.z)) / 65) * Time.deltaTime));
             yield return null;
         }
         IEnumerator lrmove = LRMove(movePos);
