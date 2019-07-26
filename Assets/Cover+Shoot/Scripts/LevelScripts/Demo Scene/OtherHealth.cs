@@ -135,7 +135,7 @@ public class OtherHealth : HealthManager
     {
         base.Hiteffect(ray, raycastHit);     
         if (toggleSound)
-            AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+            AudioSource.PlayClipAtPoint(toggleSound,ray.GetPoint(0));
     }
     public void TargetEnd()
     {

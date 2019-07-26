@@ -192,8 +192,8 @@ public class ShootGameEditor : SimpleEditor
         {
            // PositionY = true,
             ScaleY = true,
-            RotationX = true,
-            RotationZ = true,
+            //RotationX = true,
+            //RotationZ = true,
             RotationFree = true,
             RotationScreen = true
 
@@ -1106,6 +1106,7 @@ public class ShootGameEditor : SimpleEditor
 
     private void OnGameStart()
     {
+        GameObject.Find("EventSystem").GetComponent<OutLog>().enabled = false;
         modul = Modul.Game;
         isPlaying = !isPlaying;
         ShootGame._Instance.isEditor = !isPlaying;
@@ -1115,7 +1116,7 @@ public class ShootGameEditor : SimpleEditor
         Editor.Undo.Select(null, null);
         Editor.Selection.Enabled = false;
         EditorUI._Instance.GameModle();
-        EditorUI._Instance.sceneNameUI.OnStart();
+        //EditorUI._Instance.sceneNameUI.OnStart();
         Associated();
         ShootGame._Instance.delateTime = 7;
         ShootGame._Instance.Start();

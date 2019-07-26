@@ -373,7 +373,7 @@ public class TargetHealth : HealthManager
                 break;
         }
         if(toggleSound)
-        AudioSource.PlayClipAtPoint(toggleSound, transform.position);
+        AudioSource.PlayClipAtPoint(toggleSound, ray.GetPoint(0));
     }
 
 
@@ -544,8 +544,8 @@ public class TargetHealth : HealthManager
                 {
                     if (i.name == "movePos")
                     {
-                        i.localPosition = new Vector3(-0.0317173f, -0.7f, -0.08000182f);
-                        i.localEulerAngles = new Vector3(0,0,0);
+                        //i.localPosition = new Vector3(-0.0317173f, -0.7f, -0.08000182f);
+                        i.localEulerAngles = new Vector3(0,0,59);
                     }
                 }
                 break;

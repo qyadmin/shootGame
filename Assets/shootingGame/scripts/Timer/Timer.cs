@@ -81,10 +81,10 @@ namespace Utils
         /// <summary>
         /// 添加定时器,该定时器受时间缩放影响
         /// </summary>
-        /// <param name="interval"></param>
-        /// <param name="count"></param>
-        /// <param name="start"></param>
-        /// <param name="func"></param>
+        /// <param name="interval">间隔时间</param>
+        /// <param name="count">执行次数</param>
+        /// <param name="start">第一次执行开始时间</param>
+        /// <param name="func">回调</param>
         /// <returns></returns>
         public int AddDeltaTimer(float interval, int count, float start, TimerCallBack func)
         {

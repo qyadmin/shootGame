@@ -61,13 +61,13 @@ public class ShootGame : MonoBehaviour
         m_SwitchAwake -= OnStart;
         m_SwitchStop -= ViewStop;
         timer.Finish -= Getresults;
-        Timer.Instance.CancelTimer(timerid);
+        //Timer.Instance.CancelTimer(timerid);
     }
 
 
     private void Update()
     {
-        Timer.Instance.DoUpdate();
+        //Timer.Instance.DoUpdate();
     }
 
 
@@ -98,7 +98,8 @@ public class ShootGame : MonoBehaviour
     }
     void OnStart()
     {       
-        timerid = Timer.Instance.AddDeltaTimer(delateTime, 1, delateTime, StartGame);
+        //timerid = Timer.Instance.AddDeltaTimer(delateTime, 1, delateTime, StartGame);
+        EditorUI._Instance.sceneNameUI.OnStart(StartGame);
         EditorUI._Instance.timerUI.Open();
     }
 
@@ -124,7 +125,7 @@ public class ShootGame : MonoBehaviour
     void ResetTime()
     {
         timer.suspended();
-        Timer.Instance.CancelTimer(timerid);
+        //Timer.Instance.CancelTimer(timerid);
         EditorUI._Instance.timerUI.Close();
     }
 
