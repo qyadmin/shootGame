@@ -91,6 +91,11 @@ public class Xml_ShootingItem
         }
     }
 
+    public bool existXmlfuntion()
+    {
+        return File.Exists(path);
+    }
+
     /// <summary>
     /// 增加Xml数据
     /// </summary>

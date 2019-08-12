@@ -230,11 +230,6 @@ public class TargetHealth : HealthManager
             Kill();
     }
 
-    public void End()
-    {
-        TargetEnd();
-    }
-
 	private void UpdateHealthBar()
 	{
 		float scaleFactor = health / totalHealth;
@@ -455,8 +450,9 @@ public class TargetHealth : HealthManager
         }
     }
 
-    public void TargetEnd()
+    public override void TargetEnd()
     {
+        base.TargetEnd();
         StopAllCoroutines();
         Transform[] allchild;
 
@@ -625,11 +621,15 @@ public class TargetHealth : HealthManager
 
     IEnumerator SliceSteel(Transform movePos)
     {
+        Quaternion q = Quaternion.identity;
+        q.eulerAngles = new Vector3(movePos.rotation.eulerAngles.x - 75,0, 0);
         while (Mathf.Abs(movePos.localEulerAngles.x - 265) > 15)
         {
             Debug.Log(movePos.localEulerAngles.x);
-            movePos.Rotate(new Vector3(-Rotate_speed * 10 * Time.deltaTime, 0, 0));
-            yield return null;
+            //movePos.Rotate(new Vector3(-Rotate_speed * 10 * Time.deltaTime, 0, 0));
+
+            movePos.rotation = Quaternion.Lerp(movePos.rotation, q, 20 * Time.deltaTime);
+            yield return 0;
         }     
     }
 }

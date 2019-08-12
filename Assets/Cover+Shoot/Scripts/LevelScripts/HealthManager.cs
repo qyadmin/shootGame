@@ -14,7 +14,11 @@ public enum TargetType
     Rotate_double,
     Slide_single,
     Slide_double,
-    DoorOrWindow
+    DoorOrWindow,
+    MolotovCocktails,
+    balloon,
+    coke,
+    watermelon
 }
 // This is a template script for in-game object health manager.
 // Any in-game entity that reacts to a shot must have this script with the public function TakeDamage().
@@ -48,6 +52,11 @@ public class HealthManager : MonoBehaviour
     }
 
     public virtual void TargetResets()
+    {
+
+    }
+
+    public virtual void TargetEnd()
     {
 
     }

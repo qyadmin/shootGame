@@ -306,10 +306,12 @@ public class ShootGameEditor : SimpleEditor
         newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黄)"), getShootingAreaItemListSprit("上下移动靶(黄)"), ItemType.shootingMoveTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黑)"), getShootingAreaItemListSprit("上下移动靶(黑)"), ItemType.shootingMoveTarget);
 
-        //newArea.ItemList.AddItem(getShootingAreaItemList("西瓜"), getShootingAreaItemListSprit("西瓜"), ItemType.EnvironmentTarget);
-        //newArea.ItemList.AddItem(getShootingAreaItemList("气球"), getShootingAreaItemListSprit("气球"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("西瓜"), getShootingAreaItemListSprit("西瓜"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("气球"), getShootingAreaItemListSprit("气球"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("可乐瓶"), getShootingAreaItemListSprit("可乐瓶"), ItemType.EnvironmentTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("油桶"), getShootingAreaItemListSprit("油桶"), ItemType.EnvironmentTarget);
         newArea.ItemList.AddItem(getShootingAreaItemList("轮胎"), getShootingAreaItemListSprit("轮胎"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("燃烧瓶"), getShootingAreaItemListSprit("燃烧瓶"), ItemType.EnvironmentTarget);
         newArea.deleteItem += DeleteItemEvent;
         m_Arealist.Add(newArea);
 
@@ -856,7 +858,7 @@ public class ShootGameEditor : SimpleEditor
         if (Xml_ShootingItem._Instance.GetSceneId() == SceneType.OutSide.ToString())
             Static.Instance.sceneType = SceneType.OutSide;
 
-        EditorUI._Instance.sceneNameUI.SceneName.text = Xml_ShootingItem._Instance.GetSceneName();
+        
 
         OnGameStart();
     }
@@ -1109,6 +1111,7 @@ public class ShootGameEditor : SimpleEditor
         GameObject.Find("EventSystem").GetComponent<OutLog>().enabled = false;
         modul = Modul.Game;
         isPlaying = !isPlaying;
+        Cursor.visible = false;
         ShootGame._Instance.isEditor = !isPlaying;
 
         if (Lock)

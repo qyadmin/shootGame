@@ -106,7 +106,11 @@ public class InteractiveSwitch : MonoBehaviour
         StopAllCoroutines();
         foreach (TargetHealth target in targets)
         {
-                target.End();
+            target.TargetEnd();
+        }
+        foreach (OtherHealth target in others)
+        {
+            target.TargetEnd();
         }
     }
     void OnAwake()
@@ -146,7 +150,7 @@ public class InteractiveSwitch : MonoBehaviour
                     }
                 }
 
-                Debug.Log(minionsDead+"  "+ targets.Count);
+                //Debug.Log(minionsDead+"  "+ targets.Count);
                 if (minionsDead == targets.Count)
                 {
                     LevelShootNum = player.GetComponent<ShootBehaviour>().Level_shoot_num;
@@ -360,7 +364,7 @@ public class InteractiveSwitch : MonoBehaviour
                 player.transform.position = Vector3.Lerp(player.transform.position, target, 20 * Time.deltaTime);
             }
                 
-            if (Vector3.Distance(player.transform.position, target) < 0.1f)
+            if (Vector3.Distance(player.transform.position, target) < 0.1f && player.transform.localEulerAngles.y - targetPoint.transform.localEulerAngles.y < 0.1f)
             {
                
                 Debug.Log("run is ok !!!");

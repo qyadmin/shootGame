@@ -79,6 +79,7 @@ public class ShootGame : MonoBehaviour
         ResetSwitch();
         ResetTime();
         ResetWeapon();
+        ResetSceneNameUI();
     }
     public int delateTime = 7;
     private void StartGame()
@@ -120,6 +121,11 @@ public class ShootGame : MonoBehaviour
     {
         Player.GetComponent<ShootBehaviour>().Weapon.ResetBullets();
         Player.GetComponent<ShootBehaviour>().ResetBulletHole();
+    }
+
+    void ResetSceneNameUI()
+    {
+        EditorUI._Instance.sceneNameUI.OnEnd();
     }
 
     void ResetTime()
