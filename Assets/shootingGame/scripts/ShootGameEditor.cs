@@ -199,6 +199,7 @@ public class ShootGameEditor : SimpleEditor
 
         };
         Xml_ShootingItem._Instance.OnStart();
+        LocalizationManager.GetInstance.SetValue();
         Debug.Log(Xml_ShootingItem._Instance.existXml);
         if (Xml_ShootingItem._Instance.existXml)
         {
@@ -262,56 +263,56 @@ public class ShootGameEditor : SimpleEditor
                                 , num);
         newArea.ItemList = new ShootingArea.ShootingItemList();
         //newArea.deleteItem += DeleteItemEvent;
-        newArea.AddItem(Resources.Load<GameObject>("区域射击点"), getAreaItemListSprit("区域射击点"), AreaItemCount.transform);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(红)大"), getShootingAreaItemListSprit("钢靶(红)大"), ItemType.shootingSteelTarget, true);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(白)大"), getShootingAreaItemListSprit("钢靶(白)大"), ItemType.shootingSteelTarget, true);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(蓝)大"), getShootingAreaItemListSprit("钢靶(蓝)大"), ItemType.shootingSteelTarget, true);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(红)小"), getShootingAreaItemListSprit("钢靶(红)小"), ItemType.shootingSteelTarget, true);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(白)小"), getShootingAreaItemListSprit("钢靶(白)小"), ItemType.shootingSteelTarget, true);
-        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(蓝)小"), getShootingAreaItemListSprit("钢靶(蓝)小"), ItemType.shootingSteelTarget, true);
+        newArea.AddItem(Resources.Load<GameObject>("区域射击点"), getAreaItemListSprit("区域射击点"), AreaItemCount.transform,10001);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(红)大"), getShootingAreaItemListSprit("钢靶(红)大"), ItemType.shootingSteelTarget, true,10002);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(白)大"), getShootingAreaItemListSprit("钢靶(白)大"), ItemType.shootingSteelTarget, true,10003);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(蓝)大"), getShootingAreaItemListSprit("钢靶(蓝)大"), ItemType.shootingSteelTarget, true,10004);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(红)小"), getShootingAreaItemListSprit("钢靶(红)小"), ItemType.shootingSteelTarget, true,10005);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(白)小"), getShootingAreaItemListSprit("钢靶(白)小"), ItemType.shootingSteelTarget, true,10006);
+        newArea.ItemList.AddItem(getShootingAreaItemList("钢靶(蓝)小"), getShootingAreaItemListSprit("钢靶(蓝)小"), ItemType.shootingSteelTarget, true,10007);
 
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网"), getShootingAreaItemListSprit("铁丝网"), ItemType.ambientTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("铁丝网(门)"), ItemType.ambientTarget, true);
-        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏"), getShootingAreaItemListSprit("木围栏"), ItemType.ambientTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(门)"), getShootingAreaItemListSprit("木围栏(门)"), ItemType.ambientTarget, true);
-        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(窗)"), getShootingAreaItemListSprit("木围栏(窗)"), ItemType.ambientTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网"), getShootingAreaItemListSprit("铁丝网"), ItemType.ambientTarget,10008);
+        newArea.ItemList.AddItem(getShootingAreaItemList("铁丝网(门)"), getShootingAreaItemListSprit("铁丝网(门)"), ItemType.ambientTarget, true,10009);
+        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏"), getShootingAreaItemListSprit("木围栏"), ItemType.ambientTarget,10010);
+        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(门)"), getShootingAreaItemListSprit("木围栏(门)"), ItemType.ambientTarget, true,10011);
+        newArea.ItemList.AddItem(getShootingAreaItemList("木围栏(窗)"), getShootingAreaItemListSprit("木围栏(窗)"), ItemType.ambientTarget,10012);
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(白)"), getShootingAreaItemListSprit("IDPA纸靶(白)"), ItemType.shootingPaperTargets);
-        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黑)"), getShootingAreaItemListSprit("IDPA纸靶(黑)"), ItemType.shootingPaperTargets);
-        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黄)"), getShootingAreaItemListSprit("IDPA纸靶(黄)"), ItemType.shootingPaperTargets);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(白)"), getShootingAreaItemListSprit("IDPA纸靶(白)"), ItemType.shootingPaperTargets,10013);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黑)"), getShootingAreaItemListSprit("IDPA纸靶(黑)"), ItemType.shootingPaperTargets,10014);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IDPA纸靶(黄)"), getShootingAreaItemListSprit("IDPA纸靶(黄)"), ItemType.shootingPaperTargets,10015);
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(黑)"), getShootingAreaItemListSprit("IPSC纸靶(黑)"), ItemType.shootingPaperTargets);
-        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(白)"), getShootingAreaItemListSprit("IPSC纸靶(白)"), ItemType.shootingPaperTargets);
-        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(黄)"), getShootingAreaItemListSprit("IPSC纸靶(黄)"), ItemType.shootingPaperTargets);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(黑)"), getShootingAreaItemListSprit("IPSC纸靶(黑)"), ItemType.shootingPaperTargets,10016);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(白)"), getShootingAreaItemListSprit("IPSC纸靶(白)"), ItemType.shootingPaperTargets,10017);
+        newArea.ItemList.AddItem(getShootingAreaItemList("IPSC纸靶(黄)"), getShootingAreaItemListSprit("IPSC纸靶(黄)"), ItemType.shootingPaperTargets,10018);
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(白)"), getShootingAreaItemListSprit("方形钢靶(白)"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(蓝)"), getShootingAreaItemListSprit("方形钢靶(蓝)"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(红)"), getShootingAreaItemListSprit("方形钢靶(红)"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(白)"), getShootingAreaItemListSprit("方形钢靶(白)"), ItemType.shootingSteelTarget,10019);
+        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(蓝)"), getShootingAreaItemListSprit("方形钢靶(蓝)"), ItemType.shootingSteelTarget,10020);
+        newArea.ItemList.AddItem(getShootingAreaItemList("方形钢靶(红)"), getShootingAreaItemListSprit("方形钢靶(红)"), ItemType.shootingSteelTarget,10021);
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(白)"), getShootingAreaItemListSprit("圆形钢靶(白)"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(蓝)"), getShootingAreaItemListSprit("圆形钢靶(蓝)"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(红)"), getShootingAreaItemListSprit("圆形钢靶(红)"), ItemType.shootingSteelTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(白)"), getShootingAreaItemListSprit("圆形钢靶(白)"), ItemType.shootingSteelTarget,10022);
+        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(蓝)"), getShootingAreaItemListSprit("圆形钢靶(蓝)"), ItemType.shootingSteelTarget,10023);
+        newArea.ItemList.AddItem(getShootingAreaItemList("圆形钢靶(红)"), getShootingAreaItemListSprit("圆形钢靶(红)"), ItemType.shootingSteelTarget,10024);
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IDPA(单)"), getShootingAreaItemListSprit("滑道移动靶(单)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IDPA(双)"), getShootingAreaItemListSprit("滑道移动靶(双)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IPSC(单)"), getShootingAreaItemListSprit("滑道移动靶(单)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IPSC(双)"), getShootingAreaItemListSprit("滑道移动靶(双)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(单)"), getShootingAreaItemListSprit("旋转靶(单)"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(双)"), getShootingAreaItemListSprit("旋转靶(双)"), ItemType.shootingSteelTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(白)"), getShootingAreaItemListSprit("左右移动靶(白)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黄)"), getShootingAreaItemListSprit("左右移动靶(黄)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黑)"), getShootingAreaItemListSprit("左右移动靶(黑)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(白)"), getShootingAreaItemListSprit("上下移动靶(白)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黄)"), getShootingAreaItemListSprit("上下移动靶(黄)"), ItemType.shootingMoveTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黑)"), getShootingAreaItemListSprit("上下移动靶(黑)"), ItemType.shootingMoveTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IDPA(单)"), getShootingAreaItemListSprit("滑道移动靶(单)"), ItemType.shootingMoveTarget,10025);
+        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IDPA(双)"), getShootingAreaItemListSprit("滑道移动靶(双)"), ItemType.shootingMoveTarget,10026);
+        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IPSC(单)"), getShootingAreaItemListSprit("滑道移动靶(单)"), ItemType.shootingMoveTarget,10027);
+        newArea.ItemList.AddItem(getShootingAreaItemList("滑道移动靶IPSC(双)"), getShootingAreaItemListSprit("滑道移动靶(双)"), ItemType.shootingMoveTarget,10028);
+        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(单)"), getShootingAreaItemListSprit("旋转靶(单)"), ItemType.shootingSteelTarget,10029);
+        newArea.ItemList.AddItem(getShootingAreaItemList("旋转靶(双)"), getShootingAreaItemListSprit("旋转靶(双)"), ItemType.shootingSteelTarget,10030);
+        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(白)"), getShootingAreaItemListSprit("左右移动靶(白)"), ItemType.shootingMoveTarget,10031);
+        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黄)"), getShootingAreaItemListSprit("左右移动靶(黄)"), ItemType.shootingMoveTarget,10032);
+        newArea.ItemList.AddItem(getShootingAreaItemList("左右移动靶(黑)"), getShootingAreaItemListSprit("左右移动靶(黑)"), ItemType.shootingMoveTarget,10033);
+        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(白)"), getShootingAreaItemListSprit("上下移动靶(白)"), ItemType.shootingMoveTarget,10034);
+        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黄)"), getShootingAreaItemListSprit("上下移动靶(黄)"), ItemType.shootingMoveTarget,10035);
+        newArea.ItemList.AddItem(getShootingAreaItemList("上下移动靶(黑)"), getShootingAreaItemListSprit("上下移动靶(黑)"), ItemType.shootingMoveTarget,10036);
 
-        newArea.ItemList.AddItem(getShootingAreaItemList("西瓜"), getShootingAreaItemListSprit("西瓜"), ItemType.EnvironmentTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("气球"), getShootingAreaItemListSprit("气球"), ItemType.EnvironmentTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("可乐瓶"), getShootingAreaItemListSprit("可乐瓶"), ItemType.EnvironmentTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("油桶"), getShootingAreaItemListSprit("油桶"), ItemType.EnvironmentTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("轮胎"), getShootingAreaItemListSprit("轮胎"), ItemType.EnvironmentTarget);
-        newArea.ItemList.AddItem(getShootingAreaItemList("燃烧瓶"), getShootingAreaItemListSprit("燃烧瓶"), ItemType.EnvironmentTarget);
+        newArea.ItemList.AddItem(getShootingAreaItemList("西瓜"), getShootingAreaItemListSprit("西瓜"), ItemType.EnvironmentTarget,10037);
+        newArea.ItemList.AddItem(getShootingAreaItemList("气球"), getShootingAreaItemListSprit("气球"), ItemType.EnvironmentTarget,10038);
+        newArea.ItemList.AddItem(getShootingAreaItemList("可乐瓶"), getShootingAreaItemListSprit("可乐瓶"), ItemType.EnvironmentTarget,10039);
+        newArea.ItemList.AddItem(getShootingAreaItemList("油桶"), getShootingAreaItemListSprit("油桶"), ItemType.EnvironmentTarget,10040);
+        newArea.ItemList.AddItem(getShootingAreaItemList("轮胎"), getShootingAreaItemListSprit("轮胎"), ItemType.EnvironmentTarget,10041);
+        newArea.ItemList.AddItem(getShootingAreaItemList("燃烧瓶"), getShootingAreaItemListSprit("燃烧瓶"), ItemType.EnvironmentTarget,10042);
         newArea.deleteItem += DeleteItemEvent;
         m_Arealist.Add(newArea);
 
@@ -478,7 +479,7 @@ public class ShootGameEditor : SimpleEditor
                             EditorUI._Instance.itemEditorUI.LinkList.options.Clear();
                             EditorUI._Instance.itemEditorUI.LinkItem.gameObject.SetActive(true);
                             Dropdown.OptionData nullData = new Dropdown.OptionData();
-                            nullData.text = "无";
+                            nullData.text = LocalizationManager.GetInstance.GetValue("10000");
 
                             EditorUI._Instance.itemEditorUI.LinkList.options.Add(nullData);
 
@@ -525,7 +526,7 @@ public class ShootGameEditor : SimpleEditor
                             {
                                 EditorUI._Instance.itemEditorUI.LinkList.value = 0;
                                 EditorUI._Instance.itemEditorUI.LinkItem.sprite = getAreaItemListSprit("无");
-                                EditorUI._Instance.itemEditorUI.LinkList.captionText.text = "无";
+                                EditorUI._Instance.itemEditorUI.LinkList.captionText.text = LocalizationManager.GetInstance.GetValue("10000");
                                 EditorUI._Instance.itemEditorUI.LinkItem.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
 
                             }
@@ -726,12 +727,12 @@ public class ShootGameEditor : SimpleEditor
     {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
 
-        string filePath = OpenDialog.SaveDialog("文件夹|");
+        string filePath = OpenDialog.SaveDialog(LocalizationManager.GetInstance.GetValue("20002"));
         if (filePath != "")
         {
             if (FileManger.TestChineseDirectory(filePath))
             {
-                OpenDialog.ShowDialog("所选目录存在中文！", "存在中文目录");
+                OpenDialog.ShowDialog(LocalizationManager.GetInstance.GetValue("20003"), LocalizationManager.GetInstance.GetValue("20004"));
             }
             else
             {
@@ -760,7 +761,7 @@ public class ShootGameEditor : SimpleEditor
                 //    ZipManager._Instance.CreateZip(Application.dataPath +"/Android", Application.dataPath + "/shootgame.zip");
                 //    ZipManager._Instance.ChangeExtension(Application.dataPath + "/shootgame.zip", Path.ChangeExtension(Application.dataPath + "/shootgame.zip", ".apk"));
                 //}
-                OpenDialog.ShowDialog("发布成功！", "发布成功");
+                OpenDialog.ShowDialog(LocalizationManager.GetInstance.GetValue("20001")+"!", LocalizationManager.GetInstance.GetValue("20001"));
                 EditorUI._Instance.publishTypeUI.Clear();
             }
         }
@@ -790,8 +791,8 @@ public class ShootGameEditor : SimpleEditor
         if (EditorUI._Instance.publishTypeUI.EditorSenceName.text == string.Empty)
         {
             EditorUI._Instance.worningUI.Type = worningType.msg;
-            EditorUI._Instance.worningUI.tital.text = "添加场景名称";
-            EditorUI._Instance.worningUI.msg.text = "请填写要保存的场景名称";
+            EditorUI._Instance.worningUI.tital.text = LocalizationManager.GetInstance.GetValue("20005");
+            EditorUI._Instance.worningUI.msg.text = LocalizationManager.GetInstance.GetValue("20006");
             EditorUI._Instance.worningUI.gameObject.SetActive(true);
             return;
         }
@@ -805,8 +806,8 @@ public class ShootGameEditor : SimpleEditor
         if (EditorUI._Instance.publishTypeUI.EditorSenceName.text == string.Empty)
         {
             EditorUI._Instance.worningUI.Type = worningType.msg;
-            EditorUI._Instance.worningUI.tital.text = "添加场景名称";
-            EditorUI._Instance.worningUI.msg.text = "请填写要保存的场景名称";
+            EditorUI._Instance.worningUI.tital.text = LocalizationManager.GetInstance.GetValue("20005");
+            EditorUI._Instance.worningUI.msg.text = LocalizationManager.GetInstance.GetValue("20006");
             EditorUI._Instance.worningUI.gameObject.SetActive(true);
             return;
         }
@@ -821,8 +822,8 @@ public class ShootGameEditor : SimpleEditor
         if (m_Arealist.Count == 0)
         {
             EditorUI._Instance.worningUI.Type = worningType.msg;
-            EditorUI._Instance.worningUI.tital.text = "没有数据";
-            EditorUI._Instance.worningUI.msg.text = "请添加并编辑至少一个射击区域";
+            EditorUI._Instance.worningUI.tital.text = LocalizationManager.GetInstance.GetValue("20007");
+            EditorUI._Instance.worningUI.msg.text = LocalizationManager.GetInstance.GetValue("20008");
             EditorUI._Instance.worningUI.gameObject.SetActive(true);
             return;
         }

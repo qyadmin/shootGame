@@ -79,7 +79,7 @@ namespace Battlehub.RTHandles
 
             if (m_prefabName != null)
             {
-                m_prefabName.text = m_prefab.name;
+                m_prefabName.text = LocalizationManager.GetInstance.GetValue(m_prefabNum.ToString());
             }
         }
 

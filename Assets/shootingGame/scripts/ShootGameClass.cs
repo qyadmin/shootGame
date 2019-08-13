@@ -149,7 +149,7 @@ public struct ShootingItem
     {
         get
         {
-            return m_Name;
+            return LocalizationManager.GetInstance.GetValue(Number.ToString());
         }
         set
         {
@@ -303,25 +303,25 @@ public class ShootingArea : MonoBehaviour
         }
     }
 
-    public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather)
+    public void AddItem(GameObject prefab, Sprite sprite, Transform ItemFather,int num)
     {
-        int num = 1;
-        bool iscreat = false;
+        //int num = 0;
+        //bool iscreat = false;
 
-        while (!iscreat)
-        {
-            iscreat = true;
-            if (m_ShootingItem.Count != 0)
-                for (int i = 0; i < m_ShootingItem.Count; i++)
-                {
-                    if (m_ShootingItem[i].Number == num)
-                    {
-                        iscreat = false;
-                        ++num;
-                        break;
-                    }
-                }
-        }
+        //while (!iscreat)
+        //{
+        //    iscreat = true;
+        //    if (m_ShootingItem.Count != 0)
+        //        for (int i = 0; i < m_ShootingItem.Count; i++)
+        //        {
+        //            if (m_ShootingItem[i].Number == num)
+        //            {
+        //                iscreat = false;
+        //                ++num;
+        //                break;
+        //            }
+        //        }
+        //}
         ShootingItem newItem = new ShootingItem();
         newItem.Prefab = Instantiate(prefab);
         newItem.Prefab.name = prefab.name;
@@ -543,25 +543,25 @@ public class ShootingArea : MonoBehaviour
             });
         }
 
-        public void AddItem(GameObject prefab, Sprite sprite, ItemType type, bool canlink)
+        public void AddItem(GameObject prefab, Sprite sprite, ItemType type, bool canlink,int num)
         {
-            int num = 1;
-            bool iscreat = false;
+            //int num = 1;
+            //bool iscreat = false;
 
-            while (!iscreat)
-            {
-                iscreat = true;
-                if (m_ShootingItem.Count != 0)
-                    for (int i = 0; i < m_ShootingItem.Count; i++)
-                    {
-                        if (m_ShootingItem[i].Number == num)
-                        {
-                            iscreat = false;
-                            ++num;
-                            break;
-                        }
-                    }
-            }
+            //while (!iscreat)
+            //{
+            //    iscreat = true;
+            //    if (m_ShootingItem.Count != 0)
+            //        for (int i = 0; i < m_ShootingItem.Count; i++)
+            //        {
+            //            if (m_ShootingItem[i].Number == num)
+            //            {
+            //                iscreat = false;
+            //                ++num;
+            //                break;
+            //            }
+            //        }
+            //}
             ShootingItem newItem = new ShootingItem();
             newItem.Prefab = prefab;
             newItem.MinImage = sprite;
@@ -576,25 +576,25 @@ public class ShootingArea : MonoBehaviour
             m_ShootingItem.Add(newItem);
         }
 
-        public void AddItem(GameObject prefab, Sprite sprite, ItemType type)
+        public void AddItem(GameObject prefab, Sprite sprite, ItemType type,int num)
         {
-            int num = 1;
-            bool iscreat = false;
+            //int num = 1;
+            //bool iscreat = false;
 
-            while (!iscreat)
-            {
-                iscreat = true;
-                if (m_ShootingItem.Count != 0)
-                    for (int i = 0; i < m_ShootingItem.Count; i++)
-                    {
-                        if (m_ShootingItem[i].Number == num)
-                        {
-                            iscreat = false;
-                            ++num;
-                            break;
-                        }
-                    }
-            }
+            //while (!iscreat)
+            //{
+            //    iscreat = true;
+            //    if (m_ShootingItem.Count != 0)
+            //        for (int i = 0; i < m_ShootingItem.Count; i++)
+            //        {
+            //            if (m_ShootingItem[i].Number == num)
+            //            {
+            //                iscreat = false;
+            //                ++num;
+            //                break;
+            //            }
+            //        }
+            //}
             ShootingItem newItem = new ShootingItem();
             newItem.Prefab = prefab;
             newItem.MinImage = sprite;

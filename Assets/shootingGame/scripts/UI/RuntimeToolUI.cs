@@ -19,6 +19,13 @@ public class RuntimeToolUI : MonoBehaviour
         Scale_Button.interactable = false;
         Lock_Button.interactable = false;
     }
+
+    private void Awake()
+    {
+        Lock = Resources.Load<Sprite>("UI/Image/" + LocalizationManager.GetInstance.GetValue("30001"));
+        UnLock = Resources.Load<Sprite>("UI/Image/" + LocalizationManager.GetInstance.GetValue("30002"));
+    }
+
     private void Start()
     {
         previousPage.onClick.AddListener(delegate() {
