@@ -1076,8 +1076,8 @@ public class ShootGameEditor : SimpleEditor
         if (m_Arealist.Count == 0)
         {
             EditorUI._Instance.worningUI.Type = worningType.msg;
-            EditorUI._Instance.worningUI.tital.text = "请编辑场景";
-            EditorUI._Instance.worningUI.msg.text = "请添加并编辑至少一个射击区域";
+            EditorUI._Instance.worningUI.tital.text =LocalizationManager.GetInstance.GetValue("20007");
+            EditorUI._Instance.worningUI.msg.text = LocalizationManager.GetInstance.GetValue("20008");
             EditorUI._Instance.worningUI.gameObject.SetActive(true);
             return;
         }

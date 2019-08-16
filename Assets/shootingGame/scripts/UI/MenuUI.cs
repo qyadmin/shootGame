@@ -22,6 +22,8 @@ public class MenuUI : MonoBehaviour
     bool istart = false;
     private void Start()
     {
+        determine.image.sprite = Resources.Load<Sprite>("UI/Image/"+LocalizationManager.GetInstance.GetValue("30004"));
+        cancel.image.sprite = Resources.Load<Sprite>("UI/Image/" + LocalizationManager.GetInstance.GetValue("30003"));
         determine.onClick.AddListener(delegate(){
             Static.Instance.sceneType = Static.Instance.sceneType;
             slider.gameObject.SetActive(true);

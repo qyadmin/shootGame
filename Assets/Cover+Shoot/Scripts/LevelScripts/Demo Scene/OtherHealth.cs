@@ -197,7 +197,7 @@ public class OtherHealth : HealthManager
                         //i.GetComponent<MeshExploder>().Explode();
                         i.GetComponent<CapsuleCollider>().enabled = false;
                         i.GetComponent<MeshRenderer>().enabled = false;
-                        GameObject particle = Instantiate(Resources.Load<GameObject>("Particle/explosion"));
+                        GameObject particle = Instantiate(Resources.Load<GameObject>("Particle/explosion_xg"));
                         particle.transform.position = this.transform.position + new Vector3(0, 0.2f, 0);
                         for (int j = 0; j < i.transform.childCount; j++)
                         {

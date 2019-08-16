@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using Utils;
@@ -447,10 +448,19 @@ public class ShootGame : MonoBehaviour
         shootnum_miss = shootnum_total - shootnum_getshoot + shootnum_though;
         steelnum_miss = steelnum_total - steelnum_shoot;
         papernum_miss = papernum_total - papernum_shoot;
-        Debug.Log(string.Format("总时间：{0}, 总射击：{1},漏枪：{2},错枪：{3}", shoottime_total, shootnum_total, shootnum_miss, shootnum_error));
-        Debug.Log(string.Format("钢靶数量：{0},完成：{1},漏射：{2},错射：{3}", steelnum_total, steelnum_shoot, steelnum_miss, steelnum_error));
-        Debug.Log(string.Format("纸靶数量：{0},完成：{1},漏射：{2},错射：{3}", papernum_total, papernum_shoot, papernum_miss, papernum_error));
-        Debug.Log(string.Format("A：{0},C：{1},D：{2}", paper_A, paper_C, paper_D));
+
+
+        string resulttotal = string.Format("总时间：{0}, 总射击：{1},漏枪：{2},错枪：{3}\r\n", shoottime_total.ToString("f2") + "s", shootnum_total, shootnum_miss, shootnum_error);
+        string resultsteel = string.Format("钢靶数量：{0},完成：{1},漏射：{2},错射：{3}\r\n", steelnum_total, steelnum_shoot, steelnum_miss, steelnum_error);
+        string resultpaper = string.Format("纸靶数量：{0},完成：{1},漏射：{2},错射：{3}\r\n", papernum_total, papernum_shoot, papernum_miss, papernum_error);
+        string resultabc = string.Format("A：{0},C：{1},D：{2}", paper_A, paper_C, paper_D);
+        Debug.Log(resulttotal);
+        Debug.Log(resultsteel);
+        Debug.Log(resultpaper);
+        Debug.Log(resultabc);
+        string results = resulttotal + resultsteel + resultpaper + resultabc;
+
+        AddTxtTextByFileStream(results);
 
         EditorUI._Instance.gameFinishUI.shoottime_total.text = shoottime_total.ToString("f2")+"s";
         EditorUI._Instance.gameFinishUI.shootnum_total.text = shootnum_total.ToString();
@@ -479,4 +489,31 @@ public class ShootGame : MonoBehaviour
         yield return new WaitForSeconds(1);
         EditorUI._Instance.gameFinishUI.gameObject.SetActive(true);
     }
+
+    public void AddTxtTextByFileStream(string txtText)
+    {
+        string path = Application.persistentDataPath + "/OutPut/"+System.DateTime.Now.Year+System.DateTime.Now.Month+System.DateTime.Now.Day+System.DateTime.Now.Hour+System.DateTime.Now.Minute+System.DateTime.Now.Second+".txt";
+        if (!Directory.Exists(Application.persistentDataPath + "/OutPut/"))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/OutPut/");
+            print("文件夹不存在,创建");
+        }
+        // 文件流创建一个文本文件
+        FileStream file = new FileStream(path, FileMode.Create);
+        //得到字符串的UTF8 数据流
+        byte[] bts = System.Text.Encoding.UTF8.GetBytes(txtText);
+        // 文件写入数据流
+        file.Write(bts, 0, bts.Length);
+        Debug.Log(path);
+        if (file != null)
+        {
+            //清空缓存
+            file.Flush();
+            // 关闭流
+            file.Close();
+            //销毁资源
+            file.Dispose();
+        }
+    }
+
 }

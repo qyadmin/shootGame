@@ -26,14 +26,19 @@ public class LocalizationManager
     private const string english = "English";
 
     //选择自已需要的本地语言  
-    public const string language = chinese;
+    public string language = chinese;
 
+
+    public void setlanguage(string language)
+    {
+        Localization(language);
+    }
 
     private Dictionary<string, string> dic = new Dictionary<string, string>();
     /// <summary>  
     /// 读取配置文件，将文件信息保存到字典里  
     /// </summary>  
-    public LocalizationManager()
+    public void Localization(string language)
     {
         TextAsset ta = Resources.Load<TextAsset>(language);
         string text = ta.text;

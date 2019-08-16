@@ -30,8 +30,8 @@ public class RuntimeToolUI : MonoBehaviour
     {
         previousPage.onClick.AddListener(delegate() {
             EditorUI._Instance.worningUI.Type = worningType.handle;
-            EditorUI._Instance.worningUI.tital.text = "确认要返回选择场景界面么？";
-            EditorUI._Instance.worningUI.msg.text = "确认返回上一页，取消则返回";
+            EditorUI._Instance.worningUI.tital.text = LocalizationManager.GetInstance.GetValue("20009");
+            EditorUI._Instance.worningUI.msg.text = LocalizationManager.GetInstance.GetValue("20010");
             EditorUI._Instance.worningUI.cancel.onClick.AddListener(delegate() {
                 EditorUI._Instance.worningUI.gameObject.SetActive(false);
             });
