@@ -91,6 +91,17 @@ public class ShootGame : MonoBehaviour
 
     }
 
+    public void ClientStart()
+    {
+        if (SocketClient.socketClient.isConnect)
+        {
+            timeTrial = true;
+            Player.GetComponent<CapsuleCollider>().enabled = true;
+            IEnumerator endAnimation = EditorUI._Instance.sceneNameUI.endAnimation();
+            StartCoroutine(endAnimation);
+        }       
+    }
+
     int timerid = -1;
 
     IEnumerator delate()
@@ -460,7 +471,8 @@ public class ShootGame : MonoBehaviour
         Debug.Log(resultabc);
         string results = resulttotal + resultsteel + resultpaper + resultabc;
 
-        AddTxtTextByFileStream(results);
+        if (SocketClient.socketClient.isConnect)
+            AddTxtTextByFileStream(results);
 
         EditorUI._Instance.gameFinishUI.shoottime_total.text = shoottime_total.ToString("f2")+"s";
         EditorUI._Instance.gameFinishUI.shootnum_total.text = shootnum_total.ToString();
@@ -504,6 +516,7 @@ public class ShootGame : MonoBehaviour
         byte[] bts = System.Text.Encoding.UTF8.GetBytes(txtText);
         // 文件写入数据流
         file.Write(bts, 0, bts.Length);
+        SocketClient.socketClient.SendMsg(path);
         Debug.Log(path);
         if (file != null)
         {

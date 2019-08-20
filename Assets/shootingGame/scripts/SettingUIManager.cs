@@ -19,8 +19,8 @@ public class SettingUIManager : MonoBehaviour
 
         Exit.onClick.AddListener(delegate () {
             EditorUI._Instance.worningUI.Type = worningType.handle;
-            EditorUI._Instance.worningUI.tital.text = "退出程序";
-            EditorUI._Instance.worningUI.msg.text = "确认是否退出程序";
+            EditorUI._Instance.worningUI.tital.text = LocalizationManager.GetInstance.GetValue("20011");
+            EditorUI._Instance.worningUI.msg.text = LocalizationManager.GetInstance.GetValue("20012");
             EditorUI._Instance.worningUI.cancel.onClick.AddListener(delegate () {
                 EditorUI._Instance.worningUI.gameObject.SetActive(false);
             });
@@ -48,7 +48,7 @@ public class SettingUIManager : MonoBehaviour
 
     private void Restart_Application()
     {
-        SceneManager.LoadSceneAsync("Loading");
+        SceneManager.LoadSceneAsync("TimeTrial");
     }
     
 }

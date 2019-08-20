@@ -25,18 +25,34 @@ public class SceneNameUI : MonoBehaviour
         SceneName.text = "Shooter ,Are you ready ?";
         yield return new WaitForSeconds(2);
         SceneName.text = "StandBy !";
-        yield return new WaitForSeconds(UnityEngine.Random.Range(3,6));      
-        action.Invoke();
 
+        if (!SocketClient.socketClient.isConnect)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(3, 6));
+            action.Invoke();
+
+            while (color_a > 0)
+            {
+                color_a -= Time.deltaTime;
+                SceneName.color = new Color(SceneName.color.r, SceneName.color.g, SceneName.color.b, color_a);
+                BackGround.color = new Color(BackGround.color.r, BackGround.color.b, BackGround.color.g, color_a / 2);
+                yield return null;
+            }
+        }     
+    }
+    public IEnumerator endAnimation()
+    {
+        float color_a = 1;
         while (color_a > 0)
         {
             color_a -= Time.deltaTime;
             SceneName.color = new Color(SceneName.color.r, SceneName.color.g, SceneName.color.b, color_a);
-            BackGround.color = new Color(BackGround.color.r, BackGround.color.b, BackGround.color.g, color_a/ 2);
+            BackGround.color = new Color(BackGround.color.r, BackGround.color.b, BackGround.color.g, color_a / 2);
             yield return null;
         }
-        
     }
+
+
     IEnumerator StandBy;
     public void OnStart(Action start)
     {

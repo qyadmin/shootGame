@@ -26,21 +26,27 @@ public class LocalizationManager
     private const string english = "English";
 
     //选择自已需要的本地语言  
-    public string language = chinese;
-
+    public string Language;
+    class Fonts
+    {
+        public string values;
+        public int fontsize;
+    }
 
     public void setlanguage(string language)
     {
-        Localization(language);
+        Language = language;
+        CleanDic();
+        Localization();
     }
 
-    private Dictionary<string, string> dic = new Dictionary<string, string>();
+    private Dictionary<string, object> dic = new Dictionary<string, object>();
     /// <summary>  
     /// 读取配置文件，将文件信息保存到字典里  
     /// </summary>  
-    public void Localization(string language)
+    public void Localization()
     {
-        TextAsset ta = Resources.Load<TextAsset>(language);
+        TextAsset ta = Resources.Load<TextAsset>(Language);
         string text = ta.text;
 
         string[] lines = text.Split('\n');
@@ -51,7 +57,17 @@ public class LocalizationManager
                 continue;
             }
             string[] keyAndValue = line.Split('=');
-            dic.Add(keyAndValue[0], keyAndValue[1].Split('\r')[0]);
+            if (keyAndValue.Length > 2)
+            {
+                Fonts font = new Fonts();
+                font.values = keyAndValue[1];
+                Debug.Log(keyAndValue[1]);
+                font.fontsize = int.Parse(keyAndValue[2].Split('\r')[0]);
+                dic.Add(keyAndValue[0], font);
+            }
+                
+            else
+                dic.Add(keyAndValue[0], keyAndValue[1].Split('\r')[0]);
         }
         
     }
@@ -65,6 +81,10 @@ public class LocalizationManager
     {
         SetTextValue();
     }
+    void CleanDic()
+    {
+        dic.Clear();
+    }
 
     public string GetValue(string key)
     {
@@ -72,9 +92,9 @@ public class LocalizationManager
         {
             return null;
         }
-        string value = null;
+        object value = null;
         dic.TryGetValue(key, out value);
-        return value;
+        return value.ToString();
     } 
 
     void SetTextValue()
@@ -86,11 +106,22 @@ public class LocalizationManager
             {
                 if (gamemanager.transform.Find(key.Key))
                 {
-                    if(gamemanager.transform.Find(key.Key).GetComponent<Text>())
-                        gamemanager.transform.Find(key.Key).GetComponent<Text>().text = key.Value;
+                    if (gamemanager.transform.Find(key.Key).GetComponent<Text>())
+                    {
+                        Fonts font = new Fonts();
+                        if (key.Value.GetType() == typeof(Fonts))
+                        {
+                            font = (Fonts)key.Value;                         
+                            gamemanager.transform.Find(key.Key).GetComponent<Text>().text = font.values;                           
+                            gamemanager.transform.Find(key.Key).GetComponent<Text>().fontSize = font.fontsize;
+                        }
+                        else 
+                            gamemanager.transform.Find(key.Key).GetComponent<Text>().text = key.Value.ToString();
+                    }
+                       
                     if(gamemanager.transform.Find(key.Key).GetComponent<Image>())
                     {                       
-                        gamemanager.transform.Find(key.Key).GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/Image/" + key.Value);
+                        gamemanager.transform.Find(key.Key).GetComponent<Image>().sprite = Resources.Load<Sprite>("UI/Image/" + key.Value.ToString());
                     }
                 }
             }

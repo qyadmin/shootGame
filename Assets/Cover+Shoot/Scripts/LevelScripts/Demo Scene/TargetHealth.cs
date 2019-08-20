@@ -623,7 +623,7 @@ public class TargetHealth : HealthManager
     {
         Quaternion q = Quaternion.identity;
         q.eulerAngles = new Vector3(movePos.rotation.eulerAngles.x - 75,0, 0);
-        while (Mathf.Abs(movePos.localEulerAngles.x - 265) > 15)
+        while (Mathf.Abs(movePos.localEulerAngles.x - 265) > 20)
         {
             Debug.Log(movePos.localEulerAngles.x);
             //movePos.Rotate(new Vector3(-Rotate_speed * 10 * Time.deltaTime, 0, 0));

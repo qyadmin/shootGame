@@ -34,10 +34,13 @@ public class LoadingManager : MonoBehaviour
     {
         Screen.SetResolution(1366, 768, true);
         StartCoroutine(BeginLoading());
+        SocketClient.socketClient.ClientStartCallBack += Client_bengin;
+        SocketClient.socketClient.ClientSucCallBack += Client_suc;
+        SocketClient.socketClient.ClientFailCallBack += Client_fail;
         click.onClick.AddListener(delegate () {
             loadScene();
         });
-        if (!Xml_ShootingItem._Instance.existXml)
+        if (Xml_ShootingItem._Instance.existXml)
         {
             versionlist.gameObject.SetActive(true);
             versionlist.onValueChanged.AddListener(delegate (int i)
@@ -57,18 +60,19 @@ public class LoadingManager : MonoBehaviour
 
     void loadScene()
     {
-        if (languagelist.value == 0)
-            LocalizationManager.GetInstance.setlanguage("Chinese");
-        if(languagelist.value == 1)
-            LocalizationManager.GetInstance.setlanguage("English");
-        if(versionlist.value == 0)
-            asyn.allowSceneActivation = true;
-        if (versionlist.value == 1)
-        {
-            //SocketClient.socketClient.Client_Ben += Client_bengin;
-            //SocketClient.socketClient.Client_Suc += Client_suc;
-            //SocketClient.socketClient.Client_Fail += Client_fail;
 
+        if (versionlist.value == 0)
+        {
+            //LocalizationManager.GetInstance.CleanDic();
+            if (languagelist.value == 0)
+                LocalizationManager.GetInstance.setlanguage("Chinese");
+            if (languagelist.value == 1)
+                LocalizationManager.GetInstance.setlanguage("English");
+            asyn.allowSceneActivation = true;
+        }
+            
+        if (versionlist.value == 1)
+        {          
             SocketClient.socketClient.StartClient();
         }
 
@@ -80,11 +84,20 @@ public class LoadingManager : MonoBehaviour
     }
     void Client_fail(string msg)
     {
-        Client.Find("Text").GetComponent<Text>().text = msg;
+        Client.Find("Button").GetComponent<Button>().onClick.RemoveAllListeners();
+        Client.Find("Button").GetComponent<Button>().onClick.AddListener(delegate() {
+            Client.gameObject.SetActive(false);
+        });
+        Client.Find("Button/Text").GetComponent<Text>().text = msg;
+
     }
     void Client_suc(string msg)
     {
-        Client.Find("Text").GetComponent<Text>().text = msg;
+        Client.Find("Button/Text").GetComponent<Text>().text = msg;
+        if (languagelist.value == 0)
+            LocalizationManager.GetInstance.setlanguage("Chinese");
+        if (languagelist.value == 1)
+            LocalizationManager.GetInstance.setlanguage("English");
         asyn.allowSceneActivation = true;
     }
     // Update is called once per frame

@@ -40,12 +40,13 @@ public class GameFinishUI : MonoBehaviour
 
         Exit.onClick.AddListener(delegate () {
             EditorUI._Instance.worningUI.Type = worningType.handle;
-            EditorUI._Instance.worningUI.tital.text = "退出程序";
-            EditorUI._Instance.worningUI.msg.text = "确认是否退出程序";
+            EditorUI._Instance.worningUI.tital.text = LocalizationManager.GetInstance.GetValue("20011");
+            EditorUI._Instance.worningUI.msg.text = LocalizationManager.GetInstance.GetValue("20012");
             EditorUI._Instance.worningUI.cancel.onClick.AddListener(delegate () {
                 EditorUI._Instance.worningUI.gameObject.SetActive(false);
             });
             EditorUI._Instance.worningUI.determine.onClick.AddListener(delegate () {
+                //SocketClient.socketClient.isRun = false;
                 Application.Quit();
             });
             EditorUI._Instance.worningUI.gameObject.SetActive(true);
@@ -70,6 +71,7 @@ public class GameFinishUI : MonoBehaviour
 
     private void Restart_Application()
     {
-        SceneManager.LoadSceneAsync("Loading");
+        //SocketClient.socketClient.EndClient();
+        SceneManager.LoadSceneAsync("TimeTrial");
     }
 }

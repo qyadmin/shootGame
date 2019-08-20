@@ -1,6 +1,6 @@
-EditorHUD/AreaEditorUI/Shoot_time/Shoot_time_text=Area Shooting Time:
+EditorHUD/AreaEditorUI/Shoot_time/Shoot_time_text=Area Shooting Time:=25
 EditorHUD/AreaEditorUI/Shoot_time/Shoot_time_unit=S
-EditorHUD/AreaEditorUI/Shoot_num/Shoot_num_text=Number of Area Shooting:
+EditorHUD/AreaEditorUI/Shoot_num/Shoot_num_text=Number of Area Shooting:=20
 EditorHUD/AreaEditorUI/Shoot_num/Shoot_num_unit=
 EditorHUD/PublishTypeUI/Publish/SceneName=Edit Scenario Name:
 EditorHUD/RuntimeToolUI/Tools/Move=Move_English

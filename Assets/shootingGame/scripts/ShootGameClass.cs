@@ -221,7 +221,7 @@ public class ShootingArea : MonoBehaviour
         {
             ItemData additem = new ItemData();
             additem.m_number = item.Number;
-            additem.m_name = item.Name;
+            additem.m_name = LocalizationManager.GetInstance.GetValue(item.Number.ToString());
             additem.m_type = item.Type.ToString();
             additem.m_Item_pos = new Vector3Data() { x = item.m_General.position.x, y = item.m_General.position.y, z = item.m_General.position.z };
             additem.m_Item_rot = new Vector3Data() { x = item.m_General.rotation.x, y = item.m_General.rotation.y, z = item.m_General.rotation.z };
@@ -283,13 +283,14 @@ public class ShootingArea : MonoBehaviour
             Vector3 Sca = new Vector3() { x = i.m_Item_sca.x, y = i.m_Item_sca.y, z = i.m_Item_sca.z };
 
             ShootingItem Item = new ShootingItem();
-            Item.Prefab = Instantiate(Resources.Load<GameObject>(i.m_name));
+            Debug.Log(i.m_number);            
+            Item.Number = i.m_number;
+            Item.Prefab = Instantiate(Resources.Load<GameObject>(i.m_number.ToString()));
             Item.Prefab.transform.parent = perfab_father;
             Item.Prefab.transform.localPosition = Pos;
             Item.Prefab.transform.eulerAngles = Rot;
             Item.Prefab.transform.localScale = Sca;
-            Item.Number = i.m_number;
-            Item.Name = i.m_name;
+            Item.Name = LocalizationManager.GetInstance.GetValue(Item.Number.ToString());
             Item.Type = (ItemType)Enum.Parse(typeof(ItemType), i.m_type, true);
             Item.Prefab.transform.name = Item.Name;
             Item.CanThought = i.CanThought;
@@ -339,7 +340,7 @@ public class ShootingArea : MonoBehaviour
 
         newItem.MinImage = sprite;
         newItem.Number = num;
-        newItem.Name = newItem.Prefab.name;
+        newItem.Name = LocalizationManager.GetInstance.GetValue(num.ToString());
         newItem.Type = ItemType.shootingPos;
         newItem.CanLink = false;
         newItem.IsLink = false;
@@ -381,7 +382,7 @@ public class ShootingArea : MonoBehaviour
 
         newItem.MinImage = sprite;
         newItem.Number = num;
-        newItem.Name = newItem.Prefab.name;
+        newItem.Name = LocalizationManager.GetInstance.GetValue(num.ToString());
         newItem.Type = type;
         newItem.CanThought = false;
         newItem.ProhibitShooting = false;
@@ -566,7 +567,7 @@ public class ShootingArea : MonoBehaviour
             newItem.Prefab = prefab;
             newItem.MinImage = sprite;
             newItem.Number = num;
-            newItem.Name = newItem.Prefab.name;
+            newItem.Name = LocalizationManager.GetInstance.GetValue(num.ToString());
             newItem.CanThought = false;
             newItem.ProhibitShooting = false;
             newItem.InvalidItem = false;
@@ -599,7 +600,7 @@ public class ShootingArea : MonoBehaviour
             newItem.Prefab = prefab;
             newItem.MinImage = sprite;
             newItem.Number = num;
-            newItem.Name = newItem.Prefab.name;
+            newItem.Name = LocalizationManager.GetInstance.GetValue(num.ToString());
             newItem.CanThought = false;
             newItem.ProhibitShooting = false;
             newItem.InvalidItem = false;
@@ -631,7 +632,7 @@ public class ShootingArea : MonoBehaviour
             newItem.Prefab = prefab;
             newItem.MinImage = sprite;
             newItem.Number = num;
-            newItem.Name = newItem.Prefab.name;
+            newItem.Name = LocalizationManager.GetInstance.GetValue(num.ToString());
             newItem.CanThought = CanThought;
             newItem.Type = ItemType.EnvironmentTarget;
             m_ShootingItem.Add(newItem);
