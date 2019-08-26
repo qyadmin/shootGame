@@ -55,7 +55,7 @@ public class LoadingManager : MonoBehaviour
         {
             versionlist.gameObject.SetActive(false);
         }
-        
+        Debug.Log(Application.systemLanguage.ToString());
     }
 
     void loadScene()
@@ -64,9 +64,9 @@ public class LoadingManager : MonoBehaviour
         if (versionlist.value == 0)
         {
             //LocalizationManager.GetInstance.CleanDic();
-            if (languagelist.value == 0)
+            if (Application.systemLanguage.ToString() == "Chinese")
                 LocalizationManager.GetInstance.setlanguage("Chinese");
-            if (languagelist.value == 1)
+            else
                 LocalizationManager.GetInstance.setlanguage("English");
             asyn.allowSceneActivation = true;
         }
